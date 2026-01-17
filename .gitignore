@@ -1,0 +1,37 @@
+# ===============================
+# STM32CubeIDE / Eclipse stuff
+# ===============================
+/.Debug/
+/Release/
+/.Projects/
+/.cproject
+/.project
+/.mxproject
+/.settings/
+
+# ===============================
+# Build artifacts
+# ===============================
+*.o
+*.elf
+*.bin
+*.hex
+*.map
+*.axf
+*.lst
+*.d
+*.log
+
+# ===============================
+# VS Code editor stuff
+# ===============================
+.vscode/*
+
+# ===============================
+# Temporary / backup files
+# ===============================
+*~
+*.swp
+*.tmp
+*.bak
+*.stackdump

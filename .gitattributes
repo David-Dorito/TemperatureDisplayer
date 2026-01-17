@@ -1,0 +1,10 @@
+# Force all text files to use LF in the repo
+* text=auto eol=lf
+
+# Optionally, you can mark binaries to never touch them
+*.ico binary
+*.png binary
+*.jpg binary
+*.bin binary
+*.elf binary
+*.hex binary
