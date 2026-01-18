@@ -3,6 +3,13 @@
 
 #include <stdint.h>
 
+#define HIGH                1
+#define LOW                 0
+#define TRUE                1
+#define FALSE               0
+#define ENABLE              1
+#define DISABLE             0
+
 typedef int64_t             i64;
 typedef int32_t             i32;
 typedef int16_t             i16;

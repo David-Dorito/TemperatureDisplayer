@@ -1,5 +1,4 @@
 #include "../Inc/stm32f401xx.h"
-#include <stdint.h>
 
 /*************************************\
   fn: @IRQ_PriorityControl
