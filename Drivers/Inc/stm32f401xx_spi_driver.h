@@ -94,8 +94,8 @@ typedef struct {
     SPI_RegDef* pSPIx;
 } SPI_Handle;
 
-void SPI_PeriphControl(SPI_Handle* pSpiHandle, u8 isEnabled);
-void SPI_PeriphClockControl(SPI_Handle* pSpiHandle, u8 isEnabled);
+void SPI_PeriphCtrl(SPI_Handle* pSpiHandle, u8 isEnabled);
+void SPI_PeriphClkCtrl(SPI_Handle* pSpiHandle, u8 isEnabled);
 
 void SPI_Init(SPI_Handle* pSpiHandle);
 void SPI_Deinit(SPI_Handle* pSpiHandle);

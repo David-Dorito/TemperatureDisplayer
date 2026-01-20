@@ -1,9 +1,10 @@
 ### **TODO list for this project**
 
 ## Driver Layer
-1. Complete SPI drivers
-2. Implement I²C drivers
-3. Implement USART drivers
+1. Complete GPIO drivers
+2. Complete SPI drivers
+3. Implement I²C drivers
+4. Implement USART drivers
 
 ## Application Layer
 1. Configure GPIO button with external interrupt (EXTI)
