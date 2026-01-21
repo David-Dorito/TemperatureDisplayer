@@ -1,7 +1,7 @@
 #include "../Inc/stm32f401xx.h"
 
 /*************************************\
-  fn: @IRQ_PriorityControl
+  fn: @IRQ_PrioCtrl
   
   param1 u8: the IRQ number for which you have to set the priority
   param2 u8: the IRQ priority
@@ -13,7 +13,7 @@
   note: 
   
 \**************************************/
-void IRQ_PriorityControl(u8 IRQNumber, u32 IRQPriority)
+void IRQ_PrioCtrl(u8 IRQNumber, u32 IRQPriority)
 {
 	u8 iprx = IRQNumber / 4;
 	u8 iprx_section = IRQNumber % 4;
@@ -22,7 +22,7 @@ void IRQ_PriorityControl(u8 IRQNumber, u32 IRQPriority)
 }
 
 /*************************************\
-  fn: @IRQ_InterruptControl
+  fn: @IRQ_ItCtrl
   
   param1 u8: the interrupt line
   param2 u8: enable or disable
@@ -34,7 +34,7 @@ void IRQ_PriorityControl(u8 IRQNumber, u32 IRQPriority)
   note: 
   
 \**************************************/
-void IRQ_InterruptControl(u8 IRQNumber, u8 value)
+void IRQ_ItCtrl(u8 IRQNumber, u8 value)
 {
 	if (value)
 	{

@@ -24,6 +24,14 @@
 #define GPIO_PINPUPDCTRL_PULLUP     0b01
 #define GPIO_PINPUPDCTRL_PULLDOWN   0b10
 
+//RtFtDetect
+#define GPIO_RTFTDETECT_NONE        0b00
+#define GPIO_RTFTDETECT_FT          0b01
+#define GPIO_RTFTDETECT_RT          0b10
+#define GPIO_RTFTDETECT_RTFT        0b11
+
+#define GPIO_BASEADDR_TO_CODE(PORT_ADDR)	((PORT_ADDR-AHB1PERIPH_BASEADDR)/0x400U)
+
 #define GPIOA_REG_RESET() do {RCC->AHB1RSTR |= (1 << 0); RCC->APB2RSTR &= ~(1 << 0);} while(0)
 #define GPIOB_REG_RESET() do {RCC->AHB1RSTR |= (1 << 1); RCC->APB2RSTR &= ~(1 << 1);} while(0)
 #define GPIOC_REG_RESET() do {RCC->AHB1RSTR |= (1 << 2); RCC->APB2RSTR &= ~(1 << 2);} while(0)
@@ -34,10 +42,11 @@
 typedef struct {
     u8 PinNumber;
     u8 PinMode;
-    u8 PinOpType;
-    u8 PinOpSpeed;
-    u8 PinPupdCtrl;
+    u8 OpType;
+    u8 OpSpeed;
+    u8 PupdCtrl;
     u8 AltFunNumber;
+    u8 RtFtDetect;
 } GPIO_Config;
 
 typedef struct {
@@ -49,6 +58,7 @@ void GPIO_PeriphClkCtrl(GPIO_Handle* pGpioHandle, u8 ENorDI);
 
 void GPIO_Init(GPIO_Handle* pGpioHandle);
 void GPIO_Deinit(GPIO_Handle* pGpioHandle);
+void GPIO_PortReset(GPIO_Handle* pGpioHandle);
 
 void GPIO_WritePin(GPIO_Handle* pGpioHandle, u8 ENorDI);
 u8 GPIO_ReadPin(GPIO_Handle* pGpioHandle);
