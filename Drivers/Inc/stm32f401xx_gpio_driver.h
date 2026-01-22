@@ -30,8 +30,6 @@
 #define GPIO_RTFTDETECT_RT          0b10
 #define GPIO_RTFTDETECT_RTFT        0b11
 
-#define GPIO_BASEADDR_TO_CODE(PORT_ADDR)	((PORT_ADDR-AHB1PERIPH_BASEADDR)/0x400U)
-
 #define GPIOA_REG_RESET() do {RCC->AHB1RSTR |= (1 << 0); RCC->APB2RSTR &= ~(1 << 0);} while(0)
 #define GPIOB_REG_RESET() do {RCC->AHB1RSTR |= (1 << 1); RCC->APB2RSTR &= ~(1 << 1);} while(0)
 #define GPIOC_REG_RESET() do {RCC->AHB1RSTR |= (1 << 2); RCC->APB2RSTR &= ~(1 << 2);} while(0)

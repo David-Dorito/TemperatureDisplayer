@@ -1,5 +1,7 @@
 #include "../Inc/stm32f401xx_gpio_driver.h"
 
+#define GPIO_BASEADDR_TO_CODE(PORT_ADDR)	(((uintptr_t)(PORT_ADDR)-AHB1PERIPH_BASEADDR)/0x400U)
+
 void GPIO_PeriphClkCtrl(GPIO_Handle* pGpioHandle, u8 ENorDI)
 {
     if (ENorDI)
@@ -60,23 +62,39 @@ void GPIO_Init(GPIO_Handle* pGpioHandle)
         if (pGpioHandle->Config.PinNumber < 4)
         {
             SYSCFG->EXTICR1 &= ~(0b1111 << ((pGpioHandle->Config.PinNumber - 0) * 4));
+            SYSCFG->EXTICR1 |= (GPIO_BASEADDR_TO_CODE(pGpioHandle->pGPIOx) << ((pGpioHandle->Config.PinNumber - 0) * 4));
         }
         else if (pGpioHandle->Config.PinNumber < 8)
         {
             SYSCFG->EXTICR2 &= ~(0b1111 << ((pGpioHandle->Config.PinNumber - 4) * 4));
+            SYSCFG->EXTICR2 |= (GPIO_BASEADDR_TO_CODE(pGpioHandle->pGPIOx) << ((pGpioHandle->Config.PinNumber - 4) * 4));
         }
         else if (pGpioHandle->Config.PinNumber < 12)
         {
             SYSCFG->EXTICR3 &= ~(0b1111 << ((pGpioHandle->Config.PinNumber - 8) * 4));
+            SYSCFG->EXTICR3 |= (GPIO_BASEADDR_TO_CODE(pGpioHandle->pGPIOx) << ((pGpioHandle->Config.PinNumber - 8) * 4));
         }
         else
         {
             SYSCFG->EXTICR4 &= ~(0b1111 << ((pGpioHandle->Config.PinNumber - 12) * 4));
+            SYSCFG->EXTICR4 |= (GPIO_BASEADDR_TO_CODE(pGpioHandle->pGPIOx) << ((pGpioHandle->Config.PinNumber - 12) * 4));
         }
 
+        EXTI->IMR |= (1 << pGpioHandle->Config.PinNumber);
         if (pGpioHandle->Config.RtFtDetect == GPIO_RTFTDETECT_RT)
         {
-            EXTI->IMR |= (1 << pGpioHandle->Config.PinNumber);
+            EXTI->RTSR |= (1 << pGpioHandle->Config.PinNumber);
+            EXTI->FTSR &= ~(1 << pGpioHandle->Config.PinNumber);
+        }
+        else if (pGpioHandle->Config.RtFtDetect == GPIO_RTFTDETECT_FT)
+        {
+            EXTI->FTSR |= (1 << pGpioHandle->Config.PinNumber);
+            EXTI->RTSR &= ~(1 << pGpioHandle->Config.PinNumber);
+        }
+        else if (pGpioHandle->Config.RtFtDetect == GPIO_RTFTDETECT_RTFT)
+        {
+            EXTI->RTSR |= (1 << pGpioHandle->Config.PinNumber);
+            EXTI->FTSR |= (1 << pGpioHandle->Config.PinNumber);
         }
     }
 }
