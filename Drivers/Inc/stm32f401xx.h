@@ -229,7 +229,7 @@ typedef struct {
 
 #define SYSCFG_PCLK_DI()					(RCC->APB2ENR &= ~(1 << 14))
 
-void IRQ_PriorityControl(uint8_t IRQNumber, uint32_t IRQPriority);
-void IRQ_InterruptControl(uint8_t IRQNumber, uint8_t value);
+void IRQ_PrioCtrl(u8 IrqNumber, u8 IrqPriority);
+void IRQ_ItCtrl(u8 IrqNumber, u8 ENorDI);
 
 #endif /* STM32F401XX_H_ */

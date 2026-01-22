@@ -13,12 +13,12 @@
   note: 
   
 \**************************************/
-void IRQ_PrioCtrl(u8 IRQNumber, u32 IRQPriority)
+void IRQ_PrioCtrl(u8 IrqNumber, u8 IrqPriority)
 {
-	u8 iprx = IRQNumber / 4;
-	u8 iprx_section = IRQNumber % 4;
+	u8 iprx = IrqNumber / 4;
+	u8 iprx_section = IrqNumber % 4;
 
-	*(NVIC_PR + iprx) |= (IRQPriority << ((8 * iprx_section) + (8 - NO_PR_BITS_IMPLEMENTED)));
+	*(NVIC_PR + iprx) |= (IrqPriority << ((8 * iprx_section) + (8 - NO_PR_BITS_IMPLEMENTED)));
 }
 
 /*************************************\
@@ -34,28 +34,28 @@ void IRQ_PrioCtrl(u8 IRQNumber, u32 IRQPriority)
   note: 
   
 \**************************************/
-void IRQ_ItCtrl(u8 IRQNumber, u8 value)
+void IRQ_ItCtrl(u8 IrqNumber, u8 ENorDI)
 {
-	if (value)
+	if (ENorDI)
 	{
-		if (IRQNumber <= 31)
-			*NVIC_ISER0 |= (1 << IRQNumber);
+		if (IrqNumber <= 31)
+			*NVIC_ISER0 |= (1 << IrqNumber);
 
-		else if (IRQNumber > 31 && IRQNumber < 64)
-			*NVIC_ISER1 |= (1 << (IRQNumber - 32));
+		else if (IrqNumber > 31 && IrqNumber < 64)
+			*NVIC_ISER1 |= (1 << (IrqNumber - 32));
 
-		else if (IRQNumber >= 64 && IRQNumber < 95)
-			*NVIC_ISER2 |= (1 << (IRQNumber - 64));
+		else if (IrqNumber >= 64 && IrqNumber < 95)
+			*NVIC_ISER2 |= (1 << (IrqNumber - 64));
 	}
 	else
 	{
-		if (IRQNumber <= 31)
-			*NVIC_ICER0 |= (1 << IRQNumber);
+		if (IrqNumber <= 31)
+			*NVIC_ICER0 |= (1 << IrqNumber);
 
-		else if (IRQNumber > 31 && IRQNumber < 64)
-			*NVIC_ICER1 |= (1 << (IRQNumber - 32));
+		else if (IrqNumber > 31 && IrqNumber < 64)
+			*NVIC_ICER1 |= (1 << (IrqNumber - 32));
 
-		else if (IRQNumber >= 64 && IRQNumber < 95)
-			*NVIC_ICER2 |= (1 << (IRQNumber - 64));
+		else if (IrqNumber >= 64 && IrqNumber < 95)
+			*NVIC_ICER2 |= (1 << (IrqNumber - 64));
 	}
 }
