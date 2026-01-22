@@ -2,6 +2,19 @@
 
 #define GPIO_BASEADDR_TO_CODE(PORT_ADDR)	(((uintptr_t)(PORT_ADDR)-AHB1PERIPH_BASEADDR)/0x400U)
 
+/*************************************\
+  fn: @GPIO_PeriphClkCtrl
+  
+  param1 GPIO_Handle*: the gpio handle
+  param2 u8: enable or disable clock
+  
+  return:
+  
+  desc: configures the clock for the bus the periph is on
+  
+  note: 
+  
+\**************************************/
 void GPIO_PeriphClkCtrl(GPIO_Handle* pGpioHandle, u8 ENorDI)
 {
     if (ENorDI)
@@ -24,6 +37,18 @@ void GPIO_PeriphClkCtrl(GPIO_Handle* pGpioHandle, u8 ENorDI)
     }
 }
 
+/*************************************\
+  fn: @GPIO_Init
+  
+  param1 GPIO_Handle*: the gpio handle
+  
+  return:
+  
+  desc: configures the gpio pin
+  
+  note: 
+  
+\**************************************/
 void GPIO_Init(GPIO_Handle* pGpioHandle)
 {
     GPIO_PeriphClkCtrl(pGpioHandle, ENABLE);
@@ -79,7 +104,7 @@ void GPIO_Init(GPIO_Handle* pGpioHandle)
             SYSCFG->EXTICR4 &= ~(0b1111U << ((pGpioHandle->Config.PinNumber - 12) * 4));
             SYSCFG->EXTICR4 |= (GPIO_BASEADDR_TO_CODE(pGpioHandle->pGPIOx) << ((pGpioHandle->Config.PinNumber - 12) * 4));
         }
-
+        
         EXTI->IMR |= (1 << pGpioHandle->Config.PinNumber);
         if (pGpioHandle->Config.RtFtDetect == GPIO_RTFTDETECT_RT)
         {
@@ -99,6 +124,19 @@ void GPIO_Init(GPIO_Handle* pGpioHandle)
     }
 }
 
+/*************************************\
+  fn: @GPIO_Deinit
+  
+  param1 GPIO_Handle*: the gpio handle
+  
+  return:
+  
+  desc: configures the gpio pin with the reset settings
+  
+  note: calling this func only resets the parts of the gpio registers responsible
+        for this pin, doesnt affect any other gpio pins
+  
+\**************************************/
 void GPIO_Deinit(GPIO_Handle* pGpioHandle)
 {
     pGpioHandle->pGPIOx->ODR &= ~(1U << pGpioHandle->Config.PinNumber);
@@ -117,6 +155,19 @@ void GPIO_Deinit(GPIO_Handle* pGpioHandle)
         pGpioHandle->pGPIOx->AFRH &= ~(0b1111U << ((pGpioHandle->Config.PinNumber - 8) * 4));
 }
 
+/*************************************\
+  fn: @GPIO_PortReset
+  
+  param1 GPIO_Handle*: the gpio handle
+  
+  return:
+  
+  desc: resets the whole gpio port, every gpio pin on the peripheral will be
+        reset using the RCC AHB1RSTR
+  
+  note: unlike GPIO_Deinit() this affects every pin on the port
+  
+\**************************************/
 void GPIO_PortReset(GPIO_Handle* pGpioHandle)
 {
     if (pGpioHandle->pGPIOx == GPIOA) GPIOA_REG_RESET();
@@ -127,13 +178,94 @@ void GPIO_PortReset(GPIO_Handle* pGpioHandle)
     else if (pGpioHandle->pGPIOx == GPIOH) GPIOH_REG_RESET();
 }
 
-void GPIO_WritePin(GPIO_Handle* pGpioHandle, u8 ENorDI)
+/*************************************\
+  fn: @GPIO_TogglePin
+  
+  param1 GPIO_Handle*: the gpio handle
+  
+  return:
+  
+  desc: toggles the electrical pin state between high and low
+  
+  note: 
+  
+\**************************************/
+void GPIO_TogglePin(GPIO_Handle* pGpioHandle)
 {
-    if (ENorDI) pGpioHandle->pGPIOx->ODR |= (1U << pGpioHandle->Config.PinNumber);
-    else pGpioHandle->pGPIOx->ODR &= ~(1U << pGpioHandle->Config.PinNumber);
+    if (pGpioHandle->pGPIOx->ODR & pGpioHandle->Config.PinNumber)
+        pGpioHandle->pGPIOx->BSRR |= (1U << (pGpioHandle->Config.PinNumber + 16)); //set LOW
+    else
+        pGpioHandle->pGPIOx->BSRR |= (1U << (pGpioHandle->Config.PinNumber + 0)); //set HIGH
 }
 
+/*************************************\
+  fn: @GPIO_WritePin
+  
+  param1 GPIO_Handle*: the gpio handle
+  param2 u8: high or low on the pin
+  
+  return:
+  
+  desc: sets the electrical pin state to high or low
+  
+  note: 
+  
+\**************************************/
+void GPIO_WritePin(GPIO_Handle* pGpioHandle, u8 ENorDI)
+{
+    if (ENorDI) pGpioHandle->pGPIOx->BSRR |= (1U << (pGpioHandle->Config.PinNumber + 0)); //set HIGH
+    else pGpioHandle->pGPIOx->BSRR |= (1U << (pGpioHandle->Config.PinNumber + 16)); //set LOW
+}
+
+/*************************************\
+  fn: @GPIO_WritePort
+  
+  param1 GPIO_Handle*: the gpio handle
+  param2 u16: the gpio pin output values
+  
+  return:
+  
+  desc: sets the electrical pin states of every pin on the peripheral to high or low
+  
+  note: 
+  
+\**************************************/
+void GPIO_WritePort(GPIO_Handle* pGpioHandle, u16 outputReg)
+{
+    pGpioHandle->pGPIOx->BSRR = outputReg;
+    pGpioHandle->pGPIOx->BSRR = (((u32)~outputReg & 0xFFFF) << 16);
+}
+
+/*************************************\
+  fn: @GPIO_ReadPin
+  
+  param1 GPIO_Handle*: the gpio handle
+  
+  return u8: first bit is either 1 or 0 depending on electrical pin state
+  
+  desc: reads the gpio electrical pin state
+  
+  note: 
+  
+\**************************************/
 u8 GPIO_ReadPin(GPIO_Handle* pGpioHandle)
 {
     return (pGpioHandle->pGPIOx->IDR & (1U << pGpioHandle->Config.PinNumber)) >> pGpioHandle->Config.PinNumber;
+}
+
+/*************************************\
+  fn: @GPIO_ReadPort
+  
+  param1 GPIO_Handle*: the gpio handle
+  
+  return u16: returns a bitmap of the electrical states of the gpio pins
+  
+  desc: reads and returns the pin state of every pin on the gpio peripheral
+  
+  note: 
+  
+\**************************************/
+u16 GPIO_ReadPort(GPIO_Handle* pGpioHandle)
+{
+    return (pGpioHandle->pGPIOx->IDR & 0xFFFF);
 }

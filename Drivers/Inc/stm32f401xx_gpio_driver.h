@@ -58,7 +58,11 @@ void GPIO_Init(GPIO_Handle* pGpioHandle);
 void GPIO_Deinit(GPIO_Handle* pGpioHandle);
 void GPIO_PortReset(GPIO_Handle* pGpioHandle);
 
+void GPIO_TogglePin(GPIO_Handle* pGpioHandle);
 void GPIO_WritePin(GPIO_Handle* pGpioHandle, u8 ENorDI);
+void GPIO_WritePort(GPIO_Handle* pGpioHandle, u16 outputReg);
+
 u8 GPIO_ReadPin(GPIO_Handle* pGpioHandle);
+u16 GPIO_ReadPort(GPIO_Handle* pGpioHandle);
 
 #endif /* STM32F401XX_GPIO_DRIVER_H_ */
