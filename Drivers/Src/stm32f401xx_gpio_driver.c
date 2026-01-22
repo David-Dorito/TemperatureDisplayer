@@ -190,7 +190,7 @@ void GPIO_PortReset(GPIO_Handle* pGpioHandle)
   note: 
   
 \**************************************/
-void GPIO_TogglePin(GPIO_Handle* pGpioHandle)
+void GPIO_WriteTogglePin(GPIO_Handle* pGpioHandle)
 {
     if (pGpioHandle->pGPIOx->ODR & pGpioHandle->Config.PinNumber)
         pGpioHandle->pGPIOx->BSRR |= (1U << (pGpioHandle->Config.PinNumber + 16)); //set LOW
@@ -268,4 +268,49 @@ u8 GPIO_ReadPin(GPIO_Handle* pGpioHandle)
 u16 GPIO_ReadPort(GPIO_Handle* pGpioHandle)
 {
     return (pGpioHandle->pGPIOx->IDR & 0xFFFF);
+}
+
+/*************************************\
+  fn: @GPIO_IRQHandled
+  
+  param1 u8: the first pin number the interrupt could have been called from
+  param2 u8: the last pin number the interrupt could have been called from
+  
+  return: 
+  
+  desc: clears EXTI PR status bits which could have caused the interrupt, for every status clear the
+        GPIO_AppEventCallback() func gets called with the pin number as an arg
+  
+  note: should be called at the end of an EXTI IRQ Handler func that gets called by the CPU when
+        an interrupt occurs
+  
+\**************************************/
+void GPIO_IRQHandled(u8 firstPinNum, u8 lastPinNum)
+{
+    for (u8 i = firstPinNum; i <= lastPinNum; i++)
+    {
+        if (EXTI->PR & (1U << i))
+        {
+            EXTI->PR |= (1U << i);
+            GPIO_AppEventCallback(i);
+        }
+    }
+}
+
+/*************************************\
+  fn: @GPIO_AppEventCallback
+  
+  param1 u8: the pin number where an interrupt was called
+  
+  return: 
+  
+  desc: will be called everytime an interrupt status flag gets cleared in EXTI PR from GPIO_IRQHandled(),
+        and only from GPIO_IRQHandled()
+  
+  note: weak implementation, please implement your own
+  
+\**************************************/
+WEAK void GPIO_AppEventCallback(u8 pinNumber)
+{
+
 }

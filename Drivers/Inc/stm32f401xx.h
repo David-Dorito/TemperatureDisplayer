@@ -10,6 +10,8 @@
 #define ENABLE              1
 #define DISABLE             0
 
+#define WEAK                __attribute__((weak))
+
 typedef int64_t             i64;
 typedef int32_t             i32;
 typedef int16_t             i16;
