@@ -28,7 +28,24 @@ void SPI_PeriphClkCtrl(SPI_Handle* pSpiHandle, u8 ENorDI)
 
 void SPI_Init(SPI_Handle* pSpiHandle)
 {
+    pSpiHandle->pSPIx->CR1 &= ~(1 << SPI_CR1_SPE); //disabe periph to safely manipulate CR1
 
+    u16 tempReg = 0;
+
+    //configure tempReg to assign it to CR1 afterwards
+    tempReg |= (pSpiHandle->Config.CPHA << SPI_CR1_CPHA);
+    tempReg |= (pSpiHandle->Config.CPOL << SPI_CR1_CPOL);
+    tempReg |= (pSpiHandle->Config.DeviceMode << SPI_CR1_MSTR);
+    tempReg |= (pSpiHandle->Config.SclkSpeed << SPI_CR1_BR);
+    tempReg |= (pSpiHandle->Config.BitOrder << SPI_CR1_LSBFIRST);
+    tempReg |= ((pSpiHandle->Config.SSM & pSpiHandle->Config.DeviceMode) << SPI_CR1_SSI);
+    tempReg |= (pSpiHandle->Config.SSM << SPI_CR1_SSM);
+    tempReg |= (pSpiHandle->Config.DFF << SPI_CR1_DFF);
+    tempReg |= (pSpiHandle->Config.BusConfig << SPI_CR1_BIDIMODE);
+
+    pSpiHandle->pSPIx->CR1 = tempReg;
+    
+    // TODO: Add interrupt support
 }
 
 void SPI_Deinit(SPI_Handle* pSpiHandle)
