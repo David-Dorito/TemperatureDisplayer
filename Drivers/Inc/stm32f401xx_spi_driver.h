@@ -38,6 +38,8 @@
 #define SPI_SR_TXE                  1
 #define SPI_SR_RXNE                 0
 
+#define SPI_I2SCFGR_I2SMOD          11
+
 /***************************************************************************************/
 
 //DeviceMode
@@ -105,8 +107,8 @@ void SPI_PeriphClkCtrl(SPI_Handle* pSpiHandle, u8 ENorDI);
 void SPI_Init(SPI_Handle* pSpiHandle);
 void SPI_Deinit(SPI_Handle* pSpiHandle);
 
-void SPI_SendData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u32 len);
-void SPI_ReadData(SPI_Handle* pSpiHandle, u8* pRxBuffer, u32 len);
-void SPI_SendReadData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u8* pRxBuffer, u32 lenTx, u32 lenRx);
+void SPI_TransmitData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u32 len);
+void SPI_ReceiveData(SPI_Handle* pSpiHandle, u8* pRxBuffer, u32 len);
+void SPI_TransmitReceiveData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u8* pRxBuffer, u32 lenTx, u32 lenRx);
 
 #endif /* STM32F401XX_SPI_DRIVER_H_ */
