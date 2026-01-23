@@ -107,8 +107,8 @@ void SPI_PeriphClkCtrl(SPI_Handle* pSpiHandle, u8 ENorDI);
 void SPI_Init(SPI_Handle* pSpiHandle);
 void SPI_Deinit(SPI_Handle* pSpiHandle);
 
-void SPI_TransmitData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u32 len);
-void SPI_ReceiveData(SPI_Handle* pSpiHandle, u8* pRxBuffer, u32 len);
-void SPI_TransmitReceiveData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u8* pRxBuffer, u32 lenTx, u32 lenRx);
+void SPI_TransmitData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u16 len);
+void SPI_ReceiveData(SPI_Handle* pSpiHandle, u8* pRxBuffer, u16 len);
+void SPI_TransmitReceiveData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u8* pRxBuffer, u16 lenTx, u16 lenRx);
 
 #endif /* STM32F401XX_SPI_DRIVER_H_ */

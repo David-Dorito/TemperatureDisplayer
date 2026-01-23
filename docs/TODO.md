@@ -2,7 +2,7 @@
 
 ## Driver Layer
 1. [X] Complete GPIO drivers
-2. [ ] Complete SPI drivers
+2. [X] Complete SPI drivers
 3. [ ] Implement I²C drivers
 4. [ ] Implement USART drivers
 

@@ -4,6 +4,19 @@
     #define SPI_DUMMYBYTE 0x0000U
 #endif
 
+/*************************************\
+  fn: @SPI_PeriphCtrl
+  
+  param1 SPI_Handle*: the handle struct for the spi peripheral
+  param2 u8: enable or disable the spi peripheral using the SPE bit
+  
+  return:
+  
+  desc: enable or disable the spi peripheral using the SPE bit in CR1
+  
+  note: 
+  
+\**************************************/
 void SPI_PeriphCtrl(SPI_Handle* pSpiHandle, u8 ENorDI)
 {
     if (ENorDI)
@@ -12,6 +25,19 @@ void SPI_PeriphCtrl(SPI_Handle* pSpiHandle, u8 ENorDI)
         pSpiHandle->pSPIx->CR1 &= ~(1U << SPI_CR1_SPE);
 }
 
+/*************************************\
+  fn: @SPI_PeriphClkCtrl
+  
+  param1 SPI_Handle*: the handle struct for the spi peripheral
+  param2 u8: enable or disable the clock which the spi peripheral is on
+  
+  return:
+  
+  desc: enables or disables the clock which the spi peripheral is on
+  
+  note: 
+  
+\**************************************/
 void SPI_PeriphClkCtrl(SPI_Handle* pSpiHandle, u8 ENorDI)
 {
     if (ENorDI)
@@ -30,6 +56,18 @@ void SPI_PeriphClkCtrl(SPI_Handle* pSpiHandle, u8 ENorDI)
     }
 }
 
+/*************************************\
+  fn: @SPI_Init
+  
+  param1 SPI_Handle*: the handle struct for the spi peripheral
+  
+  return:
+  
+  desc: configures the spi peripheral registers with the config in the SPI_Config struct of the handle
+  
+  note: doesnt support interrupts
+  
+\**************************************/
 void SPI_Init(SPI_Handle* pSpiHandle)
 {
     pSpiHandle->pSPIx->CR1 &= ~(1 << SPI_CR1_SPE); //disabe periph to safely manipulate CR1
@@ -53,6 +91,18 @@ void SPI_Init(SPI_Handle* pSpiHandle)
     // TODO: Add interrupt support
 }
 
+/*************************************\
+  fn: @SPI_Deinit
+  
+  param1 SPI_Handle*: the handle struct for the spi peripheral
+  
+  return:
+  
+  desc: resets the SPI peripheral registers using RCC
+  
+  note:
+  
+\**************************************/
 void SPI_Deinit(SPI_Handle* pSpiHandle)
 {
     if (pSpiHandle->pSPIx == SPI1) SPI1_REG_RESET();
@@ -61,7 +111,21 @@ void SPI_Deinit(SPI_Handle* pSpiHandle)
     else if (pSpiHandle->pSPIx == SPI4) SPI4_REG_RESET(); 
 }
 
-void SPI_TransmitData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u32 len)
+/*************************************\
+  fn: @SPI_TransmitData
+  
+  param1 SPI_Handle*: the handle struct for the spi peripheral
+  param2 u8*: pointer to the transmit buffer
+  param3 u16: length of the transmit buffer
+  
+  return:
+  
+  desc: takes data out of the caller defined pTxBuffer and sends it, received data is discarded
+  
+  note: the function is blocking
+  
+\**************************************/
+void SPI_TransmitData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u16 len)
 {
     u8 spiEnabled = (pSpiHandle->pSPIx->CR1 & (1U << SPI_CR1_SPE)); //save peripheral enabled state for later
     pSpiHandle->pSPIx->CR1 |= (1U << SPI_CR1_SPE); //make sure peripheral is enabled
@@ -102,7 +166,21 @@ void SPI_TransmitData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u32 len)
     pSpiHandle->pSPIx->CR1 &= ~(!spiEnabled << SPI_CR1_SPE); //restore SPE to its original state
 }
 
-void SPI_ReceiveData(SPI_Handle* pSpiHandle, u8* pRxBuffer, u32 len)
+/*************************************\
+  fn: @SPI_ReceiveData
+  
+  param1 SPI_Handle*: the handle struct for the spi peripheral
+  param2 u8*: pointer to the receive buffer
+  param3 u16: length of the receive buffer
+  
+  return:
+  
+  desc: sends dummy bytes and saves the received data into the caller defined pRxBuffer
+  
+  note: the function is blocking
+  
+\**************************************/
+void SPI_ReceiveData(SPI_Handle* pSpiHandle, u8* pRxBuffer, u16 len)
 {
     u8 spiEnabled = (pSpiHandle->pSPIx->CR1 & (1U << SPI_CR1_SPE)); //save peripheral enabled state for later
     pSpiHandle->pSPIx->CR1 |= (1U << SPI_CR1_SPE); //make sure peripheral is enabled
@@ -143,7 +221,24 @@ void SPI_ReceiveData(SPI_Handle* pSpiHandle, u8* pRxBuffer, u32 len)
     pSpiHandle->pSPIx->CR1 &= ~(!spiEnabled << SPI_CR1_SPE); //restore SPE to its original state
 }
 
-void SPI_TransmitReceiveData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u8* pRxBuffer, u32 lenTx, u32 lenRx)
+/*************************************\
+  fn: @SPI_TransmitReceiveData
+  
+  param1 SPI_Handle*: the handle struct for the spi peripheral
+  param2 u8*: pointer to the transmit buffer
+  param3 u8*: pointer to the receive buffer
+  param4 u16: length of the transmit buffer
+  param5 u16: length of the receive buffer
+  
+  return:
+  
+  desc: simultaniously transmits and receives data
+  
+  note: if the pRxBuffer is larger than the pTxBuffer, it will start sending dummy
+        bytes after the pTxBuffer runs out. the function is blocking
+  
+\**************************************/
+void SPI_TransmitReceiveData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u8* pRxBuffer, u16 lenTx, u16 lenRx)
 {
     u8 spiEnabled = (pSpiHandle->pSPIx->CR1 & (1U << SPI_CR1_SPE)); //save peripheral enabled state for later
     pSpiHandle->pSPIx->CR1 |= (1U << SPI_CR1_SPE); //make sure peripheral is enabled
