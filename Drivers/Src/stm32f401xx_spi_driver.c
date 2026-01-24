@@ -70,6 +70,7 @@ void SPI_PeriphClkCtrl(SPI_Handle* pSpiHandle, u8 ENorDI)
 \**************************************/
 void SPI_Init(SPI_Handle* pSpiHandle)
 {
+    SPI_PeriphClkCtrl(pSpiHandle, ENABLE);
     pSpiHandle->pSPIx->CR1 &= ~(1 << SPI_CR1_SPE); //disabe periph to safely manipulate CR1
 
     u16 tempReg = 0;

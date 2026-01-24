@@ -25,7 +25,7 @@
 # ===============================
 # VS Code editor stuff
 # ===============================
-.vscode/*
+.vscode/!.vscode/settings.json
 
 # ===============================
 # Temporary / backup files
@@ -35,3 +35,15 @@
 *.tmp
 *.bak
 *.stackdump
+
+# ===============================
+# Build output
+# ===============================
+/build/
+
+# ===============================
+# CMake
+# ===============================
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
