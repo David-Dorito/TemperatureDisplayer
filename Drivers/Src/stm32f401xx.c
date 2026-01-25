@@ -34,9 +34,9 @@ void IRQ_PrioCtrl(u8 IrqNumber, u8 IrqPriority)
   note: 
   
 \**************************************/
-void IRQ_ItCtrl(u8 IrqNumber, u8 ENorDI)
+void IRQ_ItCtrl(u8 IrqNumber, u8 isEnabled)
 {
-	if (ENorDI)
+	if (isEnabled)
 	{
 		if (IrqNumber <= 31)
 			*NVIC_ISER0 |= (1 << IrqNumber);

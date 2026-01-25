@@ -17,9 +17,9 @@
   note: 
   
 \**************************************/
-void SPI_PeriphCtrl(SPI_Handle* pSpiHandle, u8 ENorDI)
+void SPI_PeriphCtrl(SPI_Handle* pSpiHandle, u8 isEnabled)
 {
-    if (ENorDI)
+    if (isEnabled)
         pSpiHandle->pSPIx->CR1 |= (1U << SPI_CR1_SPE);
     else
         pSpiHandle->pSPIx->CR1 &= ~(1U << SPI_CR1_SPE);
@@ -38,9 +38,9 @@ void SPI_PeriphCtrl(SPI_Handle* pSpiHandle, u8 ENorDI)
   note: 
   
 \**************************************/
-void SPI_PeriphClkCtrl(SPI_Handle* pSpiHandle, u8 ENorDI)
+void SPI_PeriphClkCtrl(SPI_Handle* pSpiHandle, u8 isEnabled)
 {
-    if (ENorDI)
+    if (isEnabled)
     {
         if (pSpiHandle->pSPIx == SPI1) SPI1_PCLK_EN();
         else if (pSpiHandle->pSPIx == SPI2) SPI2_PCLK_EN();

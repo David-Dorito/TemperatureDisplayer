@@ -15,9 +15,9 @@
   note: 
   
 \**************************************/
-void GPIO_PeriphClkCtrl(GPIO_Handle* pGpioHandle, u8 ENorDI)
+void GPIO_PeriphClkCtrl(GPIO_Handle* pGpioHandle, u8 isEnabled)
 {
-    if (ENorDI)
+    if (isEnabled)
     {
         if (pGpioHandle->pGPIOx == GPIOA) GPIOA_PCLK_EN();
         else if (pGpioHandle->pGPIOx == GPIOB) GPIOB_PCLK_EN();
@@ -211,9 +211,9 @@ void GPIO_WriteTogglePin(GPIO_Handle* pGpioHandle)
   note: 
   
 \**************************************/
-void GPIO_WritePin(GPIO_Handle* pGpioHandle, u8 ENorDI)
+void GPIO_WritePin(GPIO_Handle* pGpioHandle, u8 isEnabled)
 {
-    if (ENorDI) pGpioHandle->pGPIOx->BSRR |= (1U << (pGpioHandle->Config.PinNumber + 0)); //set HIGH
+    if (isEnabled) pGpioHandle->pGPIOx->BSRR |= (1U << (pGpioHandle->Config.PinNumber + 0)); //set HIGH
     else pGpioHandle->pGPIOx->BSRR |= (1U << (pGpioHandle->Config.PinNumber + 16)); //set LOW
 }
 
