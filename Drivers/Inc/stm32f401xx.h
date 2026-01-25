@@ -3,38 +3,38 @@
 
 #include <stdint.h>
 
-#define HIGH                1
-#define LOW                 0
-#define TRUE                1
-#define FALSE               0
-#define ENABLE              1
-#define DISABLE             0
+#define HIGH                                1
+#define LOW                                 0
+#define TRUE                                1
+#define FALSE                               0
+#define ENABLE                              1
+#define DISABLE                             0
 
-#define WEAK                __attribute__((weak))
+#define WEAK                                __attribute__((weak))
 
-typedef int64_t             i64;
-typedef int32_t             i32;
-typedef int16_t             i16;
-typedef int8_t              i8;
-typedef uint64_t            u64;
-typedef uint32_t            u32;
-typedef uint16_t            u16;
-typedef uint8_t             u8;
+typedef int64_t                             i64;
+typedef int32_t                             i32;
+typedef int16_t                             i16;
+typedef int8_t                              i8;
+typedef uint64_t                            u64;
+typedef uint32_t                            u32;
+typedef uint16_t                            u16;
+typedef uint8_t                             u8;
 
 /******************************** PROCESSOR SPECIFIC DETAILS ********************************/
 
-#define NVIC_ISER0							((volatile uint32_t*)0xE000E100)
-#define NVIC_ISER1							((volatile uint32_t*)0xE000E104)
-#define NVIC_ISER2							((volatile uint32_t*)0xE000E108)
-#define NVIC_ISER3							((volatile uint32_t*)0xE000E10C)
+#define NVIC_ISER0							((volatile u32*)0xE000E100U)
+#define NVIC_ISER1							((volatile u32*)0xE000E104U)
+#define NVIC_ISER2							((volatile u32*)0xE000E108U)
+#define NVIC_ISER3							((volatile u32*)0xE000E10CU)
 
-#define NVIC_ICER0							((volatile uint32_t*)0xE000E180)
-#define NVIC_ICER1							((volatile uint32_t*)0xE000E184)
-#define NVIC_ICER2							((volatile uint32_t*)0xE000E188)
-#define NVIC_ICER3							((volatile uint32_t*)0xE000E18C)
+#define NVIC_ICER0							((volatile u32*)0xE000E180U)
+#define NVIC_ICER1							((volatile u32*)0xE000E184U)
+#define NVIC_ICER2							((volatile u32*)0xE000E188U)
+#define NVIC_ICER3							((volatile u32*)0xE000E18CU)
 
 #define NVIC_PR_BASEADDR					0xE000E400U
-#define NVIC_PR								((volatile uint32_t*)0xE000E400)
+#define NVIC_PR								((volatile u32*)NVIC_PR_BASEADDR)
 
 #define NO_PR_BITS_IMPLEMENTED				4
 
@@ -90,27 +90,27 @@ typedef uint8_t             u8;
 #define SYSCFG_BASEADDR						(APB2PERIPH_BASEADDR + 0x3800)
 
 typedef struct {
-	volatile uint32_t IMR;
-	volatile uint32_t EMR;
-	volatile uint32_t RTSR;
-	volatile uint32_t FTSR;
-	volatile uint32_t SWIER;
-	volatile uint32_t PR;
+	volatile u32 IMR;
+	volatile u32 EMR;
+	volatile u32 RTSR;
+	volatile u32 FTSR;
+	volatile u32 SWIER;
+	volatile u32 PR;
 } EXTI_RegDef;
 
 #define EXTI								((EXTI_RegDef*)EXTI_BASEADDR)
 
 typedef struct {
-	volatile uint32_t MODER;
-	volatile uint32_t OTYPER;
-	volatile uint32_t OSPEEDR;
-	volatile uint32_t PUPDR;
-	volatile uint32_t IDR;
-	volatile uint32_t ODR;
-	volatile uint32_t BSRR;
-	volatile uint32_t LCKR;
-	volatile uint32_t AFRL;
-	volatile uint32_t AFRH;
+	volatile u32 MODER;
+	volatile u32 OTYPER;
+	volatile u32 OSPEEDR;
+	volatile u32 PUPDR;
+	volatile u32 IDR;
+	volatile u32 ODR;
+	volatile u32 BSRR;
+	volatile u32 LCKR;
+	volatile u32 AFRL;
+	volatile u32 AFRH;
 } GPIO_RegDef;
 
 #define GPIOA								((GPIO_RegDef*)GPIOA_BASEADDR)
@@ -121,15 +121,15 @@ typedef struct {
 #define GPIOH								((GPIO_RegDef*)GPIOH_BASEADDR)
 
 typedef struct {
-	volatile uint32_t CR1;
-	volatile uint32_t RESERVED;
-	volatile uint32_t SR;
-	volatile uint32_t DR;
-	volatile uint32_t CRCPR;
-	volatile uint32_t RXCRCR;
-	volatile uint32_t TXCRCR;
-	volatile uint32_t I2SCFGR;
-	volatile uint32_t I2SPR;
+	volatile u32 CR1;
+	volatile u32 RESERVED;
+	volatile u32 SR;
+	volatile u32 DR;
+	volatile u32 CRCPR;
+	volatile u32 RXCRCR;
+	volatile u32 TXCRCR;
+	volatile u32 I2SCFGR;
+	volatile u32 I2SPR;
 } SPI_RegDef;
 
 #define SPI1								((SPI_RegDef*)SPI1_BASEADDR)
@@ -138,48 +138,65 @@ typedef struct {
 #define SPI4                                ((SPI_RegDef*)SPI4_BASEADDR)
 
 typedef struct {
-	volatile uint32_t CR;
-	volatile uint32_t PLLCFGR;
-	volatile uint32_t CFGR;
-	volatile uint32_t CIR;
-	volatile uint32_t AHB1RSTR;
-	volatile uint32_t AHB2RSTR;
-	volatile uint32_t RESERVED00[2];
-	volatile uint32_t APB1RSTR;
-	volatile uint32_t APB2RSTR;
-	volatile uint32_t RESERVED01[2];
-	volatile uint32_t AHB1ENR;
-	volatile uint32_t AHB2ENR;
-	volatile uint32_t RESERVED02[2];
-	volatile uint32_t APB1ENR;
-	volatile uint32_t APB2ENR;
-	volatile uint32_t RESERVED03[2];
-	volatile uint32_t AHB1LPENR;
-	volatile uint32_t AHB2LPENR;
-	volatile uint32_t RESERVED04[2];
-	volatile uint32_t APB1LPENR;
-	volatile uint32_t APB2LPENR;
-	volatile uint32_t RESERVED05[2];
-	volatile uint32_t BDCR;
-	volatile uint32_t CSR;
-	volatile uint32_t RESERVED06[2];
-	volatile uint32_t SSCGR;
-	volatile uint32_t PLLI2SCFGR;
-	volatile uint32_t RESERVED07;
-	volatile uint32_t DCKCFGR;
+    volatile u32 CR1;
+    volatile u32 CR2;
+    volatile u32 OAR1;
+    volatile u32 OAR2;
+    volatile u32 DR;
+    volatile u32 SR1;
+    volatile u32 SR2;
+    volatile u32 CCR;
+    volatile u32 TRISE;
+    volatile u32 FLTR;
+} I2C_RegDef;
+
+#define I2C1                                ((I2C_RegDef*)I2C1_BASEADDR)
+#define I2C2                                ((I2C_RegDef*)I2C2_BASEADDR)
+#define I2C3                                ((I2C_RegDef*)I2C3_BASEADDR)
+
+typedef struct {
+	volatile u32 CR;
+	volatile u32 PLLCFGR;
+	volatile u32 CFGR;
+	volatile u32 CIR;
+	volatile u32 AHB1RSTR;
+	volatile u32 AHB2RSTR;
+	volatile u32 RESERVED00[2];
+	volatile u32 APB1RSTR;
+	volatile u32 APB2RSTR;
+	volatile u32 RESERVED01[2];
+	volatile u32 AHB1ENR;
+	volatile u32 AHB2ENR;
+	volatile u32 RESERVED02[2];
+	volatile u32 APB1ENR;
+	volatile u32 APB2ENR;
+	volatile u32 RESERVED03[2];
+	volatile u32 AHB1LPENR;
+	volatile u32 AHB2LPENR;
+	volatile u32 RESERVED04[2];
+	volatile u32 APB1LPENR;
+	volatile u32 APB2LPENR;
+	volatile u32 RESERVED05[2];
+	volatile u32 BDCR;
+	volatile u32 CSR;
+	volatile u32 RESERVED06[2];
+	volatile u32 SSCGR;
+	volatile u32 PLLI2SCFGR;
+	volatile u32 RESERVED07;
+	volatile u32 DCKCFGR;
 } RCC_RegDef;
 
 #define RCC									((RCC_RegDef*)RCC_BASEADDR)
 
 typedef struct {
-	volatile uint32_t MEMRMP;
-	volatile uint32_t PMC;
-	volatile uint32_t EXTICR1;
-	volatile uint32_t EXTICR2;
-	volatile uint32_t EXTICR3;
-	volatile uint32_t EXTICR4;
-	volatile uint32_t RESERVED[2];
-	volatile uint32_t CMPCR;
+	volatile u32 MEMRMP;
+	volatile u32 PMC;
+	volatile u32 EXTICR1;
+	volatile u32 EXTICR2;
+	volatile u32 EXTICR3;
+	volatile u32 EXTICR4;
+	volatile u32 RESERVED[2];
+	volatile u32 CMPCR;
 } SYSCFG_RegDef;
 
 #define SYSCFG								((SYSCFG_RegDef*)SYSCFG_BASEADDR)
