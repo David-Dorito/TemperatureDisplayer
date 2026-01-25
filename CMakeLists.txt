@@ -1,17 +1,19 @@
-
 cmake_minimum_required(VERSION 3.25)
 
 project(SensorDisplaySystem LANGUAGES C ASM)
 
-set(CMAKE_C_FLAGS "-mcpu=cortex-m4 -mthumb -O2 -g")
-set(CMAKE_ASM_FLAGS "-mcpu=cortex-m4 -mthumb -g")
-
-include_directories(
-    ${CMAKE_SOURCE_DIR}/Inc
-    ${CMAKE_SOURCE_DIR}/Drivers/Inc
+add_compile_options(
+    -mcpu=cortex-m4
+    -mthumb
+    -O2
+    -g
 )
 
-# Gather all source files
+include_directories(
+    Inc
+    Drivers/Inc
+)
+
 file(GLOB_RECURSE SOURCES
     Src/*.c
     Drivers/Src/*.c
@@ -20,9 +22,15 @@ file(GLOB_RECURSE SOURCES
 
 add_executable(${PROJECT_NAME}.elf ${SOURCES})
 
-set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/STM32F401CCUX_FLASH.ld)
-set_target_properties(${PROJECT_NAME}.elf PROPERTIES LINK_FLAGS "-T${LINKER_SCRIPT}")
+target_link_options(${PROJECT_NAME}.elf PRIVATE
+    -T${CMAKE_SOURCE_DIR}/STM32F401CCUX_FLASH.ld
+    -mcpu=cortex-m4
+    -mthumb
+)
 
 add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
-    COMMAND ${CMAKE_OBJCOPY} -O binary ${PROJECT_NAME}.elf ${PROJECT_NAME}.bin
+    COMMAND ${CMAKE_OBJCOPY}
+            -O binary
+            ${PROJECT_NAME}.elf
+            ${PROJECT_NAME}.bin
 )
