@@ -36,9 +36,9 @@
 #define I2C_SR1_ADDR                    1
 #define I2C_SR1_SB                      0
 
-#define I2C_CR2_TRA                     2
-#define I2C_CR2_BUSY                    1
-#define I2C_CR2_MSL                     0
+#define I2C_SR2_TRA                     2
+#define I2C_SR2_BUSY                    1
+#define I2C_SR2_MSL                     0
 
 #define I2C_CCR_FS                      15
 #define I2C_CCR_DUTY                    14
@@ -67,11 +67,11 @@
 #define I2C_DEFAULTACKCTRL_EN           1
 
 typedef struct {
+    u16 OwnAddr;
+    u8 OwnAddrMode;
     u8 SclSpeed;
     u8 SclStretching;
     u8 FMDutyCycle;
-    u8 OwnAddr;
-    u8 OwnAddrMode;
     u8 DefaultAckCtrl;
 } I2C_Config;
 
