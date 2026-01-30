@@ -1,4 +1,15 @@
 #include "../Inc/stm32f401xx_i2c_driver.h"
+#include "../Inc/stm32f401xx_clocks.h"
+
+#define RCC_CFGR_PPRE1      10
+#define RCC_CFGR_HPRE       4
+#define RCC_CFGR_SWS        2
+
+#define RCC_SYSCLK_HSI      0b00
+#define RCC_SYSCLK_HSE      0b01
+#define RCC_SYSCLK_PLL      0b10
+
+static u32 GetApb1ClkFreq();
 
 void I2C_PeriphClkCtrl(I2C_Handle* pI2cHandle, u8 isEnabled)
 {
@@ -35,7 +46,8 @@ void I2C_Init(I2C_Handle* pI2cHandle)
     pI2cHandle->pI2Cx->CR1 &= ~(1U << I2C_CR1_NOSTRETCH);
     pI2cHandle->pI2Cx->CR1 |= (pI2cHandle->Config.SclStretching << I2C_CR1_NOSTRETCH);
 
-    // TODO: configure CR2 FREQ field
+    pI2cHandle->pI2Cx->CR2 &= ~(0b111111 << I2C_CR2_FREQ);
+    pI2cHandle->pI2Cx->CR2 |= ((GetApb1ClkFreq()/MILLION) << I2C_CR2_FREQ);
     
     if (pI2cHandle->Config.OwnAddrMode == I2C_OWNADDRMODE_7BIT)
     {
@@ -61,7 +73,9 @@ void I2C_Init(I2C_Handle* pI2cHandle)
 
 void I2C_Deinit(I2C_Handle* pI2cHandle)
 {
-
+    if (pI2cHandle->pI2Cx == I2C1) I2C1_REG_RESET();
+    else if (pI2cHandle->pI2Cx == I2C2) I2C2_REG_RESET();
+    else if (pI2cHandle->pI2Cx == I2C3) I2C3_REG_RESET();
 }
 
 void I2C_MasterSendData(I2C_Handle* pI2cHandle, u8 slaveAddress, u8* pTxBuffer, u16 len)
@@ -73,3 +87,47 @@ void I2C_MasterReceiveData(I2C_Handle* pI2cHandle, u8 slaveAddress, u8* pRxBuffe
 {
 
 }
+
+/******************************** Helper functions ********************************/
+
+static u32 GetApb1ClkFreq()
+{
+    const u16 AhbPrescalars[] = {1, 2, 4, 8, 16, 64, 128, 256, 512};
+    const u8 Apb1Prescalars[] = {1, 2, 4, 8, 16};
+    
+    u16 AhbPrescalar;
+    u8 ClkPrescalarConfig = (RCC->CFGR & (0b1111U << RCC_CFGR_HPRE) >> RCC_CFGR_HPRE);
+    if (ClkPrescalarConfig < 0b1000)
+        AhbPrescalar = AhbPrescalars[0];
+    else
+        AhbPrescalar = AhbPrescalars[(ClkPrescalarConfig % 0b1000) + 1];
+
+    u8 Apb1Prescalar;
+    ClkPrescalarConfig = ((RCC->CFGR & (0b111U << RCC_CFGR_PPRE1)) >> RCC_CFGR_PPRE1);
+    if (ClkPrescalarConfig < 0b100)
+        Apb1Prescalar = Apb1Prescalars[0];
+    else
+        Apb1Prescalar = Apb1Prescalars[(ClkPrescalarConfig % 0b100) + 1];
+    
+    u8 SysClk = RCC->CFGR & (0b11U << RCC_CFGR_SWS);
+    if (SysClk == RCC_SYSCLK_HSI)
+    {
+        return (HSI_FREQ / AhbPrescalar) / Apb1Prescalar;
+    }
+    else if (SysClk == RCC_SYSCLK_HSE)
+    {
+        return (HSE_FREQ / AhbPrescalar) / Apb1Prescalar;
+    }
+    else if (SysClk == RCC_SYSCLK_PLL)
+    {
+        // TODO: Add PLL support for GetApb1ClkFreq
+        return 0;
+    }
+    else
+    {
+        // TODO: Add error return for GetApb1ClkFreq
+        return 0;
+    }
+}
+
+/**********************************************************************************/

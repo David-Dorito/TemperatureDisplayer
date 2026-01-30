@@ -66,6 +66,10 @@
 #define I2C_DEFAULTACKCTRL_DI           0
 #define I2C_DEFAULTACKCTRL_EN           1
 
+#define I2C1_REG_RESET() do {RCC->APB1RSTR |= (1 << 21); RCC->APB1RSTR &= ~(1 << 21);} while(0)
+#define I2C2_REG_RESET() do {RCC->APB1RSTR |= (1 << 22); RCC->APB1RSTR &= ~(1 << 22);} while(0)
+#define I2C3_REG_RESET() do {RCC->APB1RSTR |= (1 << 23); RCC->APB1RSTR &= ~(1 << 23);} while(0)
+
 typedef struct {
     u16 OwnAddr;
     u8 OwnAddrMode;
