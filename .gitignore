@@ -25,7 +25,8 @@
 # ===============================
 # VS Code editor stuff
 # ===============================
-.vscode/!.vscode/settings.json
+.vscode/*
+!.vscode/settings.json
 
 # ===============================
 # Temporary / backup files
