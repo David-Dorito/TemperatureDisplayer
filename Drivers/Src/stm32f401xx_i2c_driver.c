@@ -112,14 +112,38 @@ void I2C_Deinit(I2C_Handle* pI2cHandle)
     else if (pI2cHandle->pI2Cx == I2C3) I2C3_REG_RESET();
 }
 
-void I2C_MasterSendData(I2C_Handle* pI2cHandle, u8 slaveAddress, u8* pTxBuffer, u16 len)
+void I2C_MasterSendData(I2C_Handle* pI2cHandle, u16 slaveAddr, u8 AddrMode, u8* pTxBuffer, u16 len)
 {
-
+    
 }
 
-void I2C_MasterReceiveData(I2C_Handle* pI2cHandle, u8 slaveAddress, u8* pRxBuffer, u16 len)
+void I2C_MasterReceiveData(I2C_Handle* pI2cHandle, u16 slaveAddr, u8 AddrMode, u8* pRxBuffer, u16 len)
 {
-
+    u32 tempread;
+    pI2cHandle->pI2Cx->CR1 |= (1U << I2C_CR1_START);
+    while (!(pI2cHandle->pI2Cx->SR1 & (1U << I2C_SR1_SB)));
+    if (AddrMode == I2C_OWNADDRMODE_7BIT)
+    {
+        pI2cHandle->pI2Cx->DR = (((u8)slaveAddr << 1) | 1);
+        while (!(pI2cHandle->pI2Cx->SR1 & (1U << I2C_SR1_ADDR)));
+        tempread = pI2cHandle->pI2Cx->SR1;
+        tempread = pI2cHandle->pI2Cx->SR2;
+        (void)tempread;
+        while (len > 0)
+        {
+            while (!(pI2cHandle->pI2Cx->SR1 & (1U << I2C_SR1_RXNE)));
+            *pRxBuffer = (u8)pI2cHandle->pI2Cx->DR;
+            pRxBuffer++;
+            len--;
+        }
+    }
+    else
+    {
+        // TODO: add 10-bit address mode support
+    }
+    
+    pI2cHandle->pI2Cx->CR1 |= (1U << I2C_CR1_STOP);
+    while (!(pI2cHandle->pI2Cx->SR1 & (1U << I2C_SR1_STOPF)));
 }
 
 /******************************** Helper functions ********************************/

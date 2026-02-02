@@ -10,19 +10,19 @@
 #define GPIO_PINMODE_ANALOG         0b11
 
 //PinOpType
-#define GPIO_PINOPTYPE_PP           0b0
-#define GPIO_PINOPTYPE_OD           0b1
+#define GPIO_OPTYPE_PP           0b0
+#define GPIO_OPTYPE_OD           0b1
 
 //PinOpSpeed
-#define GPIO_PINOPSPEED_LOW         0b00
-#define GPIO_PINOPSPEED_MED         0b01
-#define GPIO_PINOPSPEED_HIGH        0b10
-#define GPIO_PINOPSPEED_VERYHIGH    0b11
+#define GPIO_OPSPEED_LOW         0b00
+#define GPIO_OPSPEED_MED         0b01
+#define GPIO_OPSPEED_HIGH        0b10
+#define GPIO_OPSPEED_VERYHIGH    0b11
 
 //PinPupdCtrl
-#define GPIO_PINPUPDCTRL_NOPUPD     0b00
-#define GPIO_PINPUPDCTRL_PULLUP     0b01
-#define GPIO_PINPUPDCTRL_PULLDOWN   0b10
+#define GPIO_PUPDCTRL_NOPUPD     0b00
+#define GPIO_PUPDCTRL_PULLUP     0b01
+#define GPIO_PUPDCTRL_PULLDOWN   0b10
 
 //RtFtDetect
 #define GPIO_RTFTDETECT_NONE        0b00

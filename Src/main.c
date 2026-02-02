@@ -17,13 +17,57 @@
  */
 
 #include <stdint.h>
+#include "../Drivers/Inc/stm32f401xx.h"
+#include "../Drivers/Inc/stm32f401xx_gpio_driver.h"
+#include "../Drivers/Inc/stm32f401xx_spi_driver.h"
+
 
 #if !defined(__SOFT_FP__) && defined(__ARM_FP)
   #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
 #endif
 
+
+/*************************************\
+  
+  PA10 -> Gpio button, connect to GND over the button
+  PA15 -> Gpio Led, connect to GND
+  
+\*************************************/
+
+GPIO_Handle GpioBtn = (GPIO_Handle){
+    .pGPIOx = GPIOA,
+    .Config = (GPIO_Config){
+        .PinNumber = 10,
+        .PinMode = GPIO_PINMODE_INPUT,
+        .PupdCtrl = GPIO_PUPDCTRL_PULLUP,
+        .RtFtDetect = GPIO_RTFTDETECT_FT
+    }
+};
+
+GPIO_Handle GpioLed = (GPIO_Handle){
+    .pGPIOx = GPIOA,
+    .Config = (GPIO_Config){
+        .PinNumber = 15,
+        .PinMode = GPIO_PINMODE_OUTPUT,
+        .OpSpeed = GPIO_OPSPEED_MED,
+        .OpType = GPIO_OPTYPE_PP,
+        .RtFtDetect = GPIO_RTFTDETECT_NONE
+    }
+};
+
 int main(void)
 {
-    /* Loop forever */
-	for(;;);
+    GPIO_Init(&GpioBtn);
+    GPIO_Init(&GpioLed);
+}
+
+void EXTI15_10_IRQHandler(void)
+{
+    GPIO_IRQHandled(10, 15);
+}
+
+void GPIO_AppEventCallback(u8 pinNumber)
+{
+    if (pinNumber == 10)
+        GPIO_WriteTogglePin(&GpioLed);
 }
