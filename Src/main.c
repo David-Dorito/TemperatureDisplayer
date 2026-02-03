@@ -57,6 +57,7 @@ GPIO_Handle GpioLed = (GPIO_Handle){
 
 int main(void)
 {
+    IRQ_ItCtrl(IRQ_NO_EXTI15_10, ENABLE);
     GPIO_Init(&GpioBtn);
     GPIO_Init(&GpioLed);
 }

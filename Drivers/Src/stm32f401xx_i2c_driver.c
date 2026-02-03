@@ -103,6 +103,8 @@ void I2C_Init(I2C_Handle* pI2cHandle)
         pI2cHandle->pI2Cx->TRISE |= (u32)((I2C_TRISE_MAX_STD / t_pclk1) + 1);
     else
         pI2cHandle->pI2Cx->TRISE |= (u32)((I2C_TRISE_MAX_FAST / t_pclk1) + 1);
+    
+    // TODO: add i2c interrupt support
 }
 
 void I2C_Deinit(I2C_Handle* pI2cHandle)
@@ -112,9 +114,34 @@ void I2C_Deinit(I2C_Handle* pI2cHandle)
     else if (pI2cHandle->pI2Cx == I2C3) I2C3_REG_RESET();
 }
 
-void I2C_MasterSendData(I2C_Handle* pI2cHandle, u16 slaveAddr, u8 AddrMode, u8* pTxBuffer, u16 len)
+void I2C_MasterTransmitData(I2C_Handle* pI2cHandle, u16 slaveAddr, u8 AddrMode, u8* pTxBuffer, u16 len)
 {
+    u32 tempread;
+    pI2cHandle->pI2Cx->CR1 |= (1U << I2C_CR1_START);
+    while (!(pI2cHandle->pI2Cx->SR1 & (1U << I2C_SR1_SB)));
+    if (AddrMode == I2C_OWNADDRMODE_7BIT)
+    {
+        pI2cHandle->pI2Cx->DR = (u8)slaveAddr << 1;
+        while (!(pI2cHandle->pI2Cx->SR1 & (1U << I2C_SR1_ADDR)));
+        tempread = pI2cHandle->pI2Cx->SR1;
+        tempread = pI2cHandle->pI2Cx->SR2;
+        (void)tempread;
+        while (len > 0)
+        {
+            while (!(pI2cHandle->pI2Cx->SR1 & (1U << I2C_SR1_TXE)));
+            pI2cHandle->pI2Cx->DR = *pTxBuffer;
+            pTxBuffer++;
+            len--;
+        }
+    }
+    else
+    {
+        // TODO: add 10-bit address mode support
+    }
     
+    while (!(pI2cHandle->pI2Cx->SR1 & (1U << I2C_SR1_BTF)));
+    pI2cHandle->pI2Cx->CR1 |= (1U << I2C_CR1_STOP);
+    while (!(pI2cHandle->pI2Cx->SR1 & (1U << I2C_SR1_STOPF)));
 }
 
 void I2C_MasterReceiveData(I2C_Handle* pI2cHandle, u16 slaveAddr, u8 AddrMode, u8* pRxBuffer, u16 len)
@@ -142,6 +169,7 @@ void I2C_MasterReceiveData(I2C_Handle* pI2cHandle, u16 slaveAddr, u8 AddrMode, u
         // TODO: add 10-bit address mode support
     }
     
+    while (!(pI2cHandle->pI2Cx->SR1 & (1U << I2C_SR1_BTF)));
     pI2cHandle->pI2Cx->CR1 |= (1U << I2C_CR1_STOP);
     while (!(pI2cHandle->pI2Cx->SR1 & (1U << I2C_SR1_STOPF)));
 }

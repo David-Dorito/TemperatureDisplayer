@@ -90,7 +90,7 @@ void I2C_PeriphCtrl(I2C_Handle* pI2cHandle, u8 isEnabled);
 void I2C_Init(I2C_Handle* pI2cHandle);
 void I2C_Deinit(I2C_Handle* pI2cHandle);
 
-void I2C_MasterSendData(I2C_Handle* pI2cHandle, u16 slaveAddr, u8 AddrMode, u8* pTxBuffer, u16 len);
+void I2C_MasterTransmitData(I2C_Handle* pI2cHandle, u16 slaveAddr, u8 AddrMode, u8* pTxBuffer, u16 len);
 void I2C_MasterReceiveData(I2C_Handle* pI2cHandle, u16 slaveAddr, u8 AddrMode, u8* pRxBuffer, u16 len);
 
 #endif
