@@ -11,7 +11,9 @@ void NOKIA5110_TurnOn(NOKIA5110_Handle* pNokia5110Handle)
 
 void NOKIA5110_TurnOff(NOKIA5110_Handle* pNokia5110Handle)
 {
-
+    GPIO_WritePin(pNokia5110Handle->pCsPin, HIGH);
+    GPIO_WritePin(pNokia5110Handle->pDcPin, LOW);
+    GPIO_WritePin(pNokia5110Handle->pVccPin, LOW);
 }
 
 void NOKIA5110_SendCommand(NOKIA5110_Handle* pNokia5110Handle, u8 command)
