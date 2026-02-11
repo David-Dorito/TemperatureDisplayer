@@ -1,10 +1,12 @@
 # **TODO list for this project**
 
 ## Driver Layer
-1. [X] Complete GPIO drivers
-2. [X] Complete SPI drivers
+1. [X] Implement GPIO drivers
+2. [X] Implement SPI drivers
 3. [~] Implement I²C drivers
 4. [ ] Implement USART drivers
+5. [ ] Implement Nokia5110 drivers
+6. [ ] Implement Mcp9808 drivers
 
 ## Application Layer
 1. [ ] Configure GPIO button with external interrupt (EXTI)

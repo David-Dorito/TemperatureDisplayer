@@ -1,14 +1,6 @@
 #include "../Inc/stm32f401xx_i2c_driver.h"
 #include "../Inc/stm32f401xx_clocks.h"
 
-#define RCC_CFGR_PPRE1      10
-#define RCC_CFGR_HPRE       4
-#define RCC_CFGR_SWS        2
-
-#define RCC_SYSCLK_HSI      0b00
-#define RCC_SYSCLK_HSE      0b01
-#define RCC_SYSCLK_PLL      0b10
-
 #define I2C_SCLFREQ_STD     100U*THOUSAND
 #define I2C_SCLFREQ_FAST    400U*THOUSAND
 
