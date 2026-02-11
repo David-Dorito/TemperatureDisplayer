@@ -17,7 +17,6 @@
  */
 
 #include <stdint.h>
-#include <string.h>
 #include "../Drivers/Inc/stm32f401xx.h"
 #include "../Drivers/Inc/stm32f401xx_gpio_driver.h"
 #include "../Drivers/Inc/stm32f401xx_spi_driver.h"
@@ -43,83 +42,7 @@ typedef struct {
     GPIO_Handle MosiPin;
 } SPI;
 
-SPI SPI_Display = (SPI){
-    .SpiHandle = (SPI_Handle){
-        .pSPIx = SPI1,
-        .Config = (SPI_Config){
-            .BusConfig = SPI_BUSCONFIG_FULLDUPLEX,
-            .BitOrder = SPI_BITORDER_LSBFIRST,
-            .CPHA = SPI_CPHA_FIRSTEDGE,
-            .CPOL = SPI_CPOL_LOW,
-            .DeviceMode = SPI_DEVICEMODE_MASTER,
-            .SclkSpeed = SPI_SCLKSPEED_DIV2,
-            .SSM = SPI_SSM_HARDWARE,
-            .DFF = SPI_DFF_8BIT
-        }
-    },
-    .NssPin = (GPIO_Handle){
-        .pGPIOx = GPIOA,
-        .Config = (GPIO_Config){
-            .PinNumber = 4,
-            .PinMode = GPIO_PINMODE_ALTFUN,
-            .AltFunNumber = 5,
-            .OpSpeed = GPIO_OPSPEED_LOW,
-            .OpType = GPIO_OPTYPE_PP,
-            .PupdCtrl = GPIO_PUPDCTRL_NOPUPD,
-            .RtFtDetect = GPIO_RTFTDETECT_NONE
-        }
-    },
-    .SckPin = (GPIO_Handle){
-        .pGPIOx = GPIOA,
-        .Config = (GPIO_Config){
-            .PinNumber = 5,
-            .PinMode = GPIO_PINMODE_ALTFUN,
-            .AltFunNumber = 5,
-            .OpSpeed = GPIO_OPSPEED_HIGH,
-            .OpType = GPIO_OPTYPE_PP,
-            .PupdCtrl = GPIO_PUPDCTRL_NOPUPD,
-            .RtFtDetect = GPIO_RTFTDETECT_NONE
-        }
-    },
-    .MisoPin = (GPIO_Handle){
-        .pGPIOx = GPIOA,
-        .Config = (GPIO_Config){
-            .PinNumber = 6,
-            .PinMode = GPIO_PINMODE_ALTFUN,
-            .AltFunNumber = 5,
-            .OpSpeed = GPIO_OPSPEED_HIGH,
-            .OpType = GPIO_OPTYPE_PP,
-            .PupdCtrl = GPIO_PUPDCTRL_NOPUPD,
-            .RtFtDetect = GPIO_RTFTDETECT_NONE
-        }
-    },
-    .MosiPin = (GPIO_Handle){
-        .pGPIOx = GPIOA,
-        .Config = (GPIO_Config){
-            .PinNumber = 7,
-            .PinMode = GPIO_PINMODE_ALTFUN,
-            .AltFunNumber = 5,
-            .OpSpeed = GPIO_OPSPEED_HIGH,
-            .OpType = GPIO_OPTYPE_PP,
-            .PupdCtrl = GPIO_PUPDCTRL_NOPUPD,
-            .RtFtDetect = GPIO_RTFTDETECT_NONE
-        }
-    }
-};
-
-GPIO_Handle DisplaySelectPin = (GPIO_Handle){
-    .pGPIOx = GPIOA,
-    .Config = (GPIO_Config){
-        .PinNumber = 1,
-        .PinMode = GPIO_PINMODE_OUTPUT,
-        .OpSpeed = GPIO_OPSPEED_MED,
-        .OpType = GPIO_OPTYPE_PP,
-        .RtFtDetect = GPIO_RTFTDETECT_NONE
-        
-    }
-};
-
-GPIO_Handle GPIO_Btn = (GPIO_Handle){
+GPIO_Handle buttonPin = (GPIO_Handle){
     .pGPIOx = GPIOA,
     .Config = (GPIO_Config){
         .PinNumber = 10,
@@ -129,13 +52,109 @@ GPIO_Handle GPIO_Btn = (GPIO_Handle){
     }
 };
 
-float temperatureData = 0;
-
-void Setup();
+u8 isButtonPressed = FALSE;
 
 int main(void)
 {
-    Setup();
+    SPI SPI_Display = (SPI){
+        .SpiHandle = (SPI_Handle){
+            .pSPIx = SPI1,
+            .Config = (SPI_Config){
+                .BusConfig = SPI_BUSCONFIG_FULLDUPLEX,
+                .BitOrder = SPI_BITORDER_LSBFIRST,
+                .CPHA = SPI_CPHA_FIRSTEDGE,
+                .CPOL = SPI_CPOL_LOW,
+                .DeviceMode = SPI_DEVICEMODE_MASTER,
+                .SclkSpeed = SPI_SCLKSPEED_DIV2,
+                .SSM = SPI_SSM_HARDWARE,
+                .DFF = SPI_DFF_8BIT
+            }
+        },
+        .NssPin = (GPIO_Handle){
+            .pGPIOx = GPIOA,
+            .Config = (GPIO_Config){
+                .PinNumber = 4,
+                .PinMode = GPIO_PINMODE_ALTFUN,
+                .AltFunNumber = 5,
+                .OpSpeed = GPIO_OPSPEED_LOW,
+                .OpType = GPIO_OPTYPE_PP,
+                .PupdCtrl = GPIO_PUPDCTRL_NOPUPD,
+                .RtFtDetect = GPIO_RTFTDETECT_NONE
+            }
+        },
+        .SckPin = (GPIO_Handle){
+            .pGPIOx = GPIOA,
+            .Config = (GPIO_Config){
+                .PinNumber = 5,
+                .PinMode = GPIO_PINMODE_ALTFUN,
+                .AltFunNumber = 5,
+                .OpSpeed = GPIO_OPSPEED_HIGH,
+                .OpType = GPIO_OPTYPE_PP,
+                .PupdCtrl = GPIO_PUPDCTRL_NOPUPD,
+                .RtFtDetect = GPIO_RTFTDETECT_NONE
+            }
+        },
+        .MisoPin = (GPIO_Handle){
+            .pGPIOx = GPIOA,
+            .Config = (GPIO_Config){
+                .PinNumber = 6,
+                .PinMode = GPIO_PINMODE_ALTFUN,
+                .AltFunNumber = 5,
+                .OpSpeed = GPIO_OPSPEED_HIGH,
+                .OpType = GPIO_OPTYPE_PP,
+                .PupdCtrl = GPIO_PUPDCTRL_NOPUPD,
+                .RtFtDetect = GPIO_RTFTDETECT_NONE
+            }
+        },
+        .MosiPin = (GPIO_Handle){
+            .pGPIOx = GPIOA,
+            .Config = (GPIO_Config){
+                .PinNumber = 7,
+                .PinMode = GPIO_PINMODE_ALTFUN,
+                .AltFunNumber = 5,
+                .OpSpeed = GPIO_OPSPEED_HIGH,
+                .OpType = GPIO_OPTYPE_PP,
+                .PupdCtrl = GPIO_PUPDCTRL_NOPUPD,
+                .RtFtDetect = GPIO_RTFTDETECT_NONE
+            }
+        }
+    };
+
+    GPIO_Handle DisplaySelectPin = (GPIO_Handle){
+        .pGPIOx = GPIOA,
+        .Config = (GPIO_Config){
+            .PinNumber = 1,
+            .PinMode = GPIO_PINMODE_OUTPUT,
+            .OpSpeed = GPIO_OPSPEED_MED,
+            .OpType = GPIO_OPTYPE_PP,
+            .RtFtDetect = GPIO_RTFTDETECT_NONE
+            
+        }
+    };
+    
+    float temperatureData = 0;
+    
+    IRQ_ItCtrl(IRQ_NO_EXTI15_10, ENABLE);
+    GPIO_Init(&buttonPin);
+    GPIO_Init(&DisplaySelectPin);
+    GPIO_Init(&SPI_Display.SckPin);
+    GPIO_Init(&SPI_Display.NssPin);
+    GPIO_Init(&SPI_Display.MisoPin);
+    GPIO_Init(&SPI_Display.MosiPin);
+    SPI_Init(&SPI_Display.SpiHandle);
+    
+    GPIO_WritePin(&DisplaySelectPin, HIGH);
+    
+    while (TRUE)
+    {
+        if (isButtonPressed)
+        {
+            isButtonPressed = FALSE;
+            GPIO_WritePin(&DisplaySelectPin, LOW);
+            // implement rest of the logic here
+            GPIO_WritePin(&DisplaySelectPin, HIGH);
+        }
+    }
 }
 
 void EXTI15_10_IRQHandler(void)
@@ -145,22 +164,6 @@ void EXTI15_10_IRQHandler(void)
 
 void GPIO_AppEventCallback(u8 pinNumber)
 {
-    if (pinNumber == 10)
-    {
-        GPIO_WritePin(&DisplaySelectPin, LOW);
-        SPI_TransmitData(&SPI_Display.SpiHandle, &temperatureData, sizeof(float)/sizeof(u8));
-        GPIO_WritePin(&DisplaySelectPin, HIGH);
-    }
-}
-
-void Setup()
-{
-    IRQ_ItCtrl(IRQ_NO_EXTI15_10, ENABLE);
-    GPIO_Init(&GPIO_Btn);
-    GPIO_Init(&DisplaySelectPin);
-    GPIO_Init(&SPI_Display.SckPin);
-    GPIO_Init(&SPI_Display.NssPin);
-    GPIO_Init(&SPI_Display.MisoPin);
-    GPIO_Init(&SPI_Display.MosiPin);
-    SPI_Init(&SPI_Display.SpiHandle);
+    if (pinNumber == buttonPin.Config.PinNumber)
+        isButtonPressed = TRUE;
 }
