@@ -245,7 +245,34 @@ typedef struct {
 
 #define SYSCFG_PCLK_DI()					(RCC->APB2ENR &= ~(1 << 14))
 
+/*************************************\
+  fn: @IRQ_PrioCtrl
+  
+  param1 u8: the IRQ number for which you have to set the priority
+  param2 u8: the IRQ priority
+  
+  return:
+  
+  desc: sets the IRQ priority of the signal
+  
+  note: 
+  
+\**************************************/
 void IRQ_PrioCtrl(u8 IrqNumber, u8 IrqPriority);
+
+/*************************************\
+  fn: @IRQ_ItCtrl
+  
+  param1 u8: the interrupt line
+  param2 u8: enable or disable
+  
+  return:
+  
+  desc: enables or disables a specific interrupt line in the NVIC
+  
+  note: 
+  
+\**************************************/
 void IRQ_ItCtrl(u8 IrqNumber, u8 isEnabled);
 
 #endif /* STM32F401XX_H_ */

@@ -101,14 +101,113 @@ typedef struct {
     SPI_RegDef* pSPIx;
 } SPI_Handle;
 
+/*************************************\
+  fn: @SPI_PeriphCtrl
+  
+  param1 SPI_Handle*: the handle struct for the spi peripheral
+  param2 u8: enable or disable the spi peripheral using the SPE bit
+  
+  return:
+  
+  desc: enable or disable the spi peripheral using the SPE bit in CR1
+  
+  note: 
+  
+\**************************************/
 void SPI_PeriphCtrl(SPI_Handle* pSpiHandle, u8 isEnabled);
+
+/*************************************\
+  fn: @SPI_PeriphClkCtrl
+  
+  param1 SPI_Handle*: the handle struct for the spi peripheral
+  param2 u8: enable or disable the clock which the spi peripheral is on
+  
+  return:
+  
+  desc: enables or disables the clock which the spi peripheral is on
+  
+  note: 
+  
+\**************************************/
 void SPI_PeriphClkCtrl(SPI_Handle* pSpiHandle, u8 isEnabled);
 
+/*************************************\
+  fn: @SPI_Init
+  
+  param1 SPI_Handle*: the handle struct for the spi peripheral
+  
+  return:
+  
+  desc: configures the spi peripheral registers with the config in the SPI_Config struct of the handle
+  
+  note: doesnt support interrupts
+  
+\**************************************/
 void SPI_Init(SPI_Handle* pSpiHandle);
+
+/*************************************\
+  fn: @SPI_Deinit
+  
+  param1 SPI_Handle*: the handle struct for the spi peripheral
+  
+  return:
+  
+  desc: resets the SPI peripheral registers using RCC
+  
+  note:
+  
+\**************************************/
 void SPI_Deinit(SPI_Handle* pSpiHandle);
 
+/*************************************\
+  fn: @SPI_TransmitData
+  
+  param1 SPI_Handle*: the handle struct for the spi peripheral
+  param2 u8*: pointer to the transmit buffer
+  param3 u16: length of the transmit buffer
+  
+  return:
+  
+  desc: takes data out of the caller defined pTxBuffer and sends it, received data is discarded
+  
+  note: the function is blocking
+  
+\**************************************/
 void SPI_TransmitData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u16 len);
+
+/*************************************\
+  fn: @SPI_ReceiveData
+  
+  param1 SPI_Handle*: the handle struct for the spi peripheral
+  param2 u8*: pointer to the receive buffer
+  param3 u16: length of the receive buffer
+  
+  return:
+  
+  desc: sends dummy bytes and saves the received data into the caller defined pRxBuffer
+  
+  note: the function is blocking
+  
+\**************************************/
 void SPI_ReceiveData(SPI_Handle* pSpiHandle, u8* pRxBuffer, u16 len);
+
+/*************************************\
+  fn: @SPI_TransmitReceiveData
+  
+  param1 SPI_Handle*: the handle struct for the spi peripheral
+  param2 u8*: pointer to the transmit buffer
+  param3 u8*: pointer to the receive buffer
+  param4 u16: length of the transmit buffer
+  param5 u16: length of the receive buffer
+  
+  return:
+  
+  desc: simultaniously transmits and receives data
+  
+  note: if the pRxBuffer is larger than the pTxBuffer, it will start sending dummy
+        bytes after the pTxBuffer runs out. the function is blocking
+  
+\**************************************/
 void SPI_TransmitReceiveData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u8* pRxBuffer, u16 lenTx, u16 lenRx);
 
 #endif /* STM32F401XX_SPI_DRIVER_H_ */

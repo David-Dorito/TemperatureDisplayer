@@ -30,6 +30,19 @@
     #warning "LSE_FREQ value is not set inside of Drivers/Inc/stm32f401xx_clocks.h, if your using LSE please set it else turn IgnoreClockWarnings to 1"
 #endif
 
+/*************************************\
+  fn: @UnpreciseDelay
+  
+  param1 u32: the delay in milliseconds
+  
+  return:
+  
+  desc: does a rough delay for the amount of milliseconds specified, using a for loop
+  
+  note: the delay is very unprecise, dont trust this if you need high accurracy,
+        but it should have a tolerance of max 75%
+  
+\**************************************/
 void UnpreciseDelay(u32 millisecondsDelay);
 
 #endif
