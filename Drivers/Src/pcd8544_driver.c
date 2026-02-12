@@ -24,6 +24,8 @@ void PCD8544_TurnOff(PCD8544_Handle* pPcd8544Handle)
 
 void PCD8544_SetSleepMode(PCD8544_Handle* pPcd8544Handle, u8 isSleeping)
 {
+    GPIO_WritePin(pPcd8544Handle->pCsPin, LOW);
+    
     GPIO_WritePin(pPcd8544Handle->pDcPin, LOW);
     if (isSleeping)
         isSleeping = SETPOWERDOWN;
@@ -31,6 +33,8 @@ void PCD8544_SetSleepMode(PCD8544_Handle* pPcd8544Handle, u8 isSleeping)
         isSleeping = SETPOWERUP;
 
     SPI_TransmitData(pPcd8544Handle->pSpiHandle, &isSleeping, 1);
+
+    GPIO_WritePin(pPcd8544Handle->pCsPin, HIGH);
 }
 
 void PCD8544_SetBacklight(PCD8544_Handle* pPcd8544Handle, u8 isEnabled)
@@ -40,8 +44,12 @@ void PCD8544_SetBacklight(PCD8544_Handle* pPcd8544Handle, u8 isEnabled)
 
 void PCD8544_SetDisplayMode(PCD8544_Handle* pPcd8544Handle, u8 mode)
 {
+    GPIO_WritePin(pPcd8544Handle->pCsPin, LOW);
+
     GPIO_WritePin(pPcd8544Handle->pDcPin, LOW);
     SPI_TransmitData(pPcd8544Handle->pSpiHandle, &mode, 1);
+
+    GPIO_WritePin(pPcd8544Handle->pCsPin, HIGH);
 }
 
 void PCD8544_DrawPixel(PCD8544_Handle* pPcd8544Handle, u8 isBlack, u8 posX, u8 posY)
@@ -63,6 +71,8 @@ void PCD8544_FillScreen(PCD8544_Handle* pPcd8544Handle, u8 isBlack)
 
 void PCD8544_UpdateScreen(PCD8544_Handle* pPcd8544Handle)
 {
+    GPIO_WritePin(pPcd8544Handle->pCsPin, LOW);
+
     GPIO_WritePin(pPcd8544Handle->pDcPin, LOW);
     u8 command = SETXADDR_0;
     SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
@@ -77,4 +87,6 @@ void PCD8544_UpdateScreen(PCD8544_Handle* pPcd8544Handle)
         SPI_TransmitData(pPcd8544Handle->pSpiHandle, &pPcd8544Handle->pFrameBuffer[i*PCD8544_SCREEN_WIDTH], PCD8544_SCREEN_WIDTH);
     }
     GPIO_WritePin(pPcd8544Handle->pDcPin, LOW);
+
+    GPIO_WritePin(pPcd8544Handle->pCsPin, HIGH);
 }
