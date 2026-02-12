@@ -3,7 +3,6 @@
 
 #include "../Inc/stm32f401xx_gpio_driver.h"
 #include "../Inc/stm32f401xx_spi_driver.h"
-#include "../Inc/stm32f401xx_clocks.h"
 
 #define PCD8544_SCREEN_WIDTH        84
 #define PCD8544_SCREEN_HEIGHT       48
@@ -21,6 +20,7 @@ typedef struct {
 
 void PCD8544_TurnOn(PCD8544_Handle* pPcd8544Handle);
 void PCD8544_TurnOff(PCD8544_Handle* pPcd8544Handle);
+void PCD8544_SetBacklight(PCD8544_Handle* pPcd8544Handle, u8 isEnabled);
 void PCD8544_DrawPixel(PCD8544_Handle* pPcd8544Handle, u8 isBlack, u8 posX, u8 posY);
 void PCD8544_FillScreen(PCD8544_Handle* pPcd8544Handle, u8 isBlack);
 void PCD8544_UpdateScreen(PCD8544_Handle* pPcd8544Handle);
