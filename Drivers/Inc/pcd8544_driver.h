@@ -114,7 +114,7 @@ void PCD8544_SetDisplayMode(PCD8544_Handle* pPcd8544Handle, u8 mode);
 void PCD8544_TogglePixel(PCD8544_Handle* pPcd8544Handle, u8 posX, u8 posY);
 
 /*************************************\
-  fn: @PCD8544_DrawPixel
+  fn: @PCD8544_SetPixelColor
   
   param1 PCD8544_Handle*: the handle of the display
   param2 u8: the colour of the pixel
@@ -128,7 +128,23 @@ void PCD8544_TogglePixel(PCD8544_Handle* pPcd8544Handle, u8 posX, u8 posY);
   note:
   
 \**************************************/
-void PCD8544_DrawPixel(PCD8544_Handle* pPcd8544Handle, u8 isBlack, u8 posX, u8 posY);
+void PCD8544_SetPixelColor(PCD8544_Handle* pPcd8544Handle, u8 isBlack, u8 posX, u8 posY);
+
+/*************************************\
+  fn: @PCD8544_GetPixelColor
+  
+  param1 PCD8544_Handle*: the handle of the display
+  param2 u8: x position of the pixel
+  param3 u8: y position of the pixel
+  
+  return u8: color of the pixel as a bool
+  
+  desc: returns the colour of the pixel at the specified x and y position
+  
+  note:
+  
+\**************************************/
+u8 PCD8544_GetPixelColor(PCD8544_Handle* pPcd8544Handle, u8 posX, u8 posY);
 
 /*************************************\
   fn: @PCD8544_FillScreen
