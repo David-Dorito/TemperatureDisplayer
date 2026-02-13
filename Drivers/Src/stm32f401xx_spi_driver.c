@@ -1,9 +1,5 @@
 #include "../Inc/stm32f401xx_spi_driver.h"
 
-#ifndef SPI_DUMMYBYTE
-    #define SPI_DUMMYBYTE 0x0000U
-#endif
-
 /*************************************\
   fn: @SPI_PeriphCtrl
   

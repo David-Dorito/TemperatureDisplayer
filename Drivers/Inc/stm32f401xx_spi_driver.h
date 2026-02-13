@@ -1,6 +1,13 @@
 #ifndef STM32F401XX_SPI_DRIVER_H_
 #define STM32F401XX_SPI_DRIVER_H_
 
+#define SPI_DUMMYBYTE               0x0000U
+
+#define IgnoreSpiWarnings           0
+#if SPI_DUMMYBYTE == 0x0000U && !IgnoreSpiWarnings
+    #warning "SPI_DUMMYBYTE was not set, default value is 0x0000. Change it in Drivers/Inc/stm32f401xx_spi_driver.h at the top of the file or enable IgnoreSpiWarnings"
+#endif
+
 #include "stm32f401xx.h"
 
 /******************************** BIT DEFINITION MACROS ********************************/
@@ -84,6 +91,7 @@
 #define SPI2_REG_RESET() do {RCC->APB1RSTR |= (1 << 14); RCC->APB1RSTR &= ~(1 << 14);} while(0)
 #define SPI3_REG_RESET() do {RCC->APB1RSTR |= (1 << 15); RCC->APB1RSTR &= ~(1 << 15);} while(0)
 #define SPI4_REG_RESET() do {RCC->APB2RSTR |= (1 << 13); RCC->APB2RSTR &= ~(1 << 13);} while(0)
+
 
 typedef struct {
     u8 DeviceMode;
