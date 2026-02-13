@@ -98,7 +98,7 @@ void PCD8544_SetBacklight(PCD8544_Handle* pPcd8544Handle, u8 isEnabled);
 void PCD8544_SetDisplayMode(PCD8544_Handle* pPcd8544Handle, u8 mode);
 
 /*************************************\
-  fn: @PCD8544_TogglePixel
+  fn: @PCD8544_TogglePixelColor
   
   param1 PCD8544_Handle*: the handle of the display
   param2 u8: x position of the pixel
@@ -111,7 +111,7 @@ void PCD8544_SetDisplayMode(PCD8544_Handle* pPcd8544Handle, u8 mode);
   note:
   
 \**************************************/
-void PCD8544_TogglePixel(PCD8544_Handle* pPcd8544Handle, u8 posX, u8 posY);
+void PCD8544_TogglePixelColor(PCD8544_Handle* pPcd8544Handle, u8 posX, u8 posY);
 
 /*************************************\
   fn: @PCD8544_SetPixelColor
@@ -147,7 +147,7 @@ void PCD8544_SetPixelColor(PCD8544_Handle* pPcd8544Handle, u8 isBlack, u8 posX, 
 u8 PCD8544_GetPixelColor(PCD8544_Handle* pPcd8544Handle, u8 posX, u8 posY);
 
 /*************************************\
-  fn: @PCD8544_FillScreen
+  fn: @PCD8544_FillScreenColor
   
   param1 PCD8544_Handle*: the handle of the display
   param2 u8: the colour to set every pixel to
@@ -159,7 +159,7 @@ u8 PCD8544_GetPixelColor(PCD8544_Handle* pPcd8544Handle, u8 posX, u8 posY);
   note:
   
 \**************************************/
-void PCD8544_FillScreen(PCD8544_Handle* pPcd8544Handle, u8 isBlack);
+void PCD8544_FillScreenColor(PCD8544_Handle* pPcd8544Handle, u8 isBlack);
 
 /*************************************\
   fn: @PCD8544_UpdateScreen

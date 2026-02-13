@@ -185,7 +185,6 @@ int main(void)
         if (isButtonPressed)
         {
             isButtonPressed = FALSE;
-            // Write rest of the logic here
         }
     }
 }
