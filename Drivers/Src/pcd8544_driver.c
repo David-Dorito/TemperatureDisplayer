@@ -52,6 +52,13 @@ void PCD8544_SetDisplayMode(PCD8544_Handle* pPcd8544Handle, u8 mode)
     GPIO_WritePin(pPcd8544Handle->pCsPin, HIGH);
 }
 
+void PCD8544_TogglePixel(PCD8544_Handle* pPcd8544Handle, u8 posX, u8 posY)
+{
+    u16 regIndex = posX+(posY/8)*PCD8544_SCREEN_WIDTH;
+
+    pPcd8544Handle->pFrameBuffer[regIndex] ^= (1U << (posY % 8));
+}
+
 void PCD8544_DrawPixel(PCD8544_Handle* pPcd8544Handle, u8 isBlack, u8 posX, u8 posY)
 {
     u16 regIndex = posX+(posY/8)*PCD8544_SCREEN_WIDTH;
