@@ -22,17 +22,17 @@ void PCD8544_TurnOff(PCD8544_Handle* pPcd8544Handle)
     GPIO_WritePin(pPcd8544Handle->pVccPin, LOW);
 }
 
-void PCD8544_SetSleepMode(PCD8544_Handle* pPcd8544Handle, u8 isSleeping)
+void PCD8544_SetSleepMode(PCD8544_Handle* pPcd8544Handle, u8 isEnabled)
 {
     GPIO_WritePin(pPcd8544Handle->pCsPin, LOW);
     
     GPIO_WritePin(pPcd8544Handle->pDcPin, LOW);
-    if (isSleeping)
-        isSleeping = SETPOWERDOWN;
+    if (isEnabled)
+        isEnabled = SETPOWERDOWN;
     else
-        isSleeping = SETPOWERUP;
+        isEnabled = SETPOWERUP;
 
-    SPI_TransmitData(pPcd8544Handle->pSpiHandle, &isSleeping, 1);
+    SPI_TransmitData(pPcd8544Handle->pSpiHandle, &isEnabled, 1);
 
     GPIO_WritePin(pPcd8544Handle->pCsPin, HIGH);
 }
