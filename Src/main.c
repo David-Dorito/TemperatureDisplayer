@@ -21,7 +21,7 @@
 #include "../Drivers/Inc/stm32f401xx_gpio_driver.h"
 #include "../Drivers/Inc/stm32f401xx_spi_driver.h"
 #include "../Drivers/Inc/pcd8544_driver.h"
-
+#include "../Drivers/Inc/stm32f401xx_clocks.h"
 
 #if !defined(__SOFT_FP__) && defined(__ARM_FP)
   #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
@@ -51,7 +51,7 @@ GPIO_Handle buttonPin = (GPIO_Handle){
     }
 };
 
-u8 isButtonPressed = FALSE;
+volatile u8 isButtonPressed = FALSE;
 
 int main(void)
 {
@@ -59,11 +59,11 @@ int main(void)
         .pSPIx = SPI1,
         .Config = (SPI_Config){
             .BusConfig = SPI_BUSCONFIG_FULLDUPLEX,
-            .BitOrder = SPI_BITORDER_LSBFIRST,
-            .CPHA = SPI_CPHA_FIRSTEDGE,
+            .BitOrder = SPI_BITORDER_MSBFIRST,
+            .CPHA = SPI_CPHA_SECONDEDGE,
             .CPOL = SPI_CPOL_LOW,
             .DeviceMode = SPI_DEVICEMODE_MASTER,
-            .SclkSpeed = SPI_SCLKSPEED_DIV2,
+            .SclkSpeed = SPI_SCLKSPEED_DIV16,
             .SSM = SPI_SSM_SOFTWARE,
             .DFF = SPI_DFF_8BIT
         }
@@ -161,10 +161,9 @@ int main(void)
         .pLedPin = &lcdBacklightPin
     };
     
-    float temperatureData = 0;
-    
+    SYSCFG_PCLK_EN();
     IRQ_ItCtrl(IRQ_NO_EXTI15_10, ENABLE);
-
+    
     GPIO_Init(&lcdResetPin);
     GPIO_Init(&lcdSelectPin);
     GPIO_Init(&lcdDcPin);
@@ -173,17 +172,24 @@ int main(void)
     GPIO_Init(&lcdVccPin);
     GPIO_Init(&lcdBacklightPin);
     GPIO_Init(&buttonPin);
-
+    
     SPI_Init(&lcdSpiHandle);
     
     PCD8544_TurnOn(&lcdHandle);
-    
-    GPIO_WritePin(&lcdSelectPin, HIGH);
-    
+    PCD8544_SetDisplayMode(&lcdHandle, PCD8544_DISPLAYMODE_NORMAL);
+    PCD8544_SetBacklight(&lcdHandle, DISABLE);
+
+    u8 isDisplayFilledBlack = FALSE;
+    PCD8544_FillScreenColor(&lcdHandle, isDisplayFilledBlack);
+    PCD8544_UpdateScreen(&lcdHandle);
+
     while (TRUE)
     {
         if (isButtonPressed)
         {
+            isDisplayFilledBlack = !isDisplayFilledBlack;
+            PCD8544_FillScreenColor(&lcdHandle, isDisplayFilledBlack);
+            PCD8544_UpdateScreen(&lcdHandle);
             isButtonPressed = FALSE;
         }
     }

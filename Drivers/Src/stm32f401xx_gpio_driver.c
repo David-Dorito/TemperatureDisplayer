@@ -192,10 +192,10 @@ void GPIO_PortReset(GPIO_Handle* pGpioHandle)
 \**************************************/
 void GPIO_WriteTogglePin(GPIO_Handle* pGpioHandle)
 {
-    if (pGpioHandle->pGPIOx->ODR & pGpioHandle->Config.PinNumber)
-        pGpioHandle->pGPIOx->BSRR |= (1U << (pGpioHandle->Config.PinNumber + 16)); //set LOW
+    if (pGpioHandle->pGPIOx->ODR & (1U << pGpioHandle->Config.PinNumber))
+        pGpioHandle->pGPIOx->BSRR = (1U << (pGpioHandle->Config.PinNumber + 16)); //set LOW
     else
-        pGpioHandle->pGPIOx->BSRR |= (1U << (pGpioHandle->Config.PinNumber + 0)); //set HIGH
+        pGpioHandle->pGPIOx->BSRR = (1U << (pGpioHandle->Config.PinNumber + 0)); //set HIGH
 }
 
 /*************************************\
@@ -213,8 +213,8 @@ void GPIO_WriteTogglePin(GPIO_Handle* pGpioHandle)
 \**************************************/
 void GPIO_WritePin(GPIO_Handle* pGpioHandle, u8 isEnabled)
 {
-    if (isEnabled) pGpioHandle->pGPIOx->BSRR |= (1U << (pGpioHandle->Config.PinNumber + 0)); //set HIGH
-    else pGpioHandle->pGPIOx->BSRR |= (1U << (pGpioHandle->Config.PinNumber + 16)); //set LOW
+    if (isEnabled) pGpioHandle->pGPIOx->BSRR = (1U << (pGpioHandle->Config.PinNumber + 0)); //set HIGH
+    else pGpioHandle->pGPIOx->BSRR = (1U << (pGpioHandle->Config.PinNumber + 16)); //set LOW
 }
 
 /*************************************\

@@ -1,11 +1,13 @@
 #include "../Inc/pcd8544_driver.h"
 #include "../Inc/stm32f401xx_clocks.h"
 
-#define SETXADDR_0      0b10000000
-#define SETYADDR_0      0b01000000
-
-#define SETPOWERDOWN    0b000100100
-#define SETPOWERUP      0b000100000
+#define SET_XADDR_0         0b10000000
+#define SET_YADDR_0         0b01000000
+#define SET_POWERDOWN       0b00100100
+#define SET_POWERUP         0b00100000
+#define SET_EXTENDINST      0b00100001
+#define SET_BASICINST       0b00100000
+#define SET_VOP             0b10000000
 
 /*************************************\
   fn: @PCD8544_TurnOn
@@ -66,9 +68,9 @@ void PCD8544_SetSleepMode(PCD8544_Handle* pPcd8544Handle, u8 isEnabled)
     
     GPIO_WritePin(pPcd8544Handle->pDcPin, LOW);
     if (isEnabled)
-        isEnabled = SETPOWERDOWN;
+        isEnabled = SET_POWERDOWN;
     else
-        isEnabled = SETPOWERUP;
+        isEnabled = SET_POWERUP;
 
     SPI_TransmitData(pPcd8544Handle->pSpiHandle, &isEnabled, 1);
 
@@ -90,7 +92,7 @@ void PCD8544_SetSleepMode(PCD8544_Handle* pPcd8544Handle, u8 isEnabled)
 \**************************************/
 void PCD8544_SetBacklight(PCD8544_Handle* pPcd8544Handle, u8 isEnabled)
 {
-    GPIO_WritePin(pPcd8544Handle->pLedPin, isEnabled);
+    GPIO_WritePin(pPcd8544Handle->pLedPin, !isEnabled);
 }
 
 /*************************************\
@@ -112,6 +114,37 @@ void PCD8544_SetDisplayMode(PCD8544_Handle* pPcd8544Handle, u8 mode)
 
     GPIO_WritePin(pPcd8544Handle->pDcPin, LOW);
     SPI_TransmitData(pPcd8544Handle->pSpiHandle, &mode, 1);
+
+    GPIO_WritePin(pPcd8544Handle->pCsPin, HIGH);
+}
+
+/*************************************\
+  fn: @PCD8544_SetContrast
+  
+  param1 PCD8544_Handle*: the handle of the display
+  param2 u8: new contrast of the display
+  
+  return:
+  
+  desc: sets the contrast of the display
+  
+  note: 
+  
+\**************************************/
+void PCD8544_SetContrast(PCD8544_Handle* pPcd8544Handle, u8 contrast)
+{
+    GPIO_WritePin(pPcd8544Handle->pCsPin, LOW);
+
+    GPIO_WritePin(pPcd8544Handle->pDcPin, LOW);
+
+    u8 command = SET_EXTENDINST;
+    SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
+
+    command = (SET_VOP | contrast);
+    SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
+    
+    command = SET_BASICINST;
+    SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
 
     GPIO_WritePin(pPcd8544Handle->pCsPin, HIGH);
 }
@@ -221,13 +254,13 @@ void PCD8544_UpdateScreen(PCD8544_Handle* pPcd8544Handle)
     GPIO_WritePin(pPcd8544Handle->pCsPin, LOW);
 
     GPIO_WritePin(pPcd8544Handle->pDcPin, LOW);
-    u8 command = SETXADDR_0;
+    u8 command = SET_XADDR_0;
     SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
 
-    for (u16 i = 0; i < PCD8544_SCREEN_HEIGHT; i++)
+    for (u16 i = 0; i < PCD8544_SCREEN_HEIGHT/8; i++)
     {
         GPIO_WritePin(pPcd8544Handle->pDcPin, LOW);
-        command = SETYADDR_0 + i;
+        command = SET_YADDR_0 + i;
         SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
 
         GPIO_WritePin(pPcd8544Handle->pDcPin, HIGH);

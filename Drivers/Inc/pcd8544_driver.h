@@ -98,6 +98,21 @@ void PCD8544_SetBacklight(PCD8544_Handle* pPcd8544Handle, u8 isEnabled);
 void PCD8544_SetDisplayMode(PCD8544_Handle* pPcd8544Handle, u8 mode);
 
 /*************************************\
+  fn: @PCD8544_SetContrast
+  
+  param1 PCD8544_Handle*: the handle of the display
+  param2 u8: new contrast of the display
+  
+  return:
+  
+  desc: sets the contrast of the display
+  
+  note: 
+  
+\**************************************/
+void PCD8544_SetContrast(PCD8544_Handle* pPcd8544Handle, u8 contrast);
+
+/*************************************\
   fn: @PCD8544_TogglePixelColor
   
   param1 PCD8544_Handle*: the handle of the display

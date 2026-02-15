@@ -2,11 +2,13 @@ cmake_minimum_required(VERSION 3.25)
 
 project(SensorDisplaySystem LANGUAGES C ASM)
 
+set(CMAKE_BUILD_TYPE Debug)
+
 add_compile_options(
     -mcpu=cortex-m4
     -mthumb
-    -O2
-    -g
+    -O0
+    -g3
 )
 
 include_directories(
