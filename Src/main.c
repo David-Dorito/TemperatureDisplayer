@@ -175,7 +175,7 @@ int main(void)
     
     SPI_Init(&lcdSpiHandle);
     
-    PCD8544_TurnOn(&lcdHandle);
+    PCD8544_Init(&lcdHandle);
     PCD8544_SetDisplayMode(&lcdHandle, PCD8544_DISPLAYMODE_NORMAL);
     PCD8544_SetBacklight(&lcdHandle, DISABLE);
 

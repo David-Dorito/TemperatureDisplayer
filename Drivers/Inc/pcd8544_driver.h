@@ -13,6 +13,10 @@
 #define PCD8544_DISPLAYMODE_ALLSEGON    0b00001001
 #define PCD8544_DISPLAYMODE_INVERSE     0b00001101
 
+#define PCD8544_CONTRAST_DEFAULT        0x3F
+#define PCD8544_CONTRAST_MIN            0x00
+#define PCD8544_CONTRAST_MAX            0x7F
+
 typedef struct {
     SPI_Handle* pSpiHandle;
     GPIO_Handle* pDcPin;
@@ -24,21 +28,21 @@ typedef struct {
 } PCD8544_Handle;
 
 /*************************************\
-  fn: @PCD8544_TurnOn
+  fn: @PCD8544_Init
   
   param1 PCD8544_Handle*: the handle of the display
   
   return:
   
-  desc: turns the display on using the sequence described in the datasheet
+  desc: turns the display on using the sequence described in the datasheet and sets some basic configurations
   
-  note:
+  note: sets the contrast to PCD8544_CONTRAST_DEFAULT found in the header file
   
 \**************************************/
-void PCD8544_TurnOn(PCD8544_Handle* pPcd8544Handle);
+void PCD8544_Init(PCD8544_Handle* pPcd8544Handle);
 
 /*************************************\
-  fn: @PCD8544_TurnOff
+  fn: @PCD8544_Deinit
   
   param1 PCD8544_Handle*: the handle of the display
   
@@ -49,7 +53,7 @@ void PCD8544_TurnOn(PCD8544_Handle* pPcd8544Handle);
   note: also pulls chip select to HIGH and Data/Command to LOW
   
 \**************************************/
-void PCD8544_TurnOff(PCD8544_Handle* pPcd8544Handle);
+void PCD8544_Deinit(PCD8544_Handle* pPcd8544Handle);
 
 /*************************************\
   fn: @PCD8544_SetSleepMode

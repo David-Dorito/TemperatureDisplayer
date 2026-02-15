@@ -8,29 +8,52 @@
 #define SET_EXTENDINST      0b00100001
 #define SET_BASICINST       0b00100000
 #define SET_VOP             0b10000000
+#define SET_TC_0            0b00000100
+#define SET_BIAS_1_48       0b00010011
 
 /*************************************\
-  fn: @PCD8544_TurnOn
+  fn: @PCD8544_Init
   
   param1 PCD8544_Handle*: the handle of the display
   
   return:
   
-  desc: turns the display on using the sequence described in the datasheet
+  desc: turns the display on using the sequence described in the datasheet and sets some basic configurations
   
-  note:
+  note: sets the contrast to PCD8544_CONTRAST_DEFAULT found in the header file
   
 \**************************************/
-void PCD8544_TurnOn(PCD8544_Handle* pPcd8544Handle)
+void PCD8544_Init(PCD8544_Handle* pPcd8544Handle)
 {
     GPIO_WritePin(pPcd8544Handle->pResPin, LOW);
     GPIO_WritePin(pPcd8544Handle->pVccPin, HIGH);
     UnpreciseDelay(50);
     GPIO_WritePin(pPcd8544Handle->pResPin, HIGH);
+    
+    GPIO_WritePin(pPcd8544Handle->pCsPin, LOW);
+
+    GPIO_WritePin(pPcd8544Handle->pDcPin, LOW);
+
+    u8 command = SET_EXTENDINST;
+    SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
+    
+    command = SET_TC_0;
+    SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
+    
+    command = SET_BIAS_1_48;
+    SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
+
+    command = (SET_VOP | PCD8544_CONTRAST_DEFAULT);
+    SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
+    
+    command = SET_BASICINST;
+    SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
+
+    GPIO_WritePin(pPcd8544Handle->pCsPin, HIGH);
 }
 
 /*************************************\
-  fn: @PCD8544_TurnOff
+  fn: @PCD8544_Deinit
   
   param1 PCD8544_Handle*: the handle of the display
   
@@ -41,7 +64,7 @@ void PCD8544_TurnOn(PCD8544_Handle* pPcd8544Handle)
   note: also pulls chip select to HIGH and Data/Command to LOW
   
 \**************************************/
-void PCD8544_TurnOff(PCD8544_Handle* pPcd8544Handle)
+void PCD8544_Deinit(PCD8544_Handle* pPcd8544Handle)
 {
     GPIO_WritePin(pPcd8544Handle->pCsPin, HIGH);
     GPIO_WritePin(pPcd8544Handle->pDcPin, LOW);
