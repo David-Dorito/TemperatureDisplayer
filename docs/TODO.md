@@ -5,7 +5,7 @@
 2. [X] Implement SPI drivers
 3. [X] Implement I²C drivers
 4. [ ] Implement USART drivers
-5. [~] Implement Pcd8544 drivers
+5. [X] Implement Pcd8544 drivers
 6. [ ] Implement Mcp9808 drivers
 
 ## Application Layer

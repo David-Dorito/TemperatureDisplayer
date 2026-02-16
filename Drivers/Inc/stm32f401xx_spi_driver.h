@@ -9,7 +9,6 @@
 #endif
 
 #include "stm32f401xx.h"
-#include "../Inc/stm32f401xx_gpio_driver.h"
 
 /******************************** BIT DEFINITION MACROS ********************************/
 
@@ -218,7 +217,5 @@ void SPI_ReceiveData(SPI_Handle* pSpiHandle, u8* pRxBuffer, u16 len);
   
 \**************************************/
 void SPI_TransmitReceiveData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u8* pRxBuffer, u16 lenTx, u16 lenRx);
-
-void SPI_TransmitData_Software(GPIO_Handle* pMosi, GPIO_Handle* pSck, u8* pTxBuffer, u16 len);
 
 #endif /* STM32F401XX_SPI_DRIVER_H_ */

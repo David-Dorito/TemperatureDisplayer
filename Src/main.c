@@ -13,17 +13,16 @@
 
 /*************************************\
   
+  Vcc  -> LCD Vcc
   PA01 -> LCD Reset
   PA02 -> LCD Chip select
   PA03 -> LCD Data/Command select
   PA05 -> LCD Spi clock 
   PA07 -> LCD Spi MOSI
-  PA09 -> LCD Backlight
-  PA10 -> Gpio button, connect to GND over the button
+  PA09 -> LCD Backlight through a 220 to 330 Ohm resistor
+  PA10 -> GND over a button
   
 \*************************************/
-
-void TestBlankVsAllOn(PCD8544_Handle* pHandle);
 
 GPIO_Handle buttonPin = (GPIO_Handle){
     .pGPIOx = GPIOA,
@@ -44,10 +43,10 @@ int main(void)
         .Config = (SPI_Config){
             .BusConfig = SPI_BUSCONFIG_FULLDUPLEX,
             .BitOrder = SPI_BITORDER_MSBFIRST,
-            .CPHA = SPI_CPHA_SECONDEDGE,
+            .CPHA = SPI_CPHA_FIRSTEDGE,
             .CPOL = SPI_CPOL_LOW,
             .DeviceMode = SPI_DEVICEMODE_MASTER,
-            .SclkSpeed = SPI_SCLKSPEED_DIV256,
+            .SclkSpeed = SPI_SCLKSPEED_DIV64,
             .SSM = SPI_SSM_SOFTWARE,
             .DFF = SPI_DFF_8BIT
         }
@@ -69,7 +68,7 @@ int main(void)
         .Config = (GPIO_Config){
             .PinNumber = 2,
             .PinMode = GPIO_PINMODE_OUTPUT,
-            .OpSpeed = GPIO_OPSPEED_VERYHIGH,
+            .OpSpeed = GPIO_OPSPEED_HIGH,
             .OpType = GPIO_OPTYPE_PP,
             .RtFtDetect = GPIO_RTFTDETECT_NONE
         }
@@ -80,7 +79,7 @@ int main(void)
         .Config = (GPIO_Config){
             .PinNumber = 3,
             .PinMode = GPIO_PINMODE_OUTPUT,
-            .OpSpeed = GPIO_OPSPEED_VERYHIGH,
+            .OpSpeed = GPIO_OPSPEED_MED,
             .OpType = GPIO_OPTYPE_PP,
             .RtFtDetect = GPIO_RTFTDETECT_NONE
         }
@@ -90,8 +89,9 @@ int main(void)
         .pGPIOx = GPIOA,
         .Config = (GPIO_Config){
             .PinNumber = 5,
-            .PinMode = GPIO_PINMODE_OUTPUT,  // Changed from ALTFUN
-            .OpSpeed = GPIO_OPSPEED_VERYHIGH,
+            .PinMode = GPIO_PINMODE_ALTFUN,
+            .AltFunNumber = 5,
+            .OpSpeed = GPIO_OPSPEED_HIGH,
             .OpType = GPIO_OPTYPE_PP,
             .RtFtDetect = GPIO_RTFTDETECT_NONE
         }
@@ -101,8 +101,9 @@ int main(void)
     .pGPIOx = GPIOA,
     .Config = (GPIO_Config){
         .PinNumber = 7,
-        .PinMode = GPIO_PINMODE_OUTPUT,  // Changed from ALTFUN
-        .OpSpeed = GPIO_OPSPEED_VERYHIGH,
+        .PinMode = GPIO_PINMODE_ALTFUN,
+        .AltFunNumber = 5,
+        .OpSpeed = GPIO_OPSPEED_HIGH,
         .OpType = GPIO_OPTYPE_PP,
         .RtFtDetect = GPIO_RTFTDETECT_NONE
     }
@@ -113,7 +114,7 @@ int main(void)
         .Config = (GPIO_Config){
             .PinNumber = 9,
             .PinMode = GPIO_PINMODE_OUTPUT,
-            .OpSpeed = GPIO_OPSPEED_VERYHIGH,
+            .OpSpeed = GPIO_OPSPEED_LOW,
             .OpType = GPIO_OPTYPE_PP,
             .RtFtDetect = GPIO_RTFTDETECT_NONE
         }
@@ -129,8 +130,6 @@ int main(void)
         .pVccPin = NULL,
         .pResPin = &lcdResetPin,
         .pLedPin = &lcdBacklightPin,
-        .pMosiPin = &lcdMosiPin,  // ADD THIS
-        .pSckPin = &lcdSckPin     // ADD THIS
     };
     
     SYSCFG_PCLK_EN();
@@ -144,11 +143,10 @@ int main(void)
     GPIO_Init(&lcdBacklightPin);
     GPIO_Init(&buttonPin);
     
-    //SPI_Init(&lcdSpiHandle);
+    SPI_Init(&lcdSpiHandle);
     
-    /*
     PCD8544_Init(&lcdHandle);
-    PCD8544_SetDisplayMode(&lcdHandle, PCD8544_DISPLAYMODE_ALLSEGON);
+    PCD8544_SetDisplayMode(&lcdHandle, PCD8544_DISPLAYMODE_NORMAL);
     PCD8544_SetBacklight(&lcdHandle, DISABLE);
 
     u8 isDisplayFilledBlack = FALSE;
@@ -160,22 +158,8 @@ int main(void)
         if (isButtonPressed)
         {
             isDisplayFilledBlack = !isDisplayFilledBlack;
-            PCD8544_FillScreenColor(&lcdHandle, isDisplayFilledBlack);
+            PCD8544_TogglePixelColor(&lcdHandle, 40, 20);
             PCD8544_UpdateScreen(&lcdHandle);
-            isButtonPressed = FALSE;
-        }
-    }
-    */
-    
-    
-    PCD8544_Init(&lcdHandle);
-    PCD8544_SetBacklight(&lcdHandle, DISABLE);
-    
-    while (TRUE)
-    {
-        if (isButtonPressed)
-        {
-            TestBlankVsAllOn(&lcdHandle);
             isButtonPressed = FALSE;
         }
     }
@@ -190,61 +174,4 @@ void GPIO_AppEventCallback(u8 pinNumber)
 {
     if (pinNumber == buttonPin.Config.PinNumber)
         isButtonPressed = TRUE;
-}
-
-void TestBlankVsAllOn(PCD8544_Handle* pHandle)
-{
-    PCD8544_SetBacklight(pHandle, HIGH);  // Backlight ON
-    
-    uint8_t cmd;
-    
-    GPIO_WritePin(pHandle->pCsPin, LOW);
-    UnpreciseDelay(5);
-    GPIO_WritePin(pHandle->pDcPin, LOW);  // Command mode
-    UnpreciseDelay(5);
-    
-    // Configure display once
-    cmd = 0x21;  // Extended
-    SPI_TransmitData_Software(pHandle->pMosiPin, pHandle->pSckPin, &cmd, 1);
-    
-    cmd = 0x14;  // Bias 4
-    SPI_TransmitData_Software(pHandle->pMosiPin, pHandle->pSckPin, &cmd, 1);
-    
-    cmd = 0xBF;  // VOP = 0x3F (good contrast)
-    SPI_TransmitData_Software(pHandle->pMosiPin, pHandle->pSckPin, &cmd, 1);
-    
-    cmd = 0x20;  // Basic mode
-    SPI_TransmitData_Software(pHandle->pMosiPin, pHandle->pSckPin, &cmd, 1);
-    SPI_TransmitData_Software(pHandle->pMosiPin, pHandle->pSckPin, &cmd, 1);
-    
-    GPIO_WritePin(pHandle->pCsPin, HIGH);
-    UnpreciseDelay(5);
-    
-    // Now alternate forever
-    while(1)
-    {
-        // BLANK mode
-        GPIO_WritePin(pHandle->pCsPin, LOW);
-        UnpreciseDelay(5);
-        GPIO_WritePin(pHandle->pDcPin, LOW);
-        UnpreciseDelay(5);
-        
-        cmd = 0x08;  // Display blank (D=0, E=0)
-        SPI_TransmitData_Software(pHandle->pMosiPin, pHandle->pSckPin, &cmd, 1);
-        
-        GPIO_WritePin(pHandle->pCsPin, HIGH);
-        UnpreciseDelay(1000);  // 1 second blank
-        
-        // ALL SEGMENTS ON
-        GPIO_WritePin(pHandle->pCsPin, LOW);
-        UnpreciseDelay(5);
-        GPIO_WritePin(pHandle->pDcPin, LOW);
-        UnpreciseDelay(5);
-        
-        cmd = 0x09;  // All segments on (D=0, E=1)
-        SPI_TransmitData_Software(pHandle->pMosiPin, pHandle->pSckPin, &cmd, 1);
-        
-        GPIO_WritePin(pHandle->pCsPin, HIGH);
-        UnpreciseDelay(1000);  // 1 second all-on (should be black)
-    }
 }

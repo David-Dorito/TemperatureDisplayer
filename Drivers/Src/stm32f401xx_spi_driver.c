@@ -301,28 +301,3 @@ void SPI_TransmitReceiveData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u8* pRxBuffe
     
     while (pSpiHandle->pSPIx->SR & (1U << SPI_SR_BSY) || !(pSpiHandle->pSPIx->SR & (1U << SPI_SR_TXE)));
 }
-
-void SPI_TransmitData_Software(GPIO_Handle* pMosi, GPIO_Handle* pSck, u8* pTxBuffer, u16 len)
-{
-    for(u16 byte = 0; byte < len; byte++)
-    {
-        u8 data = pTxBuffer[byte];
-        
-        // Send 8 bits, MSB first
-        for(int i = 7; i >= 0; i--)
-        {
-            // Set data bit
-            if(data & (1 << i)) {
-                GPIO_WritePin(pMosi, HIGH);
-            } else {
-                GPIO_WritePin(pMosi, LOW);
-            }
-            
-            // Clock pulse HIGH
-            GPIO_WritePin(pSck, HIGH);
-            
-            // Clock pulse LOW
-            GPIO_WritePin(pSck, LOW);
-        }
-    }
-}
