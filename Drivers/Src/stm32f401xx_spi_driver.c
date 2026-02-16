@@ -86,6 +86,8 @@ void SPI_Init(SPI_Handle* pSpiHandle)
     pSpiHandle->pSPIx->CR1 = tempReg;
     
     // TODO: Add interrupt support
+    
+    SPI_PeriphCtrl(pSpiHandle, ENABLE); //disabe periph to safely manipulate CR1
 }
 
 /*************************************\
@@ -124,7 +126,6 @@ void SPI_Deinit(SPI_Handle* pSpiHandle)
 \**************************************/
 void SPI_TransmitData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u16 len)
 {
-    u8 spiEnabled = (pSpiHandle->pSPIx->CR1 & (1U << SPI_CR1_SPE)); //save peripheral enabled state for later
     pSpiHandle->pSPIx->CR1 |= (1U << SPI_CR1_SPE); //make sure peripheral is enabled
 
     if (pSpiHandle->Config.BusConfig == SPI_BUSCONFIG_FULLDUPLEX)
@@ -160,7 +161,6 @@ void SPI_TransmitData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u16 len)
     }
     
     while (pSpiHandle->pSPIx->SR & (1U << SPI_SR_BSY) || !(pSpiHandle->pSPIx->SR & (1U << SPI_SR_TXE)));
-    pSpiHandle->pSPIx->CR1 &= ~(!spiEnabled << SPI_CR1_SPE); //restore SPE to its original state
 }
 
 /*************************************\
@@ -179,7 +179,6 @@ void SPI_TransmitData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u16 len)
 \**************************************/
 void SPI_ReceiveData(SPI_Handle* pSpiHandle, u8* pRxBuffer, u16 len)
 {
-    u8 spiEnabled = (pSpiHandle->pSPIx->CR1 & (1U << SPI_CR1_SPE)); //save peripheral enabled state for later
     pSpiHandle->pSPIx->CR1 |= (1U << SPI_CR1_SPE); //make sure peripheral is enabled
 
     if (pSpiHandle->Config.BusConfig == SPI_BUSCONFIG_FULLDUPLEX)
@@ -215,7 +214,6 @@ void SPI_ReceiveData(SPI_Handle* pSpiHandle, u8* pRxBuffer, u16 len)
     }
     
     while (pSpiHandle->pSPIx->SR & (1U << SPI_SR_BSY) || !(pSpiHandle->pSPIx->SR & (1U << SPI_SR_TXE)));
-    pSpiHandle->pSPIx->CR1 &= ~(!spiEnabled << SPI_CR1_SPE); //restore SPE to its original state
 }
 
 /*************************************\
@@ -237,7 +235,6 @@ void SPI_ReceiveData(SPI_Handle* pSpiHandle, u8* pRxBuffer, u16 len)
 \**************************************/
 void SPI_TransmitReceiveData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u8* pRxBuffer, u16 lenTx, u16 lenRx)
 {
-    u8 spiEnabled = (pSpiHandle->pSPIx->CR1 & (1U << SPI_CR1_SPE)); //save peripheral enabled state for later
     pSpiHandle->pSPIx->CR1 |= (1U << SPI_CR1_SPE); //make sure peripheral is enabled
 
     if (pSpiHandle->Config.BusConfig == SPI_BUSCONFIG_FULLDUPLEX)
@@ -303,5 +300,29 @@ void SPI_TransmitReceiveData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u8* pRxBuffe
     }
     
     while (pSpiHandle->pSPIx->SR & (1U << SPI_SR_BSY) || !(pSpiHandle->pSPIx->SR & (1U << SPI_SR_TXE)));
-    pSpiHandle->pSPIx->CR1 &= ~(!spiEnabled << SPI_CR1_SPE); //restore SPE to its original state
+}
+
+void SPI_TransmitData_Software(GPIO_Handle* pMosi, GPIO_Handle* pSck, u8* pTxBuffer, u16 len)
+{
+    for(u16 byte = 0; byte < len; byte++)
+    {
+        u8 data = pTxBuffer[byte];
+        
+        // Send 8 bits, MSB first
+        for(int i = 7; i >= 0; i--)
+        {
+            // Set data bit
+            if(data & (1 << i)) {
+                GPIO_WritePin(pMosi, HIGH);
+            } else {
+                GPIO_WritePin(pMosi, LOW);
+            }
+            
+            // Clock pulse HIGH
+            GPIO_WritePin(pSck, HIGH);
+            
+            // Clock pulse LOW
+            GPIO_WritePin(pSck, LOW);
+        }
+    }
 }

@@ -1,5 +1,6 @@
 #include "../Inc/pcd8544_driver.h"
 #include "../Inc/stm32f401xx_clocks.h"
+#include <stddef.h>
 
 #define SET_XADDR_0         0b10000000
 #define SET_YADDR_0         0b01000000
@@ -23,33 +24,45 @@
   note: sets the contrast to PCD8544_CONTRAST_DEFAULT found in the header file
   
 \**************************************/
+
 void PCD8544_Init(PCD8544_Handle* pPcd8544Handle)
 {
-    GPIO_WritePin(pPcd8544Handle->pResPin, LOW);
-    GPIO_WritePin(pPcd8544Handle->pVccPin, HIGH);
-    UnpreciseDelay(50);
-    GPIO_WritePin(pPcd8544Handle->pResPin, HIGH);
+    // Control VCC if user provides the pin, otherwise assume external 3.3V
+    if (pPcd8544Handle->pVccPin != NULL)
+    {
+        GPIO_WritePin(pPcd8544Handle->pVccPin, HIGH);
+        UnpreciseDelay(50);  // Wait for VCC to stabilize
+    }
     
+    // Reset sequence
+    GPIO_WritePin(pPcd8544Handle->pResPin, LOW);
+    UnpreciseDelay(1);  // Min 100ns, 1ms is safe
+    GPIO_WritePin(pPcd8544Handle->pResPin, HIGH);
+    UnpreciseDelay(100);  // Wait for internal reset
+    
+    // Send configuration commands
     GPIO_WritePin(pPcd8544Handle->pCsPin, LOW);
-
+    UnpreciseDelay(5);
     GPIO_WritePin(pPcd8544Handle->pDcPin, LOW);
-
+    UnpreciseDelay(5);
+    
     u8 command = SET_EXTENDINST;
-    SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
+    SPI_TransmitData_Software(pPcd8544Handle->pMosiPin, pPcd8544Handle->pSckPin, &command, 1);
     
     command = SET_TC_0;
-    SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
+    SPI_TransmitData_Software(pPcd8544Handle->pMosiPin, pPcd8544Handle->pSckPin, &command, 1);
     
     command = SET_BIAS_1_48;
-    SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
-
+    SPI_TransmitData_Software(pPcd8544Handle->pMosiPin, pPcd8544Handle->pSckPin, &command, 1);
+    
     command = (SET_VOP | PCD8544_CONTRAST_DEFAULT);
-    SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
+    SPI_TransmitData_Software(pPcd8544Handle->pMosiPin, pPcd8544Handle->pSckPin, &command, 1);
     
     command = SET_BASICINST;
-    SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
-
+    SPI_TransmitData_Software(pPcd8544Handle->pMosiPin, pPcd8544Handle->pSckPin, &command, 1);
+    
     GPIO_WritePin(pPcd8544Handle->pCsPin, HIGH);
+    UnpreciseDelay(5);
 }
 
 /*************************************\
@@ -68,7 +81,7 @@ void PCD8544_Deinit(PCD8544_Handle* pPcd8544Handle)
 {
     GPIO_WritePin(pPcd8544Handle->pCsPin, HIGH);
     GPIO_WritePin(pPcd8544Handle->pDcPin, LOW);
-    GPIO_WritePin(pPcd8544Handle->pVccPin, LOW);
+    if (pPcd8544Handle->pVccPin != NULL) GPIO_WritePin(pPcd8544Handle->pVccPin, LOW);
 }
 
 /*************************************\

@@ -24,6 +24,8 @@ typedef struct {
     GPIO_Handle* pCsPin;
     GPIO_Handle* pLedPin;
     GPIO_Handle* pVccPin;
+    GPIO_Handle* pMosiPin;
+    GPIO_Handle* pSckPin;
     u8* pFrameBuffer;
 } PCD8544_Handle;
 

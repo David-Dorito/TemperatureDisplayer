@@ -3,13 +3,13 @@
 ## Driver Layer
 1. [X] Implement GPIO drivers
 2. [X] Implement SPI drivers
-3. [~] Implement I²C drivers
+3. [X] Implement I²C drivers
 4. [ ] Implement USART drivers
-5. [ ] Implement Nokia5110 drivers
+5. [~] Implement Pcd8544 drivers
 6. [ ] Implement Mcp9808 drivers
 
 ## Application Layer
-1. [ ] Configure GPIO button with external interrupt (EXTI)
+1. [X] Configure GPIO button with external interrupt (EXTI)
 2. [ ] Create interrupt handler that sends a read request to the temperature sensor over I²C
 3. [ ] Write code to send temperature data to the display using SPI
 4. [ ] Configure second GPIO button with external interrupt

@@ -24,8 +24,8 @@ Special emphasis was placed on writing maintainable, reusable drivers without re
 
 ## Hardware Used
 - MCU: **STM32F401CCU**
-- Temperature sensor: **Seeed Studio Grove MCP0908**
-- Display: **Nokia5110 84x48 LCD**
+- Temperature sensor: **Seeed Studio Grove MCP9808**
+- Display: **PCD8544 84x48 LCD (also known as Noka5110 display)**
 - USART-USB converter: **QIQIAZI UART-TTL USB Adapter CH340G**
 
 ## Project status
