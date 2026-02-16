@@ -13,6 +13,11 @@
 #define PCD8544_DISPLAYMODE_ALLSEGON    0b00001001
 #define PCD8544_DISPLAYMODE_INVERSE     0b00001101
 
+#define PCD8544_TEMPCOEFF_01MV          0b00000000
+#define PCD8544_TEMPCOEFF_09MV          0b00000001
+#define PCD8544_TEMPCOEFF_17MV          0b00000010
+#define PCD8544_TEMPCOEFF_24MV          0b00000011
+
 #define PCD8544_CONTRAST_DEFAULT        0x3F
 #define PCD8544_CONTRAST_MIN            0x00
 #define PCD8544_CONTRAST_MAX            0x7F
@@ -36,7 +41,7 @@ typedef struct {
   
   desc: turns the display on using the sequence described in the datasheet and sets some basic configurations
   
-  note: sets the contrast to PCD8544_CONTRAST_DEFAULT found in the header file
+  note:
   
 \**************************************/
 void PCD8544_Init(PCD8544_Handle* pPcd8544Handle);
@@ -56,6 +61,21 @@ void PCD8544_Init(PCD8544_Handle* pPcd8544Handle);
 void PCD8544_Deinit(PCD8544_Handle* pPcd8544Handle);
 
 /*************************************\
+  fn: @PCD8544_SetBacklight
+  
+  param1 PCD8544_Handle*: the handle of the display
+  param2 u8: enable or disable sleep mode of the display
+  
+  return:
+  
+  desc: enables or disables the background light of the display
+  
+  note: function is very basic, just a wrapper for GPIO_WritePin() with the LED pin as the arg
+  
+\**************************************/
+void PCD8544_SetBacklight(PCD8544_Handle* pPcd8544Handle, u8 isEnabled);
+
+/*************************************\
   fn: @PCD8544_SetSleepMode
   
   param1 PCD8544_Handle*: the handle of the display
@@ -72,21 +92,6 @@ void PCD8544_Deinit(PCD8544_Handle* pPcd8544Handle);
 void PCD8544_SetSleepMode(PCD8544_Handle* pPcd8544Handle, u8 isEnabled);
 
 /*************************************\
-  fn: @PCD8544_SetBacklight
-  
-  param1 PCD8544_Handle*: the handle of the display
-  param2 u8: enable or disable sleep mode of the display
-  
-  return:
-  
-  desc: enables or disables the background light of the display
-  
-  note: function is very basic, just a wrapper for GPIO_WritePin() with the LED pin as the arg
-  
-\**************************************/
-void PCD8544_SetBacklight(PCD8544_Handle* pPcd8544Handle, u8 isEnabled);
-
-/*************************************\
   fn: @PCD8544_SetDisplayMode
   
   param1 PCD8544_Handle*: the handle of the display
@@ -100,6 +105,21 @@ void PCD8544_SetBacklight(PCD8544_Handle* pPcd8544Handle, u8 isEnabled);
   
 \**************************************/
 void PCD8544_SetDisplayMode(PCD8544_Handle* pPcd8544Handle, u8 mode);
+
+/*************************************\
+  fn: @PCD8544_SetTempCoeff
+  
+  param1 PCD8544_Handle*: the handle of the display
+  param2 u8: the temperature coefficient
+  
+  return:
+  
+  desc: sets the temperature coefficient of the display
+  
+  note: use the PCD8544_TEMPCOEFF_XXX macros as the coefficient arg, view the datasheet for a description of what they do
+  
+\**************************************/
+void PCD8544_SetTempCoeff(PCD8544_Handle* pPcd8544Handle, u8 coefficient);
 
 /*************************************\
   fn: @PCD8544_SetContrast

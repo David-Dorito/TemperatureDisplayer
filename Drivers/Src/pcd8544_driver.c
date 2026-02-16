@@ -9,7 +9,8 @@
 #define SET_EXTENDINST      0b00100001
 #define SET_BASICINST       0b00100000
 #define SET_VOP             0b10000000
-#define SET_TC_0            0b00000100
+#define SET_TC              0b00000100
+#define SET_DISPLAYMODE     0b00001000
 #define SET_BIAS_1_48       0b00010011
 
 /*************************************\
@@ -47,16 +48,19 @@ void PCD8544_Init(PCD8544_Handle* pPcd8544Handle)
     u8 command = SET_EXTENDINST;
     SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
     
-    command = SET_TC_0;
+    command = (SET_VOP | PCD8544_CONTRAST_DEFAULT);
+    SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
+    
+    command = SET_TC;
     SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
     
     command = SET_BIAS_1_48;
     SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
     
-    command = (SET_VOP | PCD8544_CONTRAST_DEFAULT);
+    command = SET_BASICINST;
     SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
     
-    command = SET_BASICINST;
+    command = PCD8544_DISPLAYMODE_NORMAL;
     SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
     
     GPIO_WritePin(pPcd8544Handle->pCsPin, HIGH);
@@ -79,6 +83,24 @@ void PCD8544_Deinit(PCD8544_Handle* pPcd8544Handle)
     GPIO_WritePin(pPcd8544Handle->pCsPin, HIGH);
     GPIO_WritePin(pPcd8544Handle->pDcPin, LOW);
     if (pPcd8544Handle->pVccPin != NULL) GPIO_WritePin(pPcd8544Handle->pVccPin, LOW);
+}
+
+/*************************************\
+  fn: @PCD8544_SetBacklight
+  
+  param1 PCD8544_Handle*: the handle of the display
+  param2 u8: enable or disable sleep mode of the display
+  
+  return:
+  
+  desc: enables or disables the background light of the display
+  
+  note: function is very basic, just a wrapper for GPIO_WritePin() with the LED pin as the arg
+  
+\**************************************/
+void PCD8544_SetBacklight(PCD8544_Handle* pPcd8544Handle, u8 isEnabled)
+{
+    GPIO_WritePin(pPcd8544Handle->pLedPin, !isEnabled);
 }
 
 /*************************************\
@@ -111,24 +133,6 @@ void PCD8544_SetSleepMode(PCD8544_Handle* pPcd8544Handle, u8 isEnabled)
 }
 
 /*************************************\
-  fn: @PCD8544_SetBacklight
-  
-  param1 PCD8544_Handle*: the handle of the display
-  param2 u8: enable or disable sleep mode of the display
-  
-  return:
-  
-  desc: enables or disables the background light of the display
-  
-  note: function is very basic, just a wrapper for GPIO_WritePin() with the LED pin as the arg
-  
-\**************************************/
-void PCD8544_SetBacklight(PCD8544_Handle* pPcd8544Handle, u8 isEnabled)
-{
-    GPIO_WritePin(pPcd8544Handle->pLedPin, !isEnabled);
-}
-
-/*************************************\
   fn: @PCD8544_SetDisplayMode
   
   param1 PCD8544_Handle*: the handle of the display
@@ -146,7 +150,32 @@ void PCD8544_SetDisplayMode(PCD8544_Handle* pPcd8544Handle, u8 mode)
     GPIO_WritePin(pPcd8544Handle->pCsPin, LOW);
 
     GPIO_WritePin(pPcd8544Handle->pDcPin, LOW);
+    mode &= (SET_DISPLAYMODE | 0b00000101);
     SPI_TransmitData(pPcd8544Handle->pSpiHandle, &mode, 1);
+
+    GPIO_WritePin(pPcd8544Handle->pCsPin, HIGH);
+}
+
+/*************************************\
+  fn: @PCD8544_SetTempCoeff
+  
+  param1 PCD8544_Handle*: the handle of the display
+  param2 u8: the temperature coefficient
+  
+  return:
+  
+  desc: sets the temperature coefficient of the display
+  
+  note: use the PCD8544_TEMPCOEFF_XXX macros as the coefficient arg, view the datasheet for a description of what they do
+  
+\**************************************/
+void PCD8544_SetTempCoeff(PCD8544_Handle* pPcd8544Handle, u8 coefficient)
+{
+    GPIO_WritePin(pPcd8544Handle->pCsPin, LOW);
+
+    GPIO_WritePin(pPcd8544Handle->pDcPin, LOW);
+    coefficient &= (SET_TC | 00000011);
+    SPI_TransmitData(pPcd8544Handle->pSpiHandle, &coefficient, 1);
 
     GPIO_WritePin(pPcd8544Handle->pCsPin, HIGH);
 }

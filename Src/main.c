@@ -127,9 +127,9 @@ int main(void)
         .pSpiHandle = &lcdSpiHandle,
         .pCsPin = &lcdSelectPin,
         .pDcPin = &lcdDcPin,
-        .pVccPin = NULL,
         .pResPin = &lcdResetPin,
         .pLedPin = &lcdBacklightPin,
+        .pVccPin = NULL
     };
     
     SYSCFG_PCLK_EN();
@@ -146,20 +146,19 @@ int main(void)
     SPI_Init(&lcdSpiHandle);
     
     PCD8544_Init(&lcdHandle);
-    PCD8544_SetDisplayMode(&lcdHandle, PCD8544_DISPLAYMODE_NORMAL);
-    PCD8544_SetBacklight(&lcdHandle, DISABLE);
+    PCD8544_SetBacklight(&lcdHandle, ENABLE);
 
-    u8 isDisplayFilledBlack = FALSE;
-    PCD8544_FillScreenColor(&lcdHandle, isDisplayFilledBlack);
+    PCD8544_FillScreenColor(&lcdHandle, TRUE);
     PCD8544_UpdateScreen(&lcdHandle);
 
+    u8 isSleeping = FALSE;
     while (TRUE)
     {
         if (isButtonPressed)
         {
-            isDisplayFilledBlack = !isDisplayFilledBlack;
-            PCD8544_TogglePixelColor(&lcdHandle, 40, 20);
-            PCD8544_UpdateScreen(&lcdHandle);
+            isSleeping = !isSleeping;
+            PCD8544_SetSleepMode(&lcdHandle, isSleeping);
+            PCD8544_SetBacklight(&lcdHandle, !isSleeping);
             isButtonPressed = FALSE;
         }
     }
