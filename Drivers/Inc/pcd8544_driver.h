@@ -147,7 +147,7 @@ void PCD8544_SetContrast(PCD8544_Handle* pPcd8544Handle, u8 contrast);
   
   desc: toggles the colour of the pixel at the specified x and y position
   
-  note:
+  note: early returns nothing to avoid memory corruption if posX >= width or posY >= height
   
 \**************************************/
 void PCD8544_TogglePixelColor(PCD8544_Handle* pPcd8544Handle, u8 posX, u8 posY);
@@ -164,7 +164,7 @@ void PCD8544_TogglePixelColor(PCD8544_Handle* pPcd8544Handle, u8 posX, u8 posY);
   
   desc: sets the colour of the pixel at the specified x and y position
   
-  note:
+  note: early returns nothing to avoid memory corruption if posX >= width or posY >= height
   
 \**************************************/
 void PCD8544_SetPixelColor(PCD8544_Handle* pPcd8544Handle, u8 isBlack, u8 posX, u8 posY);
@@ -180,7 +180,7 @@ void PCD8544_SetPixelColor(PCD8544_Handle* pPcd8544Handle, u8 isBlack, u8 posX, 
   
   desc: returns the colour of the pixel at the specified x and y position
   
-  note:
+  note: returns 0 if posX >= width or posY >= height to avoid memory corruption
   
 \**************************************/
 u8 PCD8544_GetPixelColor(PCD8544_Handle* pPcd8544Handle, u8 posX, u8 posY);

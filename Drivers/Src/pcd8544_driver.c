@@ -222,11 +222,14 @@ void PCD8544_SetContrast(PCD8544_Handle* pPcd8544Handle, u8 contrast)
   
   desc: toggles the colour of the pixel at the specified x and y position
   
-  note:
+  note: early returns nothing to avoid memory corruption if posX >= width or posY >= height
   
 \**************************************/
 void PCD8544_TogglePixelColor(PCD8544_Handle* pPcd8544Handle, u8 posX, u8 posY)
 {
+    if (posX >= PCD8544_SCREEN_WIDTH || posY >= PCD8544_SCREEN_HEIGHT)
+        return;
+
     u16 regIndex = posX+(posY/8)*PCD8544_SCREEN_WIDTH;
 
     pPcd8544Handle->pFrameBuffer[regIndex] ^= (1U << (posY % 8));
@@ -244,11 +247,14 @@ void PCD8544_TogglePixelColor(PCD8544_Handle* pPcd8544Handle, u8 posX, u8 posY)
   
   desc: sets the colour of the pixel at the specified x and y position
   
-  note:
+  note: early returns nothing to avoid memory corruption if posX >= width or posY >= height
   
 \**************************************/
 void PCD8544_SetPixelColor(PCD8544_Handle* pPcd8544Handle, u8 isBlack, u8 posX, u8 posY)
 {
+    if (posX >= PCD8544_SCREEN_WIDTH || posY >= PCD8544_SCREEN_HEIGHT)
+        return;
+
     u16 regIndex = posX+(posY/8)*PCD8544_SCREEN_WIDTH;
 
     if (isBlack)
@@ -268,14 +274,17 @@ void PCD8544_SetPixelColor(PCD8544_Handle* pPcd8544Handle, u8 isBlack, u8 posX, 
   
   desc: returns the colour of the pixel at the specified x and y position
   
-  note:
-  
+  note: returns 0 if posX >= width or posY >= height to avoid memory corruption
+
 \**************************************/
 u8 PCD8544_GetPixelColor(PCD8544_Handle* pPcd8544Handle, u8 posX, u8 posY)
 {
+    if (posX >= PCD8544_SCREEN_WIDTH || posY >= PCD8544_SCREEN_HEIGHT)
+        return 0;
+
     u16 regIndex = posX+(posY/8)*PCD8544_SCREEN_WIDTH;
 
-    return ((pPcd8544Handle->pFrameBuffer[regIndex] & (1U << (posY % 8))) >> posY % 8);
+    return ((pPcd8544Handle->pFrameBuffer[regIndex] & (1U << (posY % 8))) >> (posY % 8));
 }
 
 /*************************************\

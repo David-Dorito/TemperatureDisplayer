@@ -148,17 +148,15 @@ int main(void)
     PCD8544_Init(&lcdHandle);
     PCD8544_SetBacklight(&lcdHandle, ENABLE);
 
-    PCD8544_FillScreenColor(&lcdHandle, TRUE);
+    PCD8544_FillScreenColor(&lcdHandle, FALSE);
     PCD8544_UpdateScreen(&lcdHandle);
 
-    u8 isSleeping = FALSE;
     while (TRUE)
     {
         if (isButtonPressed)
         {
-            isSleeping = !isSleeping;
-            PCD8544_SetSleepMode(&lcdHandle, isSleeping);
-            PCD8544_SetBacklight(&lcdHandle, !isSleeping);
+            PCD8544_TogglePixelColor(&lcdHandle, 0, 0);
+            PCD8544_UpdateScreen(&lcdHandle);
             isButtonPressed = FALSE;
         }
     }
