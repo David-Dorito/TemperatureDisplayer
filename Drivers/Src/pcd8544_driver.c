@@ -318,16 +318,11 @@ void PCD8544_UpdateScreen(PCD8544_Handle* pPcd8544Handle)
     GPIO_WritePin(pPcd8544Handle->pDcPin, LOW);
     u8 command = SET_XADDR_0;
     SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
+    command = SET_YADDR_0;
+    SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
 
-    for (u16 i = 0; i < PCD8544_SCREEN_HEIGHT/8; i++)
-    {
-        GPIO_WritePin(pPcd8544Handle->pDcPin, LOW);
-        command = SET_YADDR_0 + i;
-        SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
-
-        GPIO_WritePin(pPcd8544Handle->pDcPin, HIGH);
-        SPI_TransmitData(pPcd8544Handle->pSpiHandle, &pPcd8544Handle->pFrameBuffer[i*PCD8544_SCREEN_WIDTH], PCD8544_SCREEN_WIDTH);
-    }
+    GPIO_WritePin(pPcd8544Handle->pDcPin, HIGH);
+    SPI_TransmitData(pPcd8544Handle->pSpiHandle, pPcd8544Handle->pFrameBuffer, PCD8544_SCREEN_SIZE);
     GPIO_WritePin(pPcd8544Handle->pDcPin, LOW);
 
     GPIO_WritePin(pPcd8544Handle->pCsPin, HIGH);
