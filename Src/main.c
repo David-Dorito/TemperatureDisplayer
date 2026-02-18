@@ -5,11 +5,11 @@
 #include "../Drivers/Inc/stm32f401xx_spi_driver.h"
 #include "../Drivers/Inc/pcd8544_driver.h"
 #include "../Drivers/Inc/stm32f401xx_clocks.h"
+#include "../Libs/Gfxlib/GfxLib.h"
 
 #if !defined(__SOFT_FP__) && defined(__ARM_FP)
   #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
 #endif
-
 
 /*************************************\
   
@@ -23,6 +23,8 @@
   PA10 -> GND over a button
   
 \*************************************/
+
+void PCD8544_SetPixelColor_Bridge(void* pHandle, u16 posX, u16 posY, u32 color);
 
 GPIO_Handle buttonPin = (GPIO_Handle){
     .pGPIOx = GPIOA,
@@ -131,7 +133,35 @@ int main(void)
         .pLedPin = &lcdBacklightPin,
         .pVccPin = NULL
     };
+
+    const u8 BitMapA[] = {
+        0x7A,
+        0x18,
+        0x7F,
+        0x86,
+        0x10
+    };
+
+    GfxLib_FontChar testFontCharacters[] = {
+        (GfxLib_FontChar){      // A
+            .Width = 6,
+            .Height = 6,
+            .pBitMap = BitMapA
+        }
+    };
     
+    GfxLib_Font testFont = (GfxLib_Font){
+        .CharCount = 1,
+        .pFontChars = testFontCharacters
+    };
+    
+    GfxLib_Handle gfxlibHandle = (GfxLib_Handle){
+        .FontCount = 1,
+        .pFonts = &testFont,
+        .DrawPixelFunc = PCD8544_SetPixelColor_Bridge,
+        .pDisplayHandle = &lcdHandle
+    };
+
     SYSCFG_PCLK_EN();
     IRQ_ItCtrl(IRQ_NO_EXTI15_10, ENABLE);
     
@@ -147,7 +177,7 @@ int main(void)
     
     PCD8544_Init(&lcdHandle);
     PCD8544_SetBacklight(&lcdHandle, ENABLE);
-
+    
     PCD8544_FillScreenColor(&lcdHandle, FALSE);
     PCD8544_UpdateScreen(&lcdHandle);
 
@@ -155,7 +185,7 @@ int main(void)
     {
         if (isButtonPressed)
         {
-            PCD8544_TogglePixelColor(&lcdHandle, 0, 0);
+            GfxLib_DrawChar(&gfxlibHandle, &testFontCharacters[0], 10, 10, TRUE);
             PCD8544_UpdateScreen(&lcdHandle);
             isButtonPressed = FALSE;
         }
@@ -171,4 +201,9 @@ void GPIO_AppEventCallback(u8 pinNumber)
 {
     if (pinNumber == buttonPin.Config.PinNumber)
         isButtonPressed = TRUE;
+}
+
+void PCD8544_SetPixelColor_Bridge(void* pHandle, u16 posX, u16 posY, u32 color)
+{
+    PCD8544_SetPixelColor((PCD8544_Handle*)pHandle, color? TRUE : FALSE, posX, posY);
 }

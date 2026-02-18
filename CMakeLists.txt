@@ -14,12 +14,14 @@ add_compile_options(
 include_directories(
     Inc
     Drivers/Inc
+    Libs/GfxLib
 )
 
 file(GLOB_RECURSE SOURCES
     Src/*.c
     Drivers/Src/*.c
     Startup/*.s
+    Libs/GfxLib/*.c
 )
 
 add_executable(${PROJECT_NAME}.elf ${SOURCES})
