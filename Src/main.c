@@ -133,31 +133,73 @@ int main(void)
         .pLedPin = &lcdBacklightPin,
         .pVccPin = NULL
     };
-
-    const u8 BitMapA[] = {
-        0x7A,
-        0x18,
-        0x7F,
-        0x86,
-        0x10
-    };
-
-    GfxLib_FontChar testFontCharacters[] = {
-        (GfxLib_FontChar){      // A
-            .Width = 6,
-            .Height = 6,
-            .pBitMap = BitMapA
-        }
-    };
     
-    GfxLib_Font testFont = (GfxLib_Font){
-        .CharCount = 1,
-        .pFontChars = testFontCharacters
+    const uint8_t bitmap_A[] = {0x7A, 0x18, 0x7F, 0x86, 0x10};
+    const uint8_t bitmap_B[] = {0xFA, 0x1F, 0xA1, 0x87, 0xE0};
+    const uint8_t bitmap_C[] = {0x7A, 0x18, 0x20, 0x85, 0xE0};
+    const uint8_t bitmap_D[] = {0xF2, 0x28, 0x61, 0x8B, 0xC0};
+    const uint8_t bitmap_E[] = {0xFE, 0x0F, 0x20, 0x83, 0xF0};
+    const uint8_t bitmap_F[] = {0xFE, 0x0F, 0x20, 0x82, 0x00};
+    const uint8_t bitmap_G[] = {0x7A, 0x18, 0x27, 0x85, 0xE0};
+    const uint8_t bitmap_H[] = {0x86, 0x1F, 0xE1, 0x86, 0x10};
+    const uint8_t bitmap_I[] = {0xFC, 0xC3, 0x0C, 0x33, 0xF0};
+    const uint8_t bitmap_J[] = {0x1C, 0x20, 0x82, 0x89, 0xC0};
+    const uint8_t bitmap_K[] = {0x8E, 0x6E, 0x26, 0x8E, 0x10};
+    const uint8_t bitmap_L[] = {0x82, 0x08, 0x20, 0x83, 0xF0};
+    const uint8_t bitmap_M[] = {0x87, 0x3B, 0x61, 0x86, 0x10};
+    const uint8_t bitmap_N[] = {0x87, 0x1A, 0x65, 0x8E, 0x10};
+    const uint8_t bitmap_O[] = {0x7A, 0x18, 0x61, 0x85, 0xE0};
+    const uint8_t bitmap_P[] = {0xFA, 0x18, 0x7E, 0x82, 0x00};
+    const uint8_t bitmap_Q[] = {0x7A, 0x18, 0x61, 0x89, 0xD0};
+    const uint8_t bitmap_R[] = {0xFA, 0x18, 0x7E, 0x8E, 0x10};
+    const uint8_t bitmap_S[] = {0x7A, 0x18, 0x1E, 0x07, 0xE0};
+    const uint8_t bitmap_T[] = {0xFC, 0x82, 0x08, 0x20, 0x80};
+    const uint8_t bitmap_U[] = {0x86, 0x18, 0x61, 0x85, 0xE0};
+    const uint8_t bitmap_V[] = {0x86, 0x18, 0x52, 0x48, 0xC0};
+    const uint8_t bitmap_W[] = {0x86, 0x18, 0x6D, 0xCE, 0x10};
+    const uint8_t bitmap_X[] = {0x85, 0x23, 0x0C, 0x4A, 0x10};
+    const uint8_t bitmap_Y[] = {0x86, 0x14, 0x8C, 0x30, 0xC0};
+    const uint8_t bitmap_Z[] = {0xFC, 0x63, 0x18, 0xC3, 0xF0};
+
+    const uint8_t* basicFontBitMaps[] = {
+        bitmap_A,
+        bitmap_B,
+        bitmap_C,
+        bitmap_D,
+        bitmap_E,
+        bitmap_F,
+        bitmap_G,
+        bitmap_H,
+        bitmap_I,
+        bitmap_J,
+        bitmap_K,
+        bitmap_L,
+        bitmap_M,
+        bitmap_N,
+        bitmap_O,
+        bitmap_P,
+        bitmap_Q,
+        bitmap_R,
+        bitmap_S,
+        bitmap_T,
+        bitmap_U,
+        bitmap_V,
+        bitmap_W,
+        bitmap_X,
+        bitmap_Y,
+        bitmap_Z
+    };
+
+    GfxLib_Font basicFont = (GfxLib_Font){
+        .ppCharBitmaps = basicFontBitMaps,
+        .CharCount = sizeof(basicFontBitMaps) / sizeof(basicFontBitMaps[0]),
+        .CharHeight = 6,
+        .CharWidth = 6,
+        .StartChar = 'A'
     };
     
     GfxLib_Handle gfxlibHandle = (GfxLib_Handle){
-        .FontCount = 1,
-        .pFonts = &testFont,
+        .pFont = &basicFont,
         .DrawPixelFunc = PCD8544_SetPixelColor_Bridge,
         .pDisplayHandle = &lcdHandle
     };
@@ -181,11 +223,17 @@ int main(void)
     PCD8544_FillScreenColor(&lcdHandle, FALSE);
     PCD8544_UpdateScreen(&lcdHandle);
 
+    u8 isDrawn = FALSE;
     while (TRUE)
     {
         if (isButtonPressed)
         {
-            GfxLib_DrawChar(&gfxlibHandle, &testFontCharacters[0], 10, 10, TRUE);
+            isDrawn = !isDrawn;
+            GfxLib_DrawChar(&gfxlibHandle, 'A', 10, 2, isDrawn);
+            GfxLib_DrawString(&gfxlibHandle, "AAAAAA", 10, 10, isDrawn);
+            GfxLib_DrawChar(&gfxlibHandle, 'E', 10, 18, isDrawn);
+            GfxLib_DrawString(&gfxlibHandle, "ABCDEFGHIJKLM", 0, 26, isDrawn);
+            GfxLib_DrawString(&gfxlibHandle, "NOPQRSTUVWXYZ", 0, 34, isDrawn);
             PCD8544_UpdateScreen(&lcdHandle);
             isButtonPressed = FALSE;
         }
