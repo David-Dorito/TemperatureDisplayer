@@ -162,9 +162,8 @@ int main(void)
         if (isButtonPressed)
         {
             isDrawn = !isDrawn;
-            GfxLib_DrawString(&gfxlibHandle, "TEMPERATURE:", 6, 2, isDrawn);
-            GfxLib_DrawString(&gfxlibHandle, "23.75*C", 18, 10, isDrawn);
-            GfxLib_DrawString(&gfxlibHandle, "HELLO TEAM!", 4, 34, isDrawn);
+            GfxLib_DrawString(&gfxlibHandle, "TEMPERATURE:", 2, 12, isDrawn);
+            GfxLib_DrawString(&gfxlibHandle, "23.75*C", 18, 20, isDrawn);
             PCD8544_UpdateScreen(&lcdHandle);
             isButtonPressed = FALSE;
         }

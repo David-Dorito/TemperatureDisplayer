@@ -127,5 +127,6 @@ GfxLib_Font basicFont = (GfxLib_Font){
     .CharCount = sizeof(basicFontBitMaps) / sizeof(basicFontBitMaps[0]),
     .CharHeight = 6,
     .CharWidth = 6,
+    .CharSpacing = 1,
     .StartChar = ' '
 };

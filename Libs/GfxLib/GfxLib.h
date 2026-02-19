@@ -8,6 +8,7 @@ typedef struct {
     uint16_t CharCount;
     uint16_t CharWidth;
     uint16_t CharHeight;
+    uint8_t CharSpacing;
     char StartChar;
 } GfxLib_Font;
 
