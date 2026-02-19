@@ -15,6 +15,7 @@ include_directories(
     Inc
     Drivers/Inc
     Libs/GfxLib
+    Inc/
 )
 
 file(GLOB_RECURSE SOURCES
@@ -22,6 +23,7 @@ file(GLOB_RECURSE SOURCES
     Drivers/Src/*.c
     Startup/*.s
     Libs/GfxLib/*.c
+    Inc/*.c
 )
 
 add_executable(${PROJECT_NAME}.elf ${SOURCES})

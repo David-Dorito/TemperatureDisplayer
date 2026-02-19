@@ -1,5 +1,13 @@
 #include "Fonts.h"
 
+static const uint8_t basicFont_bitmap_spaceSymbol[] = {0x00, 0x00, 0x00, 0x00, 0x00};
+static const uint8_t basicFont_bitmap_exclamationSymbol[] = {0x30, 0xC3, 0x0C, 0x00, 0xC0};
+static const uint8_t basicFont_bitmap_quotationSymbol[] = {0x51, 0x40, 0x00, 0x00, 0x00};
+static const uint8_t basicFont_bitmap_hashtagSymbol[] = {0x4B, 0xF4, 0x92, 0xFD, 0x20};
+static const uint8_t basicFont_bitmap_dollarSymbol[] = {0x21, 0xFA, 0x1E, 0x27, 0xE0};
+static const uint8_t basicFont_bitmap_percentSymbol[] = {0xC7, 0x21, 0x08, 0x4E, 0x30};
+static const uint8_t basicFont_bitmap_andSymbol[] = {0x72, 0x27, 0x12, 0x89, 0xD0};
+static const uint8_t basicFont_bitmap_apostropheSymbol[] = {0x63, 0x00, 0x00, 0x00, 0x00};
 static const uint8_t basicFont_bitmap_leftParenthesesSymbol[] = {0x60, 0x40, 0x82, 0x11, 0x80};
 static const uint8_t basicFont_bitmap_rightParenthesesSymbol[] = {0x18, 0x84, 0x10, 0x20, 0x60};
 static const uint8_t basicFont_bitmap_asteriskSymbol[] = {0x50, 0x85, 0x00, 0x00, 0x00};
@@ -53,6 +61,14 @@ static const uint8_t basicFont_bitmap_Y[] = {0x86, 0x14, 0x8C, 0x30, 0xC0};
 static const uint8_t basicFont_bitmap_Z[] = {0xFC, 0x63, 0x18, 0xC3, 0xF0};
 
 static const uint8_t* basicFontBitMaps[] = {
+    basicFont_bitmap_spaceSymbol,
+    basicFont_bitmap_exclamationSymbol,
+    basicFont_bitmap_quotationSymbol,
+    basicFont_bitmap_hashtagSymbol,
+    basicFont_bitmap_dollarSymbol,
+    basicFont_bitmap_percentSymbol,
+    basicFont_bitmap_andSymbol,
+    basicFont_bitmap_apostropheSymbol,
     basicFont_bitmap_leftParenthesesSymbol,
     basicFont_bitmap_rightParenthesesSymbol,
     basicFont_bitmap_asteriskSymbol,
@@ -111,5 +127,5 @@ GfxLib_Font basicFont = (GfxLib_Font){
     .CharCount = sizeof(basicFontBitMaps) / sizeof(basicFontBitMaps[0]),
     .CharHeight = 6,
     .CharWidth = 6,
-    .StartChar = ')'
+    .StartChar = ' '
 };
