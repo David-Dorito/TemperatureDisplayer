@@ -1,6 +1,8 @@
 #ifndef USER_BOARD_CLOCKS_H_
 #define USER_BOARD_CLOCKS_H_
 
+#include <stdint.h>
+
 #ifndef THOUSAND
     #define THOUSAND            1000U
 #endif
@@ -43,6 +45,6 @@
         but it should have a tolerance of max 75%
   
 \**************************************/
-void UnpreciseDelay(u32 millisecondsDelay);
+void UnpreciseDelay(uint32_t millisecondsDelay);
 
 #endif

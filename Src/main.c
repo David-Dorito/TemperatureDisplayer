@@ -22,6 +22,8 @@
 \*************************************/
 
 void PCD8544_SetPixelColor_Bridge(void* pHandle, u16 posX, u16 posY, u32 color);
+void SPI_TransmitData_Bridge(void* pSpiHandle, u8* pTxBuffer, u16 len);
+void GPIO_WritePin_Bridge(void* pHandle, u8 isEnabled);
 
 GPIO_Handle buttonPin = (GPIO_Handle){
     .pGPIOx = GPIOA,
@@ -128,7 +130,10 @@ int main(void)
         .pDcPin = &lcdDcPin,
         .pResPin = &lcdResetPin,
         .pLedPin = &lcdBacklightPin,
-        .pVccPin = NULL
+        .pVccPin = NULL,
+        .SPI_TransmitData = SPI_TransmitData_Bridge,
+        .GPIO_WritePin = GPIO_WritePin_Bridge,
+        .Delay = UnpreciseDelay
     };
     
     GfxLib_Handle gfxlibHandle = (GfxLib_Handle){
@@ -184,4 +189,14 @@ void GPIO_AppEventCallback(u8 pinNumber)
 void PCD8544_SetPixelColor_Bridge(void* pHandle, u16 posX, u16 posY, u32 color)
 {
     PCD8544_SetPixelColor((PCD8544_Handle*)pHandle, color? TRUE : FALSE, posX, posY);
+}
+
+void SPI_TransmitData_Bridge(void* pHandle, u8* pTxBuffer, u16 len)
+{
+    SPI_TransmitData((SPI_Handle*)pHandle, pTxBuffer, len);
+}
+
+void GPIO_WritePin_Bridge(void* pHandle, u8 isEnabled)
+{
+    GPIO_WritePin((GPIO_Handle*)pHandle, isEnabled);
 }
