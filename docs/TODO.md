@@ -7,7 +7,7 @@
 4. [ ] Implement USART drivers
 5. [X] Implement Pcd8544 drivers
 6. [~] Implement Graphics library (technically not drivers)
-6. [ ] Implement Mcp9808 drivers
+6. [~] Implement Mcp9808 drivers
 
 ## Application Layer
 1. [X] Configure GPIO button with external interrupt (EXTI)

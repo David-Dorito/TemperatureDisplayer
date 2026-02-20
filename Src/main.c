@@ -3,14 +3,17 @@
 #include "../Drivers/Inc/stm32f401xx.h"
 #include "../Drivers/Inc/stm32f401xx_gpio_driver.h"
 #include "../Drivers/Inc/stm32f401xx_spi_driver.h"
+#include "../Drivers/Inc/stm32f401xx_i2c_driver.h"
 #include "../Drivers/Inc/pcd8544_driver.h"
+#include "../Drivers/Inc/mcp9808_driver.h"
 #include "../Drivers/Inc/stm32f401xx_clocks.h"
 #include "../Libs/Gfxlib/GfxLib.h"
 #include "../Inc/Fonts.h"
 
 /*************************************\
   
-  Vcc  -> LCD Vcc
+  GND  -> LCD, Sensor GND
+  3V3  -> LCD, Sensor Vcc
   PA01 -> LCD Reset
   PA02 -> LCD Chip select
   PA03 -> LCD Data/Command select
@@ -18,8 +21,12 @@
   PA07 -> LCD Spi MOSI
   PA09 -> LCD Backlight through a 220 to 330 Ohm resistor
   PA10 -> GND over a button
+  PB08 -> Sensor SCL
+  PB09 -> Sensor SDA
   
 \*************************************/
+
+#define I2C_OWNADDR         0x2E
 
 void PCD8544_SetPixelColor_Bridge(void* pHandle, u16 posX, u16 posY, u32 color);
 void SPI_TransmitData_Bridge(void* pSpiHandle, u8* pTxBuffer, u16 len);
@@ -120,6 +127,44 @@ int main(void)
             .RtFtDetect = GPIO_RTFTDETECT_NONE
         }
     };
+    
+    I2C_Handle sensorI2cHandle = (I2C_Handle){
+        .pI2Cx = I2C1,
+        .Config = (I2C_Config){
+            .DefaultAckCtrl = I2C_DEFAULTACKCTRL_EN,
+            .FMDutyCycle = I2C_FMDUTYCYCLE_2BY1,
+            .OwnAddr = I2C_OWNADDR,
+            .OwnAddrMode = I2C_OWNADDRMODE_7BIT,
+            .SclSpeed = I2C_SCLSPEED_STD,
+            .SclStretching = I2C_SCLSTRETCHING_EN
+        }
+    };
+    
+    GPIO_Handle sensorSdaPin = (GPIO_Handle){
+        .pGPIOx = GPIOB,
+        .Config = (GPIO_Config){
+            .PinNumber = 9,
+            .PinMode = GPIO_PINMODE_ALTFUN,
+            .AltFunNumber = 4,
+            .OpSpeed = GPIO_OPSPEED_MED,
+            .OpType = GPIO_OPTYPE_OD,
+            .PupdCtrl = GPIO_PUPDCTRL_NOPUPD,
+            .RtFtDetect = GPIO_RTFTDETECT_NONE
+        }
+    };
+
+    GPIO_Handle sensorSclPin = (GPIO_Handle){
+        .pGPIOx = GPIOB,
+        .Config = (GPIO_Config){
+            .PinNumber = 8,
+            .PinMode = GPIO_PINMODE_ALTFUN,
+            .AltFunNumber = 4,
+            .OpSpeed = GPIO_OPSPEED_MED,
+            .OpType = GPIO_OPTYPE_OD,
+            .PupdCtrl = GPIO_PUPDCTRL_NOPUPD,
+            .RtFtDetect = GPIO_RTFTDETECT_NONE
+        }
+    };
 
     u8 pLcdFrameBuffer[PCD8544_SCREEN_SIZE] = {0};
 
@@ -145,15 +190,21 @@ int main(void)
     SYSCFG_PCLK_EN();
     IRQ_ItCtrl(IRQ_NO_EXTI15_10, ENABLE);
     
+    GPIO_Init(&buttonPin);
+
     GPIO_Init(&lcdResetPin);
     GPIO_Init(&lcdSelectPin);
     GPIO_Init(&lcdDcPin);
     GPIO_Init(&lcdMosiPin);
     GPIO_Init(&lcdSckPin);
     GPIO_Init(&lcdBacklightPin);
-    GPIO_Init(&buttonPin);
+
+    GPIO_Init(&sensorSclPin);
+    GPIO_Init(&sensorSdaPin);
     
     SPI_Init(&lcdSpiHandle);
+    
+    I2C_Init(&sensorI2cHandle);
     
     PCD8544_Init(&lcdHandle);
     PCD8544_SetBacklight(&lcdHandle, ENABLE);

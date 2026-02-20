@@ -1,5 +1,4 @@
 #include "../Inc/pcd8544_driver.h"
-#include "../Inc/stm32f401xx_clocks.h"
 #include <stddef.h>
 
 #define HIGH                                1
@@ -18,16 +17,16 @@ typedef uint32_t                            u32;
 typedef uint16_t                            u16;
 typedef uint8_t                             u8;
 
-#define SET_XADDR_0         0b10000000
-#define SET_YADDR_0         0b01000000
-#define SET_POWERDOWN       0b00100100
-#define SET_POWERUP         0b00100000
-#define SET_EXTENDINST      0b00100001
-#define SET_BASICINST       0b00100000
-#define SET_VOP             0b10000000
-#define SET_TC              0b00000100
-#define SET_DISPLAYMODE     0b00001000
-#define SET_BIAS_1_48       0b00010011
+#define SET_XADDR_0                         0b10000000
+#define SET_YADDR_0                         0b01000000
+#define SET_POWERDOWN                       0b00100100
+#define SET_POWERUP                         0b00100000
+#define SET_EXTENDINST                      0b00100001
+#define SET_BASICINST                       0b00100000
+#define SET_VOP                             0b10000000
+#define SET_TC                              0b00000100
+#define SET_DISPLAYMODE                     0b00001000
+#define SET_BIAS_1_48                       0b00010011
 
 /*************************************\
   fn: @PCD8544_Init
