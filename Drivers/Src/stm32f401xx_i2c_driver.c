@@ -4,8 +4,8 @@
 #define I2C_SCLFREQ_STD     100U*THOUSAND
 #define I2C_SCLFREQ_FAST    400U*THOUSAND
 
-#define I2C_TRISE_MAX_STD   (1000e-9)
-#define I2C_TRISE_MAX_FAST  (300e-9)
+#define I2C_TRISE_MAX_STD   1000U
+#define I2C_TRISE_MAX_FAST  300U
 
 static u32 GetApb1ClkFreq();
 
@@ -44,9 +44,9 @@ void I2C_Init(I2C_Handle* pI2cHandle)
     pI2cHandle->pI2Cx->CR1 &= ~(1U << I2C_CR1_NOSTRETCH);
     pI2cHandle->pI2Cx->CR1 |= (pI2cHandle->Config.SclStretching << I2C_CR1_NOSTRETCH);
     
-    u8 Apb1ClkFreq = GetApb1ClkFreq() / MILLION;
+    u32 Apb1ClkFreq = GetApb1ClkFreq();
     pI2cHandle->pI2Cx->CR2 &= ~(0b111111 << I2C_CR2_FREQ);
-    pI2cHandle->pI2Cx->CR2 |= (Apb1ClkFreq << I2C_CR2_FREQ);
+    pI2cHandle->pI2Cx->CR2 |= (Apb1ClkFreq / MILLION << I2C_CR2_FREQ);
     
     if (pI2cHandle->Config.OwnAddrMode == I2C_OWNADDRMODE_7BIT)
     {
@@ -59,42 +59,45 @@ void I2C_Init(I2C_Handle* pI2cHandle)
         pI2cHandle->pI2Cx->OAR1 |= (pI2cHandle->Config.OwnAddr << I2C_OAR1_ADD0);
     }
 
-    pI2cHandle->pI2Cx->CCR &= ~(1U << I2C_CCR_FS);
-    pI2cHandle->pI2Cx->CCR |= (pI2cHandle->Config.SclSpeed << I2C_CCR_FS);
-
-    pI2cHandle->pI2Cx->CCR &= ~(1U << I2C_CCR_DUTY);
-    pI2cHandle->pI2Cx->CCR |= (pI2cHandle->Config.FMDutyCycle << I2C_CCR_DUTY);
-    
-    u8 t_scl;
-    u8 t_pclk1 = 1 / Apb1ClkFreq;
+    u32 ccrValue;
     if (pI2cHandle->Config.SclSpeed == I2C_SCLSPEED_STD)
     {
-        t_scl = 1 / I2C_SCLFREQ_STD;
+        pI2cHandle->pI2Cx->CCR &= ~(1 << I2C_CCR_FS);       
         
-        pI2cHandle->pI2Cx->CCR &= ~(0b111111111111 << I2C_CCR_CCR);
-        pI2cHandle->pI2Cx->CCR |= ((t_scl / (2 * t_pclk1)) << I2C_CCR_CCR);
+        ccrValue = Apb1ClkFreq / (2 * I2C_SCLFREQ_STD);
+
+        pI2cHandle->pI2Cx->CCR &= ~(0xFFF);
+
+        pI2cHandle->pI2Cx->CCR |= (ccrValue & 0xFFF);
     }
-    else if (pI2cHandle->Config.SclSpeed == I2C_SCLSPEED_FAST)
+    else
     {
-        t_scl = 1 / I2C_SCLFREQ_FAST;
+        pI2cHandle->pI2Cx->CCR |= (1 << I2C_CCR_FS);
+
         if (pI2cHandle->Config.FMDutyCycle == I2C_FMDUTYCYCLE_2BY1)
         {
-            pI2cHandle->pI2Cx->CCR &= ~(0b111111111111 << I2C_CCR_CCR);
-            pI2cHandle->pI2Cx->CCR |= ((t_scl / (3 * t_pclk1)) << I2C_CCR_CCR);
-        }
-        else if (pI2cHandle->Config.FMDutyCycle == I2C_FMDUTYCYCLE_16BY9)
-        {
-            pI2cHandle->pI2Cx->CCR &= ~(0b111111111111 << I2C_CCR_CCR);            
-            pI2cHandle->pI2Cx->CCR |= ((t_scl / (25 * t_pclk1)) << I2C_CCR_CCR);
-        }
-    }
-    // TODO: Add checks to make sure the t_low and t_high cant be over or under the limit because of APB1 clk freq
+            pI2cHandle->pI2Cx->CCR &= ~(1 << I2C_CCR_DUTY);
 
-    pI2cHandle->pI2Cx->TRISE &= ~(0b111111);
+            ccrValue = Apb1ClkFreq / (3 * I2C_SCLFREQ_FAST);
+        }
+        else
+        {
+            pI2cHandle->pI2Cx->CCR |= (1 << I2C_CCR_DUTY);
+
+            ccrValue = Apb1ClkFreq / (25 * I2C_SCLFREQ_FAST);
+        }
+
+        pI2cHandle->pI2Cx->CCR &= ~(0xFFF);
+
+        pI2cHandle->pI2Cx->CCR |= (ccrValue & 0xFFF);
+    }
+    
+    u32 trise;
     if (pI2cHandle->Config.SclSpeed == I2C_SCLSPEED_STD)
-        pI2cHandle->pI2Cx->TRISE |= (u32)((I2C_TRISE_MAX_STD / t_pclk1) + 1);
+        trise = ((Apb1ClkFreq * I2C_TRISE_MAX_STD) / 1000000000U) + 1U;
     else
-        pI2cHandle->pI2Cx->TRISE |= (u32)((I2C_TRISE_MAX_FAST / t_pclk1) + 1);
+        trise = ((Apb1ClkFreq * I2C_TRISE_MAX_FAST) / 1000000000U) + 1U;
+    pI2cHandle->pI2Cx->TRISE = trise;
     
     // TODO: add i2c interrupt support
 }

@@ -36,6 +36,7 @@ void SPI_TransmitData_Bridge(void* pSpiHandle, u8* pTxBuffer, u16 len);
 void GPIO_WritePin_Bridge(void* pHandle, u8 isEnabled);
 void I2C_MasterTransmitData_Bridge(void* pI2cHandle, u16 slaveAddr, u8 addrMode, uint8_t* pTxBuffer, u16 len);
 void I2C_MasterReceiveData_Bridge(void* pI2cHandle, u16 slaveAddr, u8 addrMode, uint8_t* pRxBuffer, u16 len);
+void FloatToString(float value, char *buffer, int decimals);
 
 GPIO_Handle buttonPin = (GPIO_Handle){
     .pGPIOx = GPIOA,
@@ -241,10 +242,12 @@ int main(void)
         if (isButtonPressed)
         {
             float temperature = MCP9808_GetTemperature(&sensorHandle);
+            char temperatureString[16] = "";
+            FloatToString(temperature, temperatureString, 4);
             
             PCD8544_FillScreenColor(&lcdHandle, WHITE);
             GfxLib_DrawString(&gfxlibHandle, "TEMPERATURE:", 2, 12, BLACK);
-            GfxLib_DrawString(&gfxlibHandle, "23.75*C", 18, 20, BLACK);
+            GfxLib_DrawString(&gfxlibHandle, temperatureString, 18, 20, BLACK);
             PCD8544_UpdateScreen(&lcdHandle);
             
             isButtonPressed = FALSE;
@@ -286,4 +289,53 @@ void I2C_MasterTransmitData_Bridge(void* pI2cHandle, u16 slaveAddr, u8 addrMode,
 void I2C_MasterReceiveData_Bridge(void* pI2cHandle, u16 slaveAddr, u8 addrMode, uint8_t* pRxBuffer, u16 len)
 {
     I2C_MasterReceiveData((I2C_Handle*)pI2cHandle, slaveAddr, addrMode, pRxBuffer, len);
+}
+
+void FloatToString(float value, char* buffer, int decimals)
+{
+    int i = 0;
+
+    // Handle negative numbers
+    if (value < 0)
+    {
+        buffer[i++] = '-';
+        value = -value;
+    }
+
+    // Integer part
+    int whole = (int)value;
+    float fraction = value - (float)whole;
+
+    // Convert integer part
+    char temp[16];
+    int j = 0;
+
+    if (whole == 0)
+        temp[j++] = '0';
+    else
+        while (whole > 0)
+        {
+            temp[j++] = (whole % 10) + '0';
+            whole /= 10;
+        }
+
+    // Reverse integer digits
+    for (int k = j - 1; k >= 0; k--)
+        buffer[i++] = temp[k];
+
+    // Decimal point
+    if (decimals > 0)
+    {
+        buffer[i++] = '.';
+
+        for (int d = 0; d < decimals; d++)
+        {
+            fraction *= 10;
+            int digit = (int)fraction;
+            buffer[i++] = digit + '0';
+            fraction -= digit;
+        }
+    }
+
+    buffer[i] = '\0';
 }
