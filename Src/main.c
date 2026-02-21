@@ -26,11 +26,16 @@
   
 \*************************************/
 
+#define WHITE               0
+#define BLACK               1
+
 #define I2C_OWNADDR         0x2E
 
 void PCD8544_SetPixelColor_Bridge(void* pHandle, u16 posX, u16 posY, u32 color);
 void SPI_TransmitData_Bridge(void* pSpiHandle, u8* pTxBuffer, u16 len);
 void GPIO_WritePin_Bridge(void* pHandle, u8 isEnabled);
+void I2C_MasterTransmitData_Bridge(void* pI2cHandle, u16 slaveAddr, u8 addrMode, uint8_t* pTxBuffer, u16 len);
+void I2C_MasterReceiveData_Bridge(void* pI2cHandle, u16 slaveAddr, u8 addrMode, uint8_t* pRxBuffer, u16 len);
 
 GPIO_Handle buttonPin = (GPIO_Handle){
     .pGPIOx = GPIOA,
@@ -165,6 +170,23 @@ int main(void)
             .RtFtDetect = GPIO_RTFTDETECT_NONE
         }
     };
+    
+    MCP9808_Handle sensorHandle = (MCP9808_Handle){
+        .pI2cHandle = &sensorI2cHandle,
+        .I2C_MasterTransmitData = I2C_MasterTransmitData_Bridge,
+        .I2C_MasterReceiveData = I2C_MasterReceiveData_Bridge,
+        .Config = (MCP9808_Config){
+            .AlertCtrl = DISABLE,
+            .AlertOpMode = MCP9808_ALERTOPMODE_COMPARATOR,
+            .AlertPolarity = LOW,
+            .AlertTrigger = MCP9808_ALERTTRIGGER_ALL,
+            .CritTempTrigger = 120.0f,
+            .HighTempTrigger = 100.0f,
+            .LowTempTrigger = -20.0f,
+            .SlaveAddr = 0x18,
+            .Resolution = MCP9808_RESOLUTION_0125
+        }
+    };
 
     u8 pLcdFrameBuffer[PCD8544_SCREEN_SIZE] = {0};
 
@@ -209,18 +231,22 @@ int main(void)
     PCD8544_Init(&lcdHandle);
     PCD8544_SetBacklight(&lcdHandle, ENABLE);
     
+    MCP9808_Init(&sensorHandle);
+    
     PCD8544_FillScreenColor(&lcdHandle, FALSE);
     PCD8544_UpdateScreen(&lcdHandle);
 
-    u8 isDrawn = FALSE;
     while (TRUE)
     {
         if (isButtonPressed)
         {
-            isDrawn = !isDrawn;
-            GfxLib_DrawString(&gfxlibHandle, "TEMPERATURE:", 2, 12, isDrawn);
-            GfxLib_DrawString(&gfxlibHandle, "23.75*C", 18, 20, isDrawn);
+            float temperature = MCP9808_GetTemperature(&sensorHandle);
+            
+            PCD8544_FillScreenColor(&lcdHandle, WHITE);
+            GfxLib_DrawString(&gfxlibHandle, "TEMPERATURE:", 2, 12, BLACK);
+            GfxLib_DrawString(&gfxlibHandle, "23.75*C", 18, 20, BLACK);
             PCD8544_UpdateScreen(&lcdHandle);
+            
             isButtonPressed = FALSE;
         }
     }
@@ -250,4 +276,14 @@ void SPI_TransmitData_Bridge(void* pHandle, u8* pTxBuffer, u16 len)
 void GPIO_WritePin_Bridge(void* pHandle, u8 isEnabled)
 {
     GPIO_WritePin((GPIO_Handle*)pHandle, isEnabled);
+}
+
+void I2C_MasterTransmitData_Bridge(void* pI2cHandle, u16 slaveAddr, u8 addrMode, uint8_t* pTxBuffer, u16 len)
+{
+    I2C_MasterTransmitData((I2C_Handle*)pI2cHandle, slaveAddr, addrMode, pTxBuffer, len);
+}
+
+void I2C_MasterReceiveData_Bridge(void* pI2cHandle, u16 slaveAddr, u8 addrMode, uint8_t* pRxBuffer, u16 len)
+{
+    I2C_MasterReceiveData((I2C_Handle*)pI2cHandle, slaveAddr, addrMode, pRxBuffer, len);
 }

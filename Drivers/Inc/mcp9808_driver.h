@@ -3,19 +3,24 @@
 
 #include <stdint.h>
 
-#define MCP9808_RESOLUTION_05           0b00
-#define MCP9808_RESOLUTION_025          0b01
-#define MCP9808_RESOLUTION_0125         0b10
-#define MCP9808_RESOLUTION_00625        0b11
+#define MCP9808_RESOLUTION_05           0
+#define MCP9808_RESOLUTION_025          1
+#define MCP9808_RESOLUTION_0125         2
+#define MCP9808_RESOLUTION_00625        3
 
-#define MCP9808_ALTERTRIGGER_ALL        0
-#define MCP9808_ALTERTRIGGER_CRITONLY   1
+#define MCP9808_ALERTTRIGGER_ALL        0
+#define MCP9808_ALERTTRIGGER_CRITONLY   1
 
 #define MCP9808_ALERTOPMODE_COMPARATOR  0
 #define MCP9808_ALERTOPMODE_INTERRUPT   1
 
 #define MCP9808_ALERTPOLARITY_LOW       0
 #define MCP9808_ALERTPOLARITY_HIGH      1
+
+#define MCP9808_ALERTHYSTERESIS_0_0     0
+#define MCP9808_ALERTHYSTERESIS_1_5     1
+#define MCP9808_ALERTHYSTERESIS_3_0     2
+#define MCP9808_ALERTHYSTERESIS_6_0     3
 
 typedef struct {
     float LowTempTrigger;
@@ -25,6 +30,7 @@ typedef struct {
     uint8_t AlertTrigger;
     uint8_t AlertOpMode;
     uint8_t AlertPolarity;
+    uint8_t AlertHysteresis;
     uint8_t SlaveAddr;
     uint8_t Resolution;
 } MCP9808_Config;
