@@ -31,29 +31,44 @@ typedef uint8_t                 u8;
 #define I2C_ADDRMODE_7BIT       0
 
 static u16 FloatToReg(float temp, uint8_t res);
-static float ResToFloat(uint8_t res);
+static u8 GetHighByte(uint16_t reg);
+static u8 GetLowByte(u16 reg);
 
 void MCP9808_Init(MCP9808_Handle* pMcp9808Handle)
 {
-    u16 commands[5] = {0};
+    u8 commands[3] = {0};
     
-    // register pointer
-    commands[0] = REG_CONFIG;
-
     // config register
-    commands[1] |= pMcp9808Handle->Config.AlertOpMode & 0b1;
-    commands[1] |= pMcp9808Handle->Config.AlertPolarity & 0b1;
-    commands[1] |= pMcp9808Handle->Config.AlertTrigger & 0b1;
-    commands[1] |= pMcp9808Handle->Config.AlertCtrl & 0b1;
-    commands[1] |= pMcp9808Handle->Config.AlertHysteresis & 0b11;
+    u16 configReg = 0;
+    configReg |= ((pMcp9808Handle->Config.AlertOpMode & 0b1) << CONFIG_ALERTMOD);
+    configReg |= ((pMcp9808Handle->Config.AlertPolarity & 0b1) << CONFIG_ALERTPOL);
+    configReg |= ((pMcp9808Handle->Config.AlertTrigger & 0b1) << CONFIG_ALERTSEL);
+    configReg |= ((pMcp9808Handle->Config.AlertCtrl & 0b1) << CONFIG_ALERTCNT);
+    configReg |= ((pMcp9808Handle->Config.AlertHysteresis & 0b11) << CONFIG_THYST);
+    
+    commands[0] = REG_CONFIG;
+    commands[1] = GetHighByte(configReg);
+    commands[2] = GetLowByte(configReg);
+    pMcp9808Handle->I2C_MasterTransmitData(pMcp9808Handle->pI2cHandle, pMcp9808Handle->Config.SlaveAddr, I2C_ADDRMODE_7BIT, commands, sizeof(commands)/sizeof(commands[0]));
     
     // T_upper, T_lower, T_crit registers
-    commands[2] = FloatToReg(pMcp9808Handle->Config.HighTempTrigger, pMcp9808Handle->Config.Resolution);
-    commands[3] = FloatToReg(pMcp9808Handle->Config.LowTempTrigger, pMcp9808Handle->Config.Resolution);
-    commands[4] = FloatToReg(pMcp9808Handle->Config.CritTempTrigger, pMcp9808Handle->Config.Resolution);
-    
-    // write registers
-    pMcp9808Handle->I2C_MasterTransmitData(pMcp9808Handle->pI2cHandle, pMcp9808Handle->Config.SlaveAddr, I2C_ADDRMODE_7BIT, (u8*)commands, sizeof(commands)/sizeof(commands[0]));
+    u16 floatAsReg = FloatToReg(pMcp9808Handle->Config.HighTempTrigger, pMcp9808Handle->Config.Resolution);;
+    commands[0] = REG_UPPERBOUND;
+    commands[1] = GetHighByte(floatAsReg);
+    commands[2] = GetLowByte(floatAsReg);
+    pMcp9808Handle->I2C_MasterTransmitData(pMcp9808Handle->pI2cHandle, pMcp9808Handle->Config.SlaveAddr, I2C_ADDRMODE_7BIT, commands, sizeof(commands)/sizeof(commands[0]));
+
+    floatAsReg = FloatToReg(pMcp9808Handle->Config.LowTempTrigger, pMcp9808Handle->Config.Resolution);
+    commands[0] = REG_LOWERBOUND;
+    commands[1] = GetHighByte(floatAsReg);
+    commands[2] = GetLowByte(floatAsReg);
+    pMcp9808Handle->I2C_MasterTransmitData(pMcp9808Handle->pI2cHandle, pMcp9808Handle->Config.SlaveAddr, I2C_ADDRMODE_7BIT, commands, sizeof(commands)/sizeof(commands[0]));
+
+    floatAsReg = FloatToReg(pMcp9808Handle->Config.CritTempTrigger, pMcp9808Handle->Config.Resolution);
+    commands[0] = REG_CRIT;
+    commands[1] = GetHighByte(floatAsReg);
+    commands[2] = GetLowByte(floatAsReg);
+    pMcp9808Handle->I2C_MasterTransmitData(pMcp9808Handle->pI2cHandle, pMcp9808Handle->Config.SlaveAddr, I2C_ADDRMODE_7BIT, commands, sizeof(commands)/sizeof(commands[0]));
 }
 
 float MCP9808_GetTemperature(MCP9808_Handle* pMcp9808Handle)
@@ -67,12 +82,11 @@ float MCP9808_GetTemperature(MCP9808_Handle* pMcp9808Handle)
     // ^^ get temperature data from temperature register
 
     data = (rxBuffer[0] << 8) | rxBuffer[1]; // swap bytes because MCP9808 transmits MSB first
+    data &= 0x0FFF; //mask out sign bit and alert bits
     if (data & 0x1000)
         data -= 4096;
     
-    data &= 0x0FFF; //mask out sign bit and alert bits
-    
-    return data * pMcp9808Handle->Config.Resolution;
+    return (float)data * 0.0625f;
 
 }
 
@@ -83,7 +97,7 @@ void MCP9808_SetSleepMode(MCP9808_Handle* pMcp9808Handle, uint8_t isEnabled)
 
 static u16 FloatToReg(float temp, uint8_t res)
 {
-    int16_t raw = temp / ResToFloat(res);
+    int16_t raw = temp / 0.0625f;
     if (raw > 0x7FF) raw = 0x7FF;
 
     // Determine how many LSBs are unused
@@ -105,10 +119,12 @@ static u16 FloatToReg(float temp, uint8_t res)
     return (u16)raw;
 }
 
-static float ResToFloat(uint8_t res)
+static u8 GetHighByte(u16 reg)
 {
-    if (res == MCP9808_RESOLUTION_05) return 0.5f;
-    else if (res == MCP9808_RESOLUTION_025) return 0.25f;
-    else if (res == MCP9808_RESOLUTION_0125) return 0.125f;
-    else if (res == MCP9808_RESOLUTION_00625) return 0.0625f;
+    return (u8)(reg >> 8);
+}
+
+static u8 GetLowByte(u16 reg)
+{
+    return (u8)reg;
 }

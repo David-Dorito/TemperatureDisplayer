@@ -38,8 +38,8 @@ void I2C_Init(I2C_Handle* pI2cHandle)
     I2C_PeriphClkCtrl(pI2cHandle, ENABLE);
     I2C_PeriphCtrl(pI2cHandle, DISABLE);
     
-    pI2cHandle->pI2Cx->CR1 &= ~(1U << I2C_CR1_ACK);
-    pI2cHandle->pI2Cx->CR1 |= (pI2cHandle->Config.DefaultAckCtrl << I2C_CR1_ACK);
+    pI2cHandle->pI2Cx->CR1 |= (1U << I2C_CR1_SWRST);
+    pI2cHandle->pI2Cx->CR1 &= ~(1U << I2C_CR1_SWRST);
     
     pI2cHandle->pI2Cx->CR1 &= ~(1U << I2C_CR1_NOSTRETCH);
     pI2cHandle->pI2Cx->CR1 |= (pI2cHandle->Config.SclStretching << I2C_CR1_NOSTRETCH);
@@ -100,6 +100,11 @@ void I2C_Init(I2C_Handle* pI2cHandle)
     pI2cHandle->pI2Cx->TRISE = trise;
     
     // TODO: add i2c interrupt support
+    
+    I2C_PeriphCtrl(pI2cHandle, ENABLE);
+    
+    pI2cHandle->pI2Cx->CR1 &= ~(1U << I2C_CR1_ACK);
+    pI2cHandle->pI2Cx->CR1 |= (pI2cHandle->Config.DefaultAckCtrl << I2C_CR1_ACK);
 }
 
 void I2C_Deinit(I2C_Handle* pI2cHandle)
@@ -111,6 +116,7 @@ void I2C_Deinit(I2C_Handle* pI2cHandle)
 
 void I2C_MasterTransmitData(I2C_Handle* pI2cHandle, u16 slaveAddr, u8 AddrMode, u8* pTxBuffer, u16 len)
 {
+    while (pI2cHandle->pI2Cx->SR2 & I2C_SR2_BUSY);
     u32 tempread;
     pI2cHandle->pI2Cx->CR1 |= (1U << I2C_CR1_START);
     while (!(pI2cHandle->pI2Cx->SR1 & (1U << I2C_SR1_SB)));
@@ -136,27 +142,69 @@ void I2C_MasterTransmitData(I2C_Handle* pI2cHandle, u16 slaveAddr, u8 AddrMode, 
     
     while (!(pI2cHandle->pI2Cx->SR1 & (1U << I2C_SR1_BTF)));
     pI2cHandle->pI2Cx->CR1 |= (1U << I2C_CR1_STOP);
-    while (!(pI2cHandle->pI2Cx->SR1 & (1U << I2C_SR1_STOPF)));
+    
+    while (pI2cHandle->pI2Cx->SR2 & I2C_SR2_BUSY);
 }
 
 void I2C_MasterReceiveData(I2C_Handle* pI2cHandle, u16 slaveAddr, u8 AddrMode, u8* pRxBuffer, u16 len)
 {
+    while (pI2cHandle->pI2Cx->SR2 & I2C_SR2_BUSY);
     u32 tempread;
     pI2cHandle->pI2Cx->CR1 |= (1U << I2C_CR1_START);
     while (!(pI2cHandle->pI2Cx->SR1 & (1U << I2C_SR1_SB)));
-    if (AddrMode == I2C_OWNADDRMODE_7BIT)
+    if (AddrMode == I2C_ADDRMODE_7BIT)
     {
         pI2cHandle->pI2Cx->DR = (((u8)slaveAddr << 1) | 1);
         while (!(pI2cHandle->pI2Cx->SR1 & (1U << I2C_SR1_ADDR)));
-        tempread = pI2cHandle->pI2Cx->SR1;
-        tempread = pI2cHandle->pI2Cx->SR2;
-        (void)tempread;
-        while (len > 0)
+        if (len == 1)
         {
-            while (!(pI2cHandle->pI2Cx->SR1 & (1U << I2C_SR1_RXNE)));
+            pI2cHandle->pI2Cx->CR1 &= ~(1U << I2C_CR1_ACK);
+            
+            tempread = pI2cHandle->pI2Cx->SR1;
+            tempread = pI2cHandle->pI2Cx->SR2;
+            (void)tempread;
+            
+            pI2cHandle->pI2Cx->CR1 |= (1U << I2C_CR1_STOP);
+            
             *pRxBuffer = (u8)pI2cHandle->pI2Cx->DR;
-            pRxBuffer++;
-            len--;
+        }
+        else if (len == 2)
+        {
+            pI2cHandle->pI2Cx->CR1 &= ~(1U << I2C_CR1_ACK);
+            pI2cHandle->pI2Cx->CR1 |= (1U << I2C_CR1_POS);
+            
+            tempread = pI2cHandle->pI2Cx->SR1;
+            tempread = pI2cHandle->pI2Cx->SR2;
+            (void)tempread;
+            
+            while (!(pI2cHandle->pI2Cx->SR1 & (1U << I2C_SR1_BTF)));
+            pI2cHandle->pI2Cx->CR1 |= (1U << I2C_CR1_STOP);
+            
+            pRxBuffer[0] = (u8)pI2cHandle->pI2Cx->DR;
+            pRxBuffer[1] = (u8)pI2cHandle->pI2Cx->DR;
+        }
+        else
+        {
+            pI2cHandle->pI2Cx->CR1 |= (1U << I2C_CR1_ACK);
+
+            tempread = pI2cHandle->pI2Cx->SR1;
+            tempread = pI2cHandle->pI2Cx->SR2;
+            (void)tempread;
+            
+            while (len > 3)
+            {
+                while (!(pI2cHandle->pI2Cx->SR1 & (1U << I2C_SR1_RXNE)));
+                *pRxBuffer = (u8)pI2cHandle->pI2Cx->DR;
+                pRxBuffer++;
+                len--;
+            }
+            while (!(pI2cHandle->pI2Cx->SR1 & (1U << I2C_SR1_BTF)));
+            pI2cHandle->pI2Cx->CR1 &= ~(1U << I2C_CR1_ACK);
+            *pRxBuffer++ = (u8)pI2cHandle->pI2Cx->DR;
+            while (!(pI2cHandle->pI2Cx->SR1 & (1U << I2C_SR1_BTF)));
+            pI2cHandle->pI2Cx->CR1 |= (1U << I2C_CR1_STOP);
+            pRxBuffer[0] = (u8)pI2cHandle->pI2Cx->DR;
+            pRxBuffer[1] = (u8)pI2cHandle->pI2Cx->DR;
         }
     }
     else
@@ -164,9 +212,8 @@ void I2C_MasterReceiveData(I2C_Handle* pI2cHandle, u16 slaveAddr, u8 AddrMode, u
         // TODO: add 10-bit address mode support
     }
     
-    while (!(pI2cHandle->pI2Cx->SR1 & (1U << I2C_SR1_BTF)));
-    pI2cHandle->pI2Cx->CR1 |= (1U << I2C_CR1_STOP);
-    while (!(pI2cHandle->pI2Cx->SR1 & (1U << I2C_SR1_STOPF)));
+    while (pI2cHandle->pI2Cx->SR2 & I2C_SR2_BUSY);
+    pI2cHandle->pI2Cx->CR1 |= (pI2cHandle->Config.DefaultAckCtrl << I2C_CR1_ACK);
 }
 
 /******************************** Helper functions ********************************/

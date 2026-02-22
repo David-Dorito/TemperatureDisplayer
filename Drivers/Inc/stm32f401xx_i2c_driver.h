@@ -6,6 +6,7 @@
 /******************************** BIT DEFINITION MACROS ********************************/
 
 #define I2C_CR1_SWRST                   15
+#define I2C_CR1_POS                     11
 #define I2C_CR1_ACK                     10
 #define I2C_CR1_STOP                    9
 #define I2C_CR1_START                   8
@@ -61,6 +62,9 @@
 //OwnAddrMode
 #define I2C_OWNADDRMODE_7BIT            0
 #define I2C_OWNADDRMODE_10BIT           1
+
+#define I2C_ADDRMODE_7BIT               I2C_OWNADDRMODE_7BIT
+#define I2C_ADDRMODE_10BIT              I2C_OWNADDRMODE_10BIT
 
 //DefaultAckCtrl
 #define I2C_DEFAULTACKCTRL_DI           0
