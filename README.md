@@ -1,32 +1,32 @@
-# **SensorDisplaySystem Project**
+# **TemperatureDisplayer Project**
 
 ## Project Overview
-SensorDisplaySystem is an embedded systems project built on the STM32F401CCU microcontroller.
-The project focuses on bare-metal driver development, with custom drivers written for GPIO, SPI, I²C, PCD8544 display and MCP9808 temperature sensor and used together in a single application.
-
-The project was developed to apply low-level concepts such as direct register access, interrupt handling, and peripheral configuration in a practical system.
+TemperatureDisplayer is a bare-metal firmware project for the STM32F401CCU microcontroller.  
+It reads temperature data from an MCP9808 sensor and displays it on a PCD8544 LCD, using fully custom drivers for GPIO, SPI, and I²C.  
+The project demonstrates low-level peripheral integration and driver development in a single embedded application.
 
 ## System Description
-When a user presses a button, an external interrupt is generated via EXTI and handled by the NVIC.
-Inside the interrupt handler, temperature data is read from a sensor over I²C and transmitted to a display using SPI.
+When a user presses the button, an external interrupt is generated via EXTI and handled by the NVIC.  
+The interrupt sets a flag that the main loop later processes. In the main loop, temperature data is read from the MCP9808 sensor over I²C, rendered using the graphics layer, and sent to the PCD8544 display via SPI.
 
-## Learning Objectives
-This project was used to deepen understanding of microcontroller internals, interrupt systems, and peripheral configuration at the register level.
-Special emphasis was placed on writing maintainable, reusable drivers without relying on vendor abstraction layers.
+## Project Goals
+This project was created to practice low-level microcontroller concepts, including direct register access, interrupt handling, and peripheral configuration.  
+A key objective was to implement reusable drivers which do not rely on vendor HAL libraries.
 
-## Technical Highlights
-- Register-level programming without HAL
-- Custom peripheral drivers with configuration structures and handles
-- Interrupt-driven input handling
-- Integration of GPIO, SPI and I²C in one project
+## Engineering Highlights
+- Structured firmware architecture with explicit separation of concerns  
+  (Peripheral → Device → Graphics → Application)
+- Device drivers and graphics renderer designed for portability with no coupling, using generic interface functions
+- Interrupt-driven input handling for the user button
+- Fully register-level implementation without vendor-provided HAL libraries
 
 ## Hardware Used
 - MCU: **STM32F401CCU**
 - Temperature sensor: **Seeed Studio Grove MCP9808**
-- Display: **PCD8544 84x48 LCD (also known as Noka5110 display)**
+- Display: **PCD8544 84x48 LCD (also known as Nokia 5110 display)**
 
 ## Project status
-This project is currently under development, drivers for the temperature sensor and parts of the graphics library are being implemented.
+The project is currently in its first complete version. Future updates may include improvements and additional features.
 
 ## Cloning, Building and Flashing this project
 ### 1. Prerequisites
