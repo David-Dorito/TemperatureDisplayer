@@ -24,4 +24,4 @@ A key objective was to implement reusable drivers which do not rely on vendor HA
 The project is currently in its first complete version. Future updates may include improvements and additional features.
 
 ## Setup
-For hardware wiring, required components, and flashing instructions, see [Setup.md](Setup.md).
+For hardware wiring, required components, and flashing instructions, see [Setup.md](docs/Setup.md).

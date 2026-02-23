@@ -15,8 +15,9 @@ This document contains the parts list, pinout configuration, schematic and some 
 |   1   | Full sized breadboard   | To place components onto  | You could also use multiple small ones |
 |   1   | ELEGOO Power MB V2      | Voltage regulator         | You can use an alternative if you want |
 
-### Pinout
-*TODO*
+### Schematic
+Below is the wiring schematic for the project:
+![TemperatureDisplayer Schematic](TemperatureDisplayer_v1_schematic.png)
 
 ## Software
 ### Cloning, Building and Flashing this project
