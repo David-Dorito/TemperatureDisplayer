@@ -13,9 +13,13 @@ typedef struct {
 } GfxLib_Font;
 
 typedef struct {
+    void (*DrawPixelFunc)(void* pHandle, uint16_t posX, uint16_t posY, uint32_t color);
+} GfxLib_Transport;
+
+typedef struct {
     GfxLib_Font* pFont;
     void* pDisplayHandle;
-    void (*DrawPixelFunc)(void* pHandle, uint16_t posX, uint16_t posY, uint32_t color);
+    GfxLib_Transport* pTransport;
 } GfxLib_Handle; 
 
 void GfxLib_DrawChar(GfxLib_Handle* pGfxLibHandle, char character, uint16_t posX, uint16_t posY, uint32_t color);

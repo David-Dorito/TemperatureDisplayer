@@ -49,36 +49,36 @@ void MCP9808_Init(MCP9808_Handle* pMcp9808Handle)
     commands[0] = REG_CONFIG;
     commands[1] = GetHighByte(configReg);
     commands[2] = GetLowByte(configReg);
-    pMcp9808Handle->I2C_MasterTransmitData(pMcp9808Handle->pI2cHandle, pMcp9808Handle->Config.SlaveAddr, I2C_ADDRMODE_7BIT, commands, sizeof(commands)/sizeof(commands[0]));
+    pMcp9808Handle->pTransport->I2C_MasterTransmitData(pMcp9808Handle->pI2cHandle, pMcp9808Handle->Config.SlaveAddr, I2C_ADDRMODE_7BIT, commands, sizeof(commands)/sizeof(commands[0]));
     
     // T_upper, T_lower, T_crit registers
     u16 floatAsReg = FloatToReg(pMcp9808Handle->Config.HighTempTrigger, pMcp9808Handle->Config.Resolution);;
     commands[0] = REG_UPPERBOUND;
     commands[1] = GetHighByte(floatAsReg);
     commands[2] = GetLowByte(floatAsReg);
-    pMcp9808Handle->I2C_MasterTransmitData(pMcp9808Handle->pI2cHandle, pMcp9808Handle->Config.SlaveAddr, I2C_ADDRMODE_7BIT, commands, sizeof(commands)/sizeof(commands[0]));
+    pMcp9808Handle->pTransport->I2C_MasterTransmitData(pMcp9808Handle->pI2cHandle, pMcp9808Handle->Config.SlaveAddr, I2C_ADDRMODE_7BIT, commands, sizeof(commands)/sizeof(commands[0]));
 
     floatAsReg = FloatToReg(pMcp9808Handle->Config.LowTempTrigger, pMcp9808Handle->Config.Resolution);
     commands[0] = REG_LOWERBOUND;
     commands[1] = GetHighByte(floatAsReg);
     commands[2] = GetLowByte(floatAsReg);
-    pMcp9808Handle->I2C_MasterTransmitData(pMcp9808Handle->pI2cHandle, pMcp9808Handle->Config.SlaveAddr, I2C_ADDRMODE_7BIT, commands, sizeof(commands)/sizeof(commands[0]));
+    pMcp9808Handle->pTransport->I2C_MasterTransmitData(pMcp9808Handle->pI2cHandle, pMcp9808Handle->Config.SlaveAddr, I2C_ADDRMODE_7BIT, commands, sizeof(commands)/sizeof(commands[0]));
 
     floatAsReg = FloatToReg(pMcp9808Handle->Config.CritTempTrigger, pMcp9808Handle->Config.Resolution);
     commands[0] = REG_CRIT;
     commands[1] = GetHighByte(floatAsReg);
     commands[2] = GetLowByte(floatAsReg);
-    pMcp9808Handle->I2C_MasterTransmitData(pMcp9808Handle->pI2cHandle, pMcp9808Handle->Config.SlaveAddr, I2C_ADDRMODE_7BIT, commands, sizeof(commands)/sizeof(commands[0]));
+    pMcp9808Handle->pTransport->I2C_MasterTransmitData(pMcp9808Handle->pI2cHandle, pMcp9808Handle->Config.SlaveAddr, I2C_ADDRMODE_7BIT, commands, sizeof(commands)/sizeof(commands[0]));
 }
 
 float MCP9808_GetTemperature(MCP9808_Handle* pMcp9808Handle)
 {
     u16 data = REG_TEMP;
-    pMcp9808Handle->I2C_MasterTransmitData(pMcp9808Handle->pI2cHandle, pMcp9808Handle->Config.SlaveAddr, I2C_ADDRMODE_7BIT, (u8*)&data, 1);
+    pMcp9808Handle->pTransport->I2C_MasterTransmitData(pMcp9808Handle->pI2cHandle, pMcp9808Handle->Config.SlaveAddr, I2C_ADDRMODE_7BIT, (u8*)&data, 1);
     // ^^ set register pointer to the temperature register
     
     u8 rxBuffer[2];
-    pMcp9808Handle->I2C_MasterReceiveData(pMcp9808Handle->pI2cHandle, pMcp9808Handle->Config.SlaveAddr, I2C_ADDRMODE_7BIT, rxBuffer, 2);
+    pMcp9808Handle->pTransport->I2C_MasterReceiveData(pMcp9808Handle->pI2cHandle, pMcp9808Handle->Config.SlaveAddr, I2C_ADDRMODE_7BIT, rxBuffer, 2);
     // ^^ get temperature data from temperature register
 
     data = (rxBuffer[0] << 8) | rxBuffer[1]; // swap bytes because MCP9808 transmits MSB first

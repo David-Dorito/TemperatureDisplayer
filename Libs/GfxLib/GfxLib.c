@@ -21,7 +21,7 @@ void GfxLib_DrawChar(GfxLib_Handle* pGfxLibHandle, char character, uint16_t posX
         u8 bitOffset = 7 - (pixelIndex % 8);
         u8 currentPixelActive = (pGfxLibHandle->pFont->ppCharBitmaps[character - pGfxLibHandle->pFont->StartChar][pixelIndex/8] >> bitOffset) & 1;
         if (currentPixelActive)
-            pGfxLibHandle->DrawPixelFunc(pGfxLibHandle->pDisplayHandle, posX+col, posY+row, color);
+            pGfxLibHandle->pTransport->DrawPixelFunc(pGfxLibHandle->pDisplayHandle, posX+col, posY+row, color);
     }
 }
 

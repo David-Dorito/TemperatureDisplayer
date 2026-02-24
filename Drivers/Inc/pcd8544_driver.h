@@ -22,6 +22,12 @@
 #define PCD8544_CONTRAST_MAX            0x7F
 
 typedef struct {
+    void (*SPI_TransmitData)(void* pSpiHandle, uint8_t* pTxBuffer, uint16_t len);
+    void (*GPIO_WritePin)(void* pGpioHandle, uint8_t isEnabled);
+    void (*Delay)(uint32_t milliseconds);
+} PCD8544_Transport;
+
+typedef struct {
     void* pSpiHandle;
     void* pDcPin;
     void* pResPin;
@@ -29,9 +35,7 @@ typedef struct {
     void* pLedPin;
     void* pVccPin;
     uint8_t* pFrameBuffer;
-    void (*SPI_TransmitData)(void* pSpiHandle, uint8_t* pTxBuffer, uint16_t len);
-    void (*GPIO_WritePin)(void* pGpioHandle, uint8_t isEnabled);
-    void (*Delay)(uint32_t milliseconds);
+    PCD8544_Transport* pTransport;
 } PCD8544_Handle;
 
 /*************************************\

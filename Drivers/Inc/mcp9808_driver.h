@@ -36,10 +36,14 @@ typedef struct {
 } MCP9808_Config;
 
 typedef struct {
-    void* pI2cHandle;
     void (*I2C_MasterTransmitData)(void* pI2cHandle, uint16_t slaveAddr, uint8_t addrMode, uint8_t* pTxBuffer, uint16_t len);
     void (*I2C_MasterReceiveData)(void* pI2cHandle, uint16_t slaveAddr, uint8_t addrMode, uint8_t* pRxBuffer, uint16_t len);
+} MCP9808_Transport;
+
+typedef struct {
     MCP9808_Config Config;
+    void* pI2cHandle;
+    MCP9808_Transport* pTransport;
 } MCP9808_Handle;
 
 void MCP9808_Init(MCP9808_Handle* pMcp9808Handle);

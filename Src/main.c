@@ -172,10 +172,14 @@ int main(void)
         }
     };
     
+    MCP9808_Transport sensorTransport = {
+        .I2C_MasterTransmitData = I2C_MasterTransmitData_Bridge,
+        .I2C_MasterReceiveData = I2C_MasterReceiveData_Bridge
+    };
+    
     MCP9808_Handle sensorHandle = (MCP9808_Handle){
         .pI2cHandle = &sensorI2cHandle,
-        .I2C_MasterTransmitData = I2C_MasterTransmitData_Bridge,
-        .I2C_MasterReceiveData = I2C_MasterReceiveData_Bridge,
+        .pTransport = &sensorTransport,
         .Config = (MCP9808_Config){
             .AlertCtrl = DISABLE,
             .AlertOpMode = MCP9808_ALERTOPMODE_COMPARATOR,
@@ -190,6 +194,12 @@ int main(void)
     };
 
     u8 pLcdFrameBuffer[PCD8544_SCREEN_SIZE] = {0};
+    
+    PCD8544_Transport lcdTransport = {
+        .SPI_TransmitData = SPI_TransmitData_Bridge,
+        .GPIO_WritePin = GPIO_WritePin_Bridge,
+        .Delay = UnpreciseDelay
+    };
 
     PCD8544_Handle lcdHandle = (PCD8544_Handle){
         .pFrameBuffer = pLcdFrameBuffer,
@@ -199,15 +209,17 @@ int main(void)
         .pResPin = &lcdResetPin,
         .pLedPin = &lcdBacklightPin,
         .pVccPin = NULL,
-        .SPI_TransmitData = SPI_TransmitData_Bridge,
-        .GPIO_WritePin = GPIO_WritePin_Bridge,
-        .Delay = UnpreciseDelay
+        .pTransport = &lcdTransport
     };
     
+    GfxLib_Transport gfxlibTransport = {
+        .DrawPixelFunc = PCD8544_SetPixelColor_Bridge,
+    };
+
     GfxLib_Handle gfxlibHandle = (GfxLib_Handle){
         .pFont = &basicFont,
-        .DrawPixelFunc = PCD8544_SetPixelColor_Bridge,
-        .pDisplayHandle = &lcdHandle
+        .pDisplayHandle = &lcdHandle,
+        .pTransport = &gfxlibTransport
     };
 
     SYSCFG_PCLK_EN();
