@@ -44,13 +44,98 @@ typedef struct {
     I2C_RegDef* pI2Cx;
 } I2C_Handle;
 
+/*************************************\
+  fn: @I2C_PeriphClkCtrl
+  
+  param1 I2C_Handle*: the handle struct for the i2c peripheral
+  param2 u8: enable or disable the clock which the i2c peripheral is on
+  
+  return:
+  
+  desc: enables or disables the clock which the i2c peripheral is on
+  
+  note: 
+  
+\**************************************/
 void I2C_PeriphClkCtrl(I2C_Handle* pI2cHandle, u8 isEnabled);
+
+/*************************************\
+  fn: @I2C_PeriphCtrl
+  
+  param1 I2C_Handle*: the handle struct for the i2c peripheral
+  param2 u8: enable or disable the i2c peripheral
+  
+  return:
+  
+  desc: enables or disables the i2c peripheral
+  
+  note: 
+  
+\**************************************/
 void I2C_PeriphCtrl(I2C_Handle* pI2cHandle, u8 isEnabled);
 
+/*************************************\
+  fn: @I2C_Init
+  
+  param1 I2C_Handle*: the handle struct for the i2c peripheral
+  
+  return:
+  
+  desc: initializes the I2C peripheral
+  
+  note: doesnt currently support interrupts
+  
+\**************************************/
 void I2C_Init(I2C_Handle* pI2cHandle);
+
+/*************************************\
+  fn: @I2C_Deinit
+  
+  param1 I2C_Handle*: the handle struct for the i2c peripheral
+  
+  return:
+  
+  desc: deinitializes the I2C peripheral, that means resets the registers and such
+  
+  note: 
+  
+\**************************************/
 void I2C_Deinit(I2C_Handle* pI2cHandle);
 
+/*************************************\
+  fn: @I2C_MasterTransmitData
+  
+  param1 I2C_Handle*: the handle struct for the i2c peripheral
+  param2 u16: the slave address
+  param3 u8: the address mode of the slave address
+  param4 u8*: the pointer to the buffer of data to write to
+  param5 u16: the length of the data to transmit
+  
+  return:
+  
+  desc: transmits data from the given TxBuffer to the specified slave address
+  
+  note: this function is blocking, and does not contain bounds checking
+  
+\**************************************/
 void I2C_MasterTransmitData(I2C_Handle* pI2cHandle, u16 slaveAddr, u8 AddrMode, u8* pTxBuffer, u16 len);
+
+/*************************************\
+  fn: @I2C_MasterReceiveData
+  
+  param1 I2C_Handle*: the handle struct for the i2c peripheral
+  param2 u16: the slave address
+  param3 u8: the address mode of the slave address
+  param4 u8*: the pointer to the buffer to write received data to
+  param5 u16: the amount of bytes to receive
+  
+  return:
+  
+  desc: writes received data into the given RxBuffer, overflow can occur if len arg > actual buffer length
+  
+  note: this function is blocking, and does not contain bounds checking
+  
+\**************************************/
 void I2C_MasterReceiveData(I2C_Handle* pI2cHandle, u16 slaveAddr, u8 AddrMode, u8* pRxBuffer, u16 len);
 
 #endif
