@@ -46,8 +46,46 @@ typedef struct {
     MCP9808_Transport* pTransport;
 } MCP9808_Handle;
 
+/*************************************\
+  fn: @MCP9808_Init
+  
+  param1 MCP9808_Handle*: the handle of the temperature sensor
+  
+  return:
+  
+  desc: initializes the temperature sensor
+  
+  note:
+  
+\**************************************/
 void MCP9808_Init(MCP9808_Handle* pMcp9808Handle);
+
+/*************************************\
+  fn: @MCP9808_GetTemperature
+  
+  param1 MCP9808_Handle*: the handle of the temperature sensor
+  
+  return float: the temperature as a float
+  
+  desc: initializes the temperature sensor
+  
+  note:
+  
+\**************************************/
 float MCP9808_GetTemperature(MCP9808_Handle* pMcp9808Handle);
+
+/*************************************\
+  fn: @MCP9808_SetSleepMode
+  
+  param1 MCP9808_Handle*: the handle of the temperature sensor
+  
+  return: 
+  
+  desc: enables or disables the sleep mode of the peripheral
+  
+  note: not implemented yet
+  
+\**************************************/
 void MCP9808_SetSleepMode(MCP9808_Handle* pMcp9808Handle, uint8_t isEnabled);
 
 #endif

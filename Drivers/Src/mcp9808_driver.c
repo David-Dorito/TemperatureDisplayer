@@ -34,6 +34,18 @@ static u16 FloatToReg(float temp, uint8_t res);
 static u8 GetHighByte(uint16_t reg);
 static u8 GetLowByte(u16 reg);
 
+/*************************************\
+  fn: @MCP9808_Init
+  
+  param1 MCP9808_Handle*: the handle of the temperature sensor
+  
+  return:
+  
+  desc: initializes the temperature sensor
+  
+  note:
+  
+\**************************************/
 void MCP9808_Init(MCP9808_Handle* pMcp9808Handle)
 {
     u8 commands[3] = {0};
@@ -71,6 +83,18 @@ void MCP9808_Init(MCP9808_Handle* pMcp9808Handle)
     pMcp9808Handle->pTransport->I2C_MasterTransmitData(pMcp9808Handle->pI2cHandle, pMcp9808Handle->Config.SlaveAddr, I2C_ADDRMODE_7BIT, commands, sizeof(commands)/sizeof(commands[0]));
 }
 
+/*************************************\
+  fn: @MCP9808_GetTemperature
+  
+  param1 MCP9808_Handle*: the handle of the temperature sensor
+  
+  return float: the temperature as a float
+  
+  desc: initializes the temperature sensor
+  
+  note:
+  
+\**************************************/
 float MCP9808_GetTemperature(MCP9808_Handle* pMcp9808Handle)
 {
     u16 data = REG_TEMP;
@@ -90,6 +114,18 @@ float MCP9808_GetTemperature(MCP9808_Handle* pMcp9808Handle)
 
 }
 
+/*************************************\
+  fn: @MCP9808_SetSleepMode
+  
+  param1 MCP9808_Handle*: the handle of the temperature sensor
+  
+  return: 
+  
+  desc: enables or disables the sleep mode of the peripheral
+  
+  note: not implemented yet
+  
+\**************************************/
 void MCP9808_SetSleepMode(MCP9808_Handle* pMcp9808Handle, uint8_t isEnabled)
 {
 
