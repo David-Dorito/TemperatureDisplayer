@@ -123,12 +123,25 @@ float MCP9808_GetTemperature(MCP9808_Handle* pMcp9808Handle)
   
   desc: enables or disables the sleep mode of the peripheral
   
-  note: not implemented yet
+  note:
   
 \**************************************/
 void MCP9808_SetSleepMode(MCP9808_Handle* pMcp9808Handle, uint8_t isEnabled)
 {
-
+    u8 commands[3] = {0};
+    
+    u16 configReg = 0;
+    configReg |= ((pMcp9808Handle->Config.AlertOpMode & 0b1) << CONFIG_ALERTMOD);
+    configReg |= ((pMcp9808Handle->Config.AlertPolarity & 0b1) << CONFIG_ALERTPOL);
+    configReg |= ((pMcp9808Handle->Config.AlertTrigger & 0b1) << CONFIG_ALERTSEL);
+    configReg |= ((pMcp9808Handle->Config.AlertCtrl & 0b1) << CONFIG_ALERTCNT);
+    configReg |= ((isEnabled & 0b1) << CONFIG_SHUTDOWN);
+    configReg |= ((pMcp9808Handle->Config.AlertHysteresis & 0b11) << CONFIG_THYST);
+    
+    commands[0] = REG_CONFIG;
+    commands[1] = GetHighByte(configReg);
+    commands[2] = GetLowByte(configReg);
+    pMcp9808Handle->pTransport->I2C_MasterTransmitData(pMcp9808Handle->pI2cHandle, pMcp9808Handle->Config.SlaveAddr, I2C_ADDRMODE_7BIT, commands, sizeof(commands)/sizeof(commands[0]));
 }
 
 static u16 FloatToReg(float temp, uint8_t res)

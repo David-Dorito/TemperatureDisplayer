@@ -83,7 +83,7 @@ float MCP9808_GetTemperature(MCP9808_Handle* pMcp9808Handle);
   
   desc: enables or disables the sleep mode of the peripheral
   
-  note: not implemented yet
+  note: will reconfigure the config register with the data in the handle struct
   
 \**************************************/
 void MCP9808_SetSleepMode(MCP9808_Handle* pMcp9808Handle, uint8_t isEnabled);
