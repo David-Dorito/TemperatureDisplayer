@@ -2,11 +2,11 @@
 
 #define I2C_OWNADDR         0x2E
 
-void PCD8544_SetPixelColor_Bridge(void* pHandle, u16 posX, u16 posY, u32 color);
-void SPI_TransmitData_Bridge(void* pSpiHandle, u8* pTxBuffer, u16 len);
-void GPIO_WritePin_Bridge(void* pHandle, u8 isEnabled);
-void I2C_MasterTransmitData_Bridge(void* pI2cHandle, u16 slaveAddr, u8 addrMode, uint8_t* pTxBuffer, u16 len);
-void I2C_MasterReceiveData_Bridge(void* pI2cHandle, u16 slaveAddr, u8 addrMode, uint8_t* pRxBuffer, u16 len);
+static void PCD8544_SetPixelColor_Bridge(void* pHandle, u16 posX, u16 posY, u32 color);
+static void SPI_TransmitData_Bridge(void* pSpiHandle, u8* pTxBuffer, u16 len);
+static void GPIO_WritePin_Bridge(void* pHandle, u8 isEnabled);
+static void I2C_MasterTransmitData_Bridge(void* pI2cHandle, u16 slaveAddr, u8 addrMode, uint8_t* pTxBuffer, u16 len);
+static void I2C_MasterReceiveData_Bridge(void* pI2cHandle, u16 slaveAddr, u8 addrMode, uint8_t* pRxBuffer, u16 len);
 
 GPIO_Handle buttonPin = (GPIO_Handle){
     .pGPIOx = GPIOA,
@@ -189,27 +189,54 @@ GfxLib_Handle gfxlibHandle = (GfxLib_Handle){
 };
 
 
-void PCD8544_SetPixelColor_Bridge(void* pHandle, u16 posX, u16 posY, u32 color)
+static void PCD8544_SetPixelColor_Bridge(void* pHandle, u16 posX, u16 posY, u32 color)
 {
     PCD8544_SetPixelColor((PCD8544_Handle*)pHandle, color? TRUE : FALSE, posX, posY);
 }
 
-void SPI_TransmitData_Bridge(void* pHandle, u8* pTxBuffer, u16 len)
+static void SPI_TransmitData_Bridge(void* pHandle, u8* pTxBuffer, u16 len)
 {
     SPI_TransmitData((SPI_Handle*)pHandle, pTxBuffer, len);
 }
 
-void GPIO_WritePin_Bridge(void* pHandle, u8 isEnabled)
+static void GPIO_WritePin_Bridge(void* pHandle, u8 isEnabled)
 {
     GPIO_WritePin((GPIO_Handle*)pHandle, isEnabled);
 }
 
-void I2C_MasterTransmitData_Bridge(void* pI2cHandle, u16 slaveAddr, u8 addrMode, uint8_t* pTxBuffer, u16 len)
+static void I2C_MasterTransmitData_Bridge(void* pI2cHandle, u16 slaveAddr, u8 addrMode, uint8_t* pTxBuffer, u16 len)
 {
     I2C_MasterTransmitData((I2C_Handle*)pI2cHandle, slaveAddr, addrMode, pTxBuffer, len);
 }
 
-void I2C_MasterReceiveData_Bridge(void* pI2cHandle, u16 slaveAddr, u8 addrMode, uint8_t* pRxBuffer, u16 len)
+static void I2C_MasterReceiveData_Bridge(void* pI2cHandle, u16 slaveAddr, u8 addrMode, uint8_t* pRxBuffer, u16 len)
 {
     I2C_MasterReceiveData((I2C_Handle*)pI2cHandle, slaveAddr, addrMode, pRxBuffer, len);
+}
+
+void BSP_Init()
+{
+    SYSCFG_PCLK_EN();
+    IRQ_ItCtrl(IRQ_NO_EXTI15_10, ENABLE);
+    
+    GPIO_Init(&buttonPin);
+
+    GPIO_Init(&lcdResetPin);
+    GPIO_Init(&lcdSelectPin);
+    GPIO_Init(&lcdDcPin);
+    GPIO_Init(&lcdMosiPin);
+    GPIO_Init(&lcdSckPin);
+    GPIO_Init(&lcdBacklightPin);
+
+    GPIO_Init(&sensorSclPin);
+    GPIO_Init(&sensorSdaPin);
+    
+    SPI_Init(&lcdSpiHandle);
+    
+    I2C_Init(&sensorI2cHandle);
+    
+    PCD8544_Init(&lcdHandle);
+    PCD8544_SetBacklight(&lcdHandle, ENABLE);
+    
+    MCP9808_Init(&sensorHandle);
 }

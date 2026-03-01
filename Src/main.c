@@ -25,29 +25,7 @@ volatile u8 isButtonPressed = FALSE;
 
 int main(void)
 {
-    SYSCFG_PCLK_EN();
-    IRQ_ItCtrl(IRQ_NO_EXTI15_10, ENABLE);
-    
-    GPIO_Init(&buttonPin);
-
-    GPIO_Init(&lcdResetPin);
-    GPIO_Init(&lcdSelectPin);
-    GPIO_Init(&lcdDcPin);
-    GPIO_Init(&lcdMosiPin);
-    GPIO_Init(&lcdSckPin);
-    GPIO_Init(&lcdBacklightPin);
-
-    GPIO_Init(&sensorSclPin);
-    GPIO_Init(&sensorSdaPin);
-    
-    SPI_Init(&lcdSpiHandle);
-    
-    I2C_Init(&sensorI2cHandle);
-    
-    PCD8544_Init(&lcdHandle);
-    PCD8544_SetBacklight(&lcdHandle, ENABLE);
-    
-    MCP9808_Init(&sensorHandle);
+    BSP_Init();
     
     PCD8544_FillScreenColor(&lcdHandle, FALSE);
     PCD8544_UpdateScreen(&lcdHandle);

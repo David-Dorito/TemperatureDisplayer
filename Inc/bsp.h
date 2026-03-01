@@ -30,4 +30,6 @@ extern MCP9808_Handle sensorHandle;
 
 extern GfxLib_Handle gfxlibHandle;
 
+void BSP_Init();
+
 #endif
