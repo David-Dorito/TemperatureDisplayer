@@ -18,7 +18,7 @@ GPIO_Handle buttonPin = (GPIO_Handle){
     }
 };
 
-SPI_Handle lcdSpiHandle = (SPI_Handle){
+static SPI_Handle lcdSpiHandle = (SPI_Handle){
     .pSPIx = SPI1,
     .Config = (SPI_Config){
         .BusConfig = SPI_BUSCONFIG_FULLDUPLEX,
@@ -32,7 +32,7 @@ SPI_Handle lcdSpiHandle = (SPI_Handle){
     }
 };
 
-GPIO_Handle lcdResetPin = (GPIO_Handle){
+static GPIO_Handle lcdResetPin = (GPIO_Handle){
     .pGPIOx = GPIOA,
     .Config = (GPIO_Config){
         .PinNumber = 1,
@@ -43,7 +43,7 @@ GPIO_Handle lcdResetPin = (GPIO_Handle){
     }
 };
 
-GPIO_Handle lcdSelectPin = (GPIO_Handle){
+static GPIO_Handle lcdSelectPin = (GPIO_Handle){
     .pGPIOx = GPIOA,
     .Config = (GPIO_Config){
         .PinNumber = 2,
@@ -54,7 +54,7 @@ GPIO_Handle lcdSelectPin = (GPIO_Handle){
     }
 };
 
-GPIO_Handle lcdDcPin = (GPIO_Handle){
+static GPIO_Handle lcdDcPin = (GPIO_Handle){
     .pGPIOx = GPIOA,
     .Config = (GPIO_Config){
         .PinNumber = 3,
@@ -65,7 +65,7 @@ GPIO_Handle lcdDcPin = (GPIO_Handle){
     }
 };
 
-GPIO_Handle lcdSckPin = (GPIO_Handle){
+static GPIO_Handle lcdSckPin = (GPIO_Handle){
     .pGPIOx = GPIOA,
     .Config = (GPIO_Config){
         .PinNumber = 5,
@@ -77,19 +77,19 @@ GPIO_Handle lcdSckPin = (GPIO_Handle){
     }
 };
 
-GPIO_Handle lcdMosiPin = (GPIO_Handle){
-.pGPIOx = GPIOA,
-.Config = (GPIO_Config){
-    .PinNumber = 7,
-    .PinMode = GPIO_PINMODE_ALTFUN,
-    .AltFunNumber = 5,
-    .OpSpeed = GPIO_OPSPEED_HIGH,
-    .OpType = GPIO_OPTYPE_PP,
-    .RtFtDetect = GPIO_RTFTDETECT_NONE
-}
+static GPIO_Handle lcdMosiPin = (GPIO_Handle){
+    .pGPIOx = GPIOA,
+    .Config = (GPIO_Config){
+        .PinNumber = 7,
+        .PinMode = GPIO_PINMODE_ALTFUN,
+        .AltFunNumber = 5,
+        .OpSpeed = GPIO_OPSPEED_HIGH,
+        .OpType = GPIO_OPTYPE_PP,
+        .RtFtDetect = GPIO_RTFTDETECT_NONE
+    }
 };
 
-GPIO_Handle lcdBacklightPin = (GPIO_Handle){
+static GPIO_Handle lcdBacklightPin = (GPIO_Handle){
     .pGPIOx = GPIOA,
     .Config = (GPIO_Config){
         .PinNumber = 9,
@@ -100,7 +100,7 @@ GPIO_Handle lcdBacklightPin = (GPIO_Handle){
     }
 };
 
-I2C_Handle sensorI2cHandle = (I2C_Handle){
+static I2C_Handle sensorI2cHandle = (I2C_Handle){
     .pI2Cx = I2C1,
     .Config = (I2C_Config){
         .DefaultAckCtrl = I2C_DEFAULTACKCTRL_EN,
@@ -112,7 +112,7 @@ I2C_Handle sensorI2cHandle = (I2C_Handle){
     }
 };
 
-GPIO_Handle sensorSdaPin = (GPIO_Handle){
+static GPIO_Handle sensorSdaPin = (GPIO_Handle){
     .pGPIOx = GPIOB,
     .Config = (GPIO_Config){
         .PinNumber = 9,
@@ -125,7 +125,7 @@ GPIO_Handle sensorSdaPin = (GPIO_Handle){
     }
 };
 
-GPIO_Handle sensorSclPin = (GPIO_Handle){
+static GPIO_Handle sensorSclPin = (GPIO_Handle){
     .pGPIOx = GPIOB,
     .Config = (GPIO_Config){
         .PinNumber = 8,
@@ -138,7 +138,7 @@ GPIO_Handle sensorSclPin = (GPIO_Handle){
     }
 };
 
-MCP9808_Transport sensorTransport = {
+static MCP9808_Transport sensorTransport = {
     .I2C_MasterTransmitData = I2C_MasterTransmitData_Bridge,
     .I2C_MasterReceiveData = I2C_MasterReceiveData_Bridge
 };
@@ -159,9 +159,9 @@ MCP9808_Handle sensorHandle = (MCP9808_Handle){
     }
 };
 
-u8 pLcdFrameBuffer[PCD8544_SCREEN_SIZE] = {0};
+static u8 pLcdFrameBuffer[PCD8544_SCREEN_SIZE] = {0};
 
-PCD8544_Transport lcdTransport = {
+static PCD8544_Transport lcdTransport = {
     .SPI_TransmitData = SPI_TransmitData_Bridge,
     .GPIO_WritePin = GPIO_WritePin_Bridge,
     .Delay = UnpreciseDelay
@@ -178,7 +178,7 @@ PCD8544_Handle lcdHandle = (PCD8544_Handle){
     .pTransport = &lcdTransport
 };
 
-GfxLib_Transport gfxlibTransport = {
+static GfxLib_Transport gfxlibTransport = {
     .DrawPixelFunc = PCD8544_SetPixelColor_Bridge,
 };
 

@@ -19,7 +19,7 @@
 #define WHITE               0
 #define BLACK               1
 
-void FloatToString(float value, char *buffer, int decimals);
+void FloatToString(float value, char *buffer, u8 decimals);
 
 volatile u8 isButtonPressed = FALSE;
 
@@ -27,7 +27,7 @@ int main(void)
 {
     BSP_Init();
     
-    PCD8544_FillScreenColor(&lcdHandle, FALSE);
+    PCD8544_FillScreenColor(&lcdHandle, WHITE);
     PCD8544_UpdateScreen(&lcdHandle);
 
     while (TRUE)
@@ -46,6 +46,8 @@ int main(void)
             isButtonPressed = FALSE;
         }
     }
+    
+    return 0;
 }
 
 void EXTI15_10_IRQHandler(void)
@@ -59,9 +61,9 @@ void GPIO_AppEventCallback(u8 pinNumber)
         isButtonPressed = TRUE;
 }
 
-void FloatToString(float value, char* buffer, int decimals)
+void FloatToString(float value, char* buffer, u8 decimals)
 {
-    int i = 0;
+    u16 i = 0;
 
     // Handle negative numbers
     if (value < 0)
@@ -72,11 +74,11 @@ void FloatToString(float value, char* buffer, int decimals)
 
     // Integer part
     int whole = (int)value;
-    float fraction = value - (float)whole;
+    float fraction = value - whole;
 
-    // Convert integer part
+    // Convert integer part (array will be reversed, for example 20 would be 02)
     char temp[16];
-    int j = 0;
+    u16 j = 0;
 
     if (whole == 0)
         temp[j++] = '0';
@@ -87,7 +89,7 @@ void FloatToString(float value, char* buffer, int decimals)
             whole /= 10;
         }
 
-    // Reverse integer digits
+    // Reverse integer digits (from the example before, turn 02 back to 20)
     for (int k = j - 1; k >= 0; k--)
         buffer[i++] = temp[k];
 

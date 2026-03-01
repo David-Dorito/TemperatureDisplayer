@@ -13,21 +13,8 @@
 #include "../Inc/Fonts.h"
 
 extern GPIO_Handle buttonPin;
-
-extern SPI_Handle lcdSpiHandle;
-extern GPIO_Handle lcdResetPin;
-extern GPIO_Handle lcdSelectPin;
-extern GPIO_Handle lcdDcPin;
-extern GPIO_Handle lcdSckPin;
-extern GPIO_Handle lcdMosiPin;
-extern GPIO_Handle lcdBacklightPin;
 extern PCD8544_Handle lcdHandle;
-
-extern I2C_Handle sensorI2cHandle;
-extern GPIO_Handle sensorSdaPin;
-extern GPIO_Handle sensorSclPin;
 extern MCP9808_Handle sensorHandle;
-
 extern GfxLib_Handle gfxlibHandle;
 
 void BSP_Init();
