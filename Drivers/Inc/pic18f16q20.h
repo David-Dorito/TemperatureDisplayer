@@ -28,8 +28,10 @@ typedef struct {
     volatile u8 RESERVED00[233];
     volatile u8 IVTLOCK;
     volatile u8 INTCON[2];
-    volatile u8 IVTAD;
-    volatile u8 IVTBASE;
+    volatile u16 IVTAD;
+    volatile u8 RESERVED01;
+    volatile u16 IVTBASE;
+    volatile u8 RESERVED02;
     volatile u8 PIR[10];
     volatile u8 PIE[10];
     volatile u8 IPR[10];
@@ -39,50 +41,7 @@ typedef struct {
 
 /*********************************************************************************************/
 
-#define IRQ_NUM_SOFTWARE                    0x00U
-#define IRQ_NUM_INT0                        0x01U
-#define IRQ_NUM_INT1                        0x02U
-#define IRQ_NUM_INT2                        0x03U
-#define IRQ_NUM_DMA1SCNT                    0x04U
-#define IRQ_NUM_DMA1DCNT                    0x05U
-#define IRQ_NUM_DMA1OR                      0x06U
-#define IRQ_NUM_DMA1A                       0x07U
-#define IRQ_NUM_DMA2SCNT                    0x08U
-#define IRQ_NUM_DMA2DCNT                    0x09U
-#define IRQ_NUM_DMA2OR                      0x0AU
-#define IRQ_NUM_DMA2A                       0x0BU
-#define IRQ_NUM_DMA3SCNT                    0x0CU
-#define IRQ_NUM_DMA3DCNT                    0x0DU
-#define IRQ_NUM_DMA3OR                      0x0EU
-#define IRQ_NUM_DMA3A                       0x0FU
-#define IRQ_NUM_DMA4SCNT                    0x10U
-#define IRQ_NUM_DMA4DCNT                    0x11U
-#define IRQ_NUM_DMA4OR                      0x12U
-#define IRQ_NUM_DMA4A                       0x13U
-#define IRQ_NUM_VDDIO2                      0x1AU
-#define IRQ_NUM_VDDIO3                      0x1BU
-#define IRQ_NUM_TIMER0                      0x1DU
-#define IRQ_NUM_TIMER1                      0x1EU
-#define IRQ_NUM_TIMER1G                     0x1FU
-#define IRQ_NUM_TIMER2                      0x20U
-#define IRQ_NUM_TIMER4                      0x21U
-#define IRQ_NUM_UART1RX                     0x30U
-#define IRQ_NUM_UART1TX                     0x31U
-#define IRQ_NUM_UART1                       0x32U
-#define IRQ_NUM_UART1ERR                    0x33U
-#define IRQ_NUM_UART2RX                     0x34U
-#define IRQ_NUM_UART2TX                     0x35U
-#define IRQ_NUM_UART2                       0x36U
-#define IRQ_NUM_UART2ERR                    0x37U
-#define IRQ_NUM_SPI1RX                      0x38U
-#define IRQ_NUM_SPI1TX                      0x39U
-#define IRQ_NUM_SPI1                        0x3AU
-#define IRQ_NUM_I2C1RX                      0x3BU
-#define IRQ_NUM_I2C1TX                      0x3CU
-#define IRQ_NUM_I2C1                        0x3DU
-#define IRQ_NUM_I2C1ERR                     0x3EU
-
-#define OSC_BASEADDR						0x7AU
+#define OSC_BASEADDR                        0x7AU
 
 #define GPIO_BASEADDR                       0x030FU
 
@@ -214,6 +173,6 @@ typedef struct {
     volatile u8 FSCMCON;
 } OSC_RegDef;
 
-#define OSC									((OSC_RegDef*)OSC_BASEADDR)
+#define OSC                                 ((OSC_RegDef*)OSC_BASEADDR)
 
 #endif /* STM32F401XX_H_ */
