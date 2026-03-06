@@ -1,13 +1,11 @@
 # ===============================
-# STM32CubeIDE / Eclipse stuff
+# MPLAB X IDE stuff
 # ===============================
-/.Debug/
-/Release/
-/.Projects/
-/.cproject
-/.project
-/.mxproject
-/.settings/
+MPLABX_Proj.X/**
+!MPLABX_Proj.X/Makefile
+!MPLABX_Proj.X/nbproject/
+!MPLABX_Proj.X/nbproject/configurations.xml
+!MPLABX_Proj.X/nbproject/project.xml
 
 # ===============================
 # Build artifacts
@@ -23,28 +21,6 @@
 *.log
 
 # ===============================
-# VS Code editor stuff
+# VS Code stuff
 # ===============================
-.vscode/*
-!.vscode/settings.json
-
-# ===============================
-# Temporary / backup files
-# ===============================
-*~
-*.swp
-*.tmp
-*.bak
-*.stackdump
-
-# ===============================
-# Build output
-# ===============================
-/build/
-
-# ===============================
-# CMake
-# ===============================
-CMakeCache.txt
-CMakeFiles/
-cmake_install.cmake
+.vscode/

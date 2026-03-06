@@ -14,14 +14,14 @@ This project was created to practice low-level microcontroller concepts, includi
 A key objective was to implement reusable drivers which do not rely on vendor HAL libraries.
 
 ## Engineering Highlights
-- Structured firmware architecture with explicit separation of concerns  
+- Structured firmware architecture with explicit separation of concerns
   (Peripheral → Device → Graphics → Application)
 - Device drivers and graphics renderer designed for portability with no coupling, using generic interface functions
 - Interrupt-driven input handling for the user button
 - Fully register-level implementation without vendor-provided HAL libraries
 
 ## Project status
-The project is currently in its first complete version. Future updates may include improvements and additional features.
+The project is currently being ported to a PIC18F16Q20.
 
 ## Setup
 For hardware wiring, required components, and flashing instructions, see [Setup.md](docs/Setup.md).
