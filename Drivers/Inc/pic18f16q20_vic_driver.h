@@ -4,9 +4,9 @@
 #include "pic18f16q20.h"
 
 #define IRQ_NUM_SOFTWARE                    0x00U
-#define IRQ_NUM_INT0                        0x01U
-#define IRQ_NUM_INT1                        0x02U
-#define IRQ_NUM_INT2                        0x03U
+#define IRQ_NUM_EXTERNINT0                  0x01U
+#define IRQ_NUM_EXTERNINT1                  0x02U
+#define IRQ_NUM_EXTERNINT2                  0x03U
 #define IRQ_NUM_DMA1SCNT                    0x04U
 #define IRQ_NUM_DMA1DCNT                    0x05U
 #define IRQ_NUM_DMA1OR                      0x06U
@@ -46,9 +46,111 @@
 #define IRQ_NUM_I2C1                        0x3DU
 #define IRQ_NUM_I2C1ERR                     0x3EU
 
+#define EXTINT0                             0
+#define EXTINT1                             1
+#define EXTINT2                             2
+
+/*************************************\
+  fn: @VIC_SetShadowRegEnabled
+  
+  param1 u8: enable or disable?
+  
+  return:
+  
+  desc: enables or disables the shadow reg for HIGH priority interrupts
+  
+  note:
+  
+\**************************************/
 void VIC_SetShadowRegEnabled(u8 isEnabled);
+
+/*************************************\
+  fn: @VIC_SetExtIntTriggerEdge
+  
+  param1 u8: the external interrupt number
+  param2 u8: rising or falling edge?
+  
+  return:
+  
+  desc: configures the external interrupt trigger for rising or falling edge
+  
+  note:
+  
+\**************************************/
+void VIC_SetExtIntTriggerEdge(u8 ExtIntNum, u8 isRising);
+
+/*************************************\
+  fn: @VIC_SetIrqPrioEnabled
+  
+  param1 u8: enable or disable priority levels for interrupts
+  
+  return:
+  
+  desc: enables or disables wether all interrupts should count as high prio or if there should be
+        low priority ones aswell
+  
+  note: by default (disabled) all interrupts are high priority
+  
+\**************************************/
+void VIC_SetIrqPrioEnabled(u8 isEnabled);
+
+/*************************************\
+  fn: @VIC_SetIrqsEnabled
+  
+  param1 u8: enable or disable high priority interrupts
+  param2 u8: enable or disable low priority interrupts
+  
+  return:
+  
+  desc: controls if all the interrupts on the high and low priority level should be enabled or disabled
+  
+  note: disabling high priority interrupts also disables low priority interrupts
+  
+\**************************************/
+void VIC_SetIrqsEnabled(u8 isHighPrioEnabled, u8 isLowPrioEnabled);
+
+/*************************************\
+  fn: @VIC_SetIrqVTable
+  
+  param1 u16*: ptr to the vector table of interrupt handler functions
+  
+  return:
+  
+  desc: sets the vector table for interrupt handler funcs in VIC
+  
+  note:
+  
+\**************************************/
 void VIC_SetIrqVTable(u16* pVTable);
+
+/*************************************\
+  fn: @VIC_SetIrqEnabled
+  
+  param1 u8: the irq number of the interrupt
+  param2 u8: enable or disable?
+  
+  return:
+  
+  desc: enables or disables the interrupt which holds the specified IRQ number
+  
+  note: you have to call this function if you want an interrupt to trigger
+  
+\**************************************/
 void VIC_SetIrqEnabled(u8 irqNum, u8 isEnabled);
-void VIC_SetIrqPriority(u8 irqNum, u8 priority);
+
+/*************************************\
+  fn: @VIC_SetIrqPrio
+  
+  param1 u8: the irq number of the interrupt
+  param2 u8: the priority of the interrupt (high or low)
+  
+  return:
+  
+  desc: sets the interrupt priority for the specified IRQ number
+  
+  note:
+  
+\**************************************/
+void VIC_SetIrqPrio(u8 irqNum, u8 priority);
 
 #endif
