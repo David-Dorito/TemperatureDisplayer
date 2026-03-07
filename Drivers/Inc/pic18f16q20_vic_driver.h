@@ -1,7 +1,7 @@
 #ifndef PIC18F16Q20_VIC_DRIVER_H_
 #define PIC18F16Q20_VIC_DRIVER_H_
 
-#include "pic18f16q20.h"
+#include "types.h"
 
 #define IRQ_NUM_SOFTWARE                    0x00U
 #define IRQ_NUM_EXTERNINT0                  0x01U

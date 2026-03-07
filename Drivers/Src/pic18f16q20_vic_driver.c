@@ -1,48 +1,53 @@
 #include "../Inc/pic18f16q20_vic_driver.h"
+#include <pic18f16q20.h>
 
-#define VIC_INCON0_IPEN             5
-#define VIC_INCON0_GIEL             6
-#define VIC_INCON0_GIEH             7
+static volatile u8* const IPR[] = {
+    &IPR0, &IPR1, &IPR2, &IPR3, &IPR4, &IPR5, &IPR6, &IPR7, &IPR8, &IPR9
+};
+
+static volatile u8* const PIE[] = {
+    &PIE0, &PIE1, &PIE2, &PIE3, &PIE4, &PIE5, &PIE6, &PIE7, &PIE8, &PIE9
+};
+
+static volatile u8* const PIR[] = {
+    &PIR0, &PIR1, &PIR2, &PIR3, &PIR4, &PIR5, &PIR6, &PIR7, &PIR8, &PIR9
+};
 
 inline void VIC_SetShadowRegEnabled(u8 isEnabled)
 {
-    VIC->SHADCON &= ~(1U);
-    VIC->SHADCON |= !(isEnabled & 1);
+    SHADCON = (isEnabled & 1);
 }
 
 inline void VIC_SetExtIntTriggerEdge(u8 ExtIntNum, u8 isRising)
 {
-    VIC->INTCON[0] &= ~(1U << ExtIntNum);
-    VIC->INTCON[0] |= ((isRising & 1) << ExtIntNum);
+    INTCON0 &= ~(1U << ExtIntNum);
+    INTCON0 |= ((isRising & 1) << ExtIntNum);
 }
 
 inline void VIC_SetIrqPrioEnabled(u8 isEnabled)
 {
-    VIC->INTCON[0] &= ~(1U << VIC_INCON0_IPEN);
-    VIC->INTCON[0] |= ((isEnabled & 1) << VIC_INCON0_IPEN);
+    INTCON0bits.IPEN = (isEnabled & 1);
 }
 
 void VIC_SetIrqsEnabled(u8 isHighPrioEnabled, u8 isLowPrioEnabled)
 {
-    VIC->INTCON[0] &= ~(1U << VIC_INCON0_GIEL);
-    VIC->INTCON[0] |= ((isLowPrioEnabled & 1) << VIC_INCON0_GIEL);
-    VIC->INTCON[0] &= ~(1U << VIC_INCON0_GIEH);
-    VIC->INTCON[0] |= ((isHighPrioEnabled & 1) << VIC_INCON0_GIEH);
+    INTCON0bits.GIEL = (isLowPrioEnabled & 1);
+    INTCON0bits.GIEH = (isHighPrioEnabled & 1);
 }
 
 inline void VIC_SetIrqVTable(u16* pVTable)
 {
-    VIC->IVTBASE = (u16)pVTable;
+    IVTBASE = (u16)pVTable;
 }
 
 inline void VIC_SetIrqEnabled(u8 irqNum, u8 isEnabled)
 {
-    VIC->PIE[irqNum/8] &= ~(1U << (irqNum % 8));
-    VIC->PIE[irqNum/8] |= ((isEnabled & 1) << (irqNum % 8));
+    *PIE[irqNum/8] &= ~(1U << (irqNum % 8));
+    *PIE[irqNum/8] |= ((isEnabled & 1) << (irqNum % 8));
 }
 
 inline void VIC_SetIrqPrio(u8 irqNum, u8 priority)
 {
-    VIC->IPR[irqNum/8] &= ~(1U << (irqNum % 8));
-    VIC->IPR[irqNum/8] |= ((priority & 1) << (irqNum % 8));
+    *IPR[irqNum/8] &= ~(1U << (irqNum % 8));
+    *IPR[irqNum/8] |= ((priority & 1) << (irqNum % 8));
 }
