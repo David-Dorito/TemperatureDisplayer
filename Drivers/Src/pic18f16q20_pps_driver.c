@@ -1,3 +1,4 @@
+#include <pic18f16q20.h>
 #include "../Inc/pic18f16q20_pps_driver.h"
 #include "../Inc/pic18f16q20_errata.h"
 
@@ -17,14 +18,13 @@ inline void PPS_SetInput(u8 port, u8 pin, u8 inSelect)
         *pPPSReg = ((port << XXXPPS_PORT) | pin);
 }
 
-void PPS_Lock()
+inline void PPS_SetLock(u8 isLocked)
 {
-
-}
-
-void PPS_Unlock()
-{
-    
+    INTCON0bits.GIEH = 0;
+    PPSLOCK = 0x55;
+    PPSLOCK = 0xAA;
+    PPSLOCKbits.PPSLOCKED = isLocked;
+    INTCON0bits.GIEH = 1;
 }
 
 static u8* GetOutputReg(u8 port, u8 pin)

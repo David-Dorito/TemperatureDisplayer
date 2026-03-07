@@ -1,7 +1,6 @@
 #ifndef PIC18F16Q20_PPS_DRIVER_H_
 #define PIC18F16Q20_PPS_DRIVER_H_
 
-#include <pic18f16q20.h>
 #include "types.h"
 
 #define PPS_PORTA                   0x00
@@ -75,7 +74,6 @@
 
 inline void PPS_SetOutput(u8 port, u8 pin, u8 opSelect);
 inline void PPS_SetInput(u8 port, u8 pin, u8 inSelect);
-void PPS_Lock();
-void PPS_Unlock();
+inline void PPS_SetLock(u8 isLocked);
 
 #endif
