@@ -1,7 +1,7 @@
 #ifndef MCP9808_DRIVER_H_
 #define MCP9808_DRIVER_H_
 
-#include <stdint.h>
+#include "../Internal/types.h"
 
 #define MCP9808_RESOLUTION_05           0
 #define MCP9808_RESOLUTION_025          1
@@ -26,18 +26,18 @@ typedef struct {
     float LowTempTrigger;
     float HighTempTrigger;
     float CritTempTrigger;
-    uint8_t AlertCtrl;
-    uint8_t AlertTrigger;
-    uint8_t AlertOpMode;
-    uint8_t AlertPolarity;
-    uint8_t AlertHysteresis;
-    uint8_t SlaveAddr;
-    uint8_t Resolution;
+    u8 AlertCtrl;
+    u8 AlertTrigger;
+    u8 AlertOpMode;
+    u8 AlertPolarity;
+    u8 AlertHysteresis;
+    u8 SlaveAddr;
+    u8 Resolution;
 } MCP9808_Config;
 
 typedef struct {
-    void (*I2C_MasterTransmitData)(void* pI2cHandle, uint16_t slaveAddr, uint8_t addrMode, uint8_t* pTxBuffer, uint16_t len);
-    void (*I2C_MasterReceiveData)(void* pI2cHandle, uint16_t slaveAddr, uint8_t addrMode, uint8_t* pRxBuffer, uint16_t len);
+    void (*I2C_MasterTransmitData)(void* pI2cHandle, u16 slaveAddr, u8 addrMode, u8* pTxBuffer, u16 len);
+    void (*I2C_MasterReceiveData)(void* pI2cHandle, u16 slaveAddr, u8 addrMode, u8* pRxBuffer, u16 len);
 } MCP9808_Transport;
 
 typedef struct {
@@ -78,14 +78,15 @@ float MCP9808_GetTemperature(MCP9808_Handle* pMcp9808Handle);
   fn: @MCP9808_SetSleepMode
   
   param1 MCP9808_Handle*: the handle of the temperature sensor
+  param2 u8: enable or disable the sleep mode
   
   return: 
   
   desc: enables or disables the sleep mode of the peripheral
   
-  note: will reconfigure the config register with the data in the handle struct
+  note:
   
 \**************************************/
-void MCP9808_SetSleepMode(MCP9808_Handle* pMcp9808Handle, uint8_t isEnabled);
+void MCP9808_SetSleepMode(MCP9808_Handle* pMcp9808Handle, u8 isEnabled);
 
 #endif

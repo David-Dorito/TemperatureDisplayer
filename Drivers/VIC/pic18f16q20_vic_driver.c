@@ -1,4 +1,4 @@
-#include "../Inc/pic18f16q20_vic_driver.h"
+#include "pic18f16q20_vic_driver.h"
 #include <pic18f16q20.h>
 
 static volatile u8* const IPR[] = {

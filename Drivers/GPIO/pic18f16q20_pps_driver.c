@@ -1,6 +1,6 @@
 #include <pic18f16q20.h>
-#include "../Inc/pic18f16q20_pps_driver.h"
-#include "../Inc/pic18f16q20_errata.h"
+#include "pic18f16q20_pps_driver.h"
+#include "../Internal/pic18f16q20_errata.h"
 
 #define XXXPPS_PORT             0x03
 

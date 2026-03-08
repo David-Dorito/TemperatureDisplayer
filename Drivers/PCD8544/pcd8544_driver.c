@@ -1,21 +1,4 @@
-#include "../Inc/pcd8544_driver.h"
-#include <stddef.h>
-
-#define HIGH                                1
-#define LOW                                 0
-#define TRUE                                1
-#define FALSE                               0
-#define ENABLE                              1
-#define DISABLE                             0
-
-typedef int64_t                             i64;
-typedef int32_t                             i32;
-typedef int16_t                             i16;
-typedef int8_t                              i8;
-typedef uint64_t                            u64;
-typedef uint32_t                            u32;
-typedef uint16_t                            u16;
-typedef uint8_t                             u8;
+#include "pcd8544_driver.h"
 
 #define SET_XADDR_0                         0b10000000
 #define SET_YADDR_0                         0b01000000

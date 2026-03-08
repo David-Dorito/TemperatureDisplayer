@@ -5,14 +5,9 @@
                    displayName="Header Files"
                    projectFiles="true">
       <logicalFolder name="f1" displayName="Drivers" projectFiles="true">
-        <itemPath>../Drivers/Inc/mcp9808_driver.h</itemPath>
-        <itemPath>../Drivers/Inc/pcd8544_driver.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="Libs" projectFiles="true">
-        <itemPath>../Libs/GfxLib/GfxLib.h</itemPath>
       </logicalFolder>
-      <itemPath>../Inc/Fonts.h</itemPath>
-      <itemPath>../Inc/bsp.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -27,15 +22,9 @@
                    displayName="Source Files"
                    projectFiles="true">
       <logicalFolder name="f1" displayName="Drivers" projectFiles="true">
-        <itemPath>../Drivers/Src/pcd8544_driver.c</itemPath>
-        <itemPath>../Drivers/Src/mcp9808_driver.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="Libs" projectFiles="true">
-        <itemPath>../Libs/GfxLib/GfxLib.c</itemPath>
       </logicalFolder>
-      <itemPath>../Src/main.c</itemPath>
-      <itemPath>../Inc/bsp.c</itemPath>
-      <itemPath>../Inc/Fonts.c</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>

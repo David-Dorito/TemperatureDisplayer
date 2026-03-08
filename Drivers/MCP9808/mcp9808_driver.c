@@ -1,4 +1,4 @@
-#include "../Inc/mcp9808_driver.h"
+#include "mcp9808_driver.h"
 
 typedef int64_t                 i64;
 typedef int32_t                 i32;

@@ -1,7 +1,7 @@
 #ifndef PIC18F16Q20_PPS_DRIVER_H_
 #define PIC18F16Q20_PPS_DRIVER_H_
 
-#include "types.h"
+#include "../Internal/types.h"
 
 #define PPS_PORTA                   0x00
 #define PPS_PORTB                   0x01
