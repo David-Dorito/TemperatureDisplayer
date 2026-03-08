@@ -13,5 +13,7 @@
 #define IOC_TRIGGER_BOTH            0b11
 
 void IOC_SetPinTriggers(u8 port, u8 pin, u8 trigger);
+u8 IOC_GetPinTriggerStatus(u8 port, u8 pin);
+void IOC_ClearPinTriggerStatus(u8 port, u8 pin);
 
 #endif

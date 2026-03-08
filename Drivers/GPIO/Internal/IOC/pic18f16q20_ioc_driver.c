@@ -25,3 +25,32 @@ void IOC_SetPinTriggers(u8 port, u8 pin, u8 trigger)
             break;
     }
 }
+
+u8 IOC_GetPinTriggerStatus(u8 port, u8 pin)
+{
+    switch (port)
+    {
+        case IOC_PORTA:
+            return ((IOCAF & (1U << pin)) >> pin);
+        case IOC_PORTB:
+            return ((IOCBF & (1U << pin)) >> pin);
+        case IOC_PORTC:
+            return ((IOCCF & (1U << pin)) >> pin);
+    }
+}
+
+void IOC_ClearPinTriggerStatus(u8 port, u8 pin)
+{
+    switch (port)
+    {
+        case IOC_PORTA:
+            IOCAF &= ~(1U << pin);
+            break;
+        case IOC_PORTB:
+            IOCBF &= ~(1U << pin);
+            break;
+        case IOC_PORTC:
+            IOCCF &= ~(1U << pin);
+            break;
+    }
+}
