@@ -4,21 +4,21 @@
 
 #define XXXPPS_PORT             0x03
 
-inline void PPS_SetOutput(u8 port, u8 pin, u8 opSelect)
+void PPS_SetOutput(u8 port, u8 pin, u8 opSelect)
 {
     u8* pPPSReg = GetOutputReg(port, pin);
     if (pPPSReg != NULL)
         *pPPSReg = opSelect;
 }
 
-inline void PPS_SetInput(u8 port, u8 pin, u8 inSelect)
+void PPS_SetInput(u8 port, u8 pin, u8 inSelect)
 {
     u8* pPPSReg = GetInputReg(inSelect);
     if (pPPSReg != NULL)
         *pPPSReg = ((port << XXXPPS_PORT) | pin);
 }
 
-inline void PPS_SetLock(u8 isLocked)
+void PPS_SetLock(u8 isLocked)
 {
     INTCON0bits.GIEH = 0;
     PPSLOCK = 0x55;

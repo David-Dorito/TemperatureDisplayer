@@ -72,8 +72,8 @@
 #define PPS_INSEL_I2C1SDA           0x1D
 #define PPS_INSEL_ADACT             0x1E
 
-inline void PPS_SetOutput(u8 port, u8 pin, u8 opSelect);
-inline void PPS_SetInput(u8 port, u8 pin, u8 inSelect);
-inline void PPS_SetLock(u8 isLocked);
+void PPS_SetOutput(u8 port, u8 pin, u8 opSelect);
+void PPS_SetInput(u8 port, u8 pin, u8 inSelect);
+void PPS_SetLock(u8 isLocked);
 
 #endif

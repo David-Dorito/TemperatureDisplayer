@@ -62,7 +62,7 @@
   note:
   
 \**************************************/
-inline void VIC_SetShadowRegEnabled(u8 isEnabled);
+void VIC_SetShadowRegEnabled(u8 isEnabled);
 
 /*************************************\
   fn: @VIC_SetExtIntTriggerEdge
@@ -77,7 +77,7 @@ inline void VIC_SetShadowRegEnabled(u8 isEnabled);
   note:
   
 \**************************************/
-inline void VIC_SetExtIntTriggerEdge(u8 ExtIntNum, u8 isRising);
+void VIC_SetExtIntTriggerEdge(u8 ExtIntNum, u8 isRising);
 
 /*************************************\
   fn: @VIC_SetIrqPrioEnabled
@@ -92,7 +92,7 @@ inline void VIC_SetExtIntTriggerEdge(u8 ExtIntNum, u8 isRising);
   note: by default (disabled) all interrupts are high priority
   
 \**************************************/
-inline void VIC_SetIrqPrioEnabled(u8 isEnabled);
+void VIC_SetIrqPrioEnabled(u8 isEnabled);
 
 /*************************************\
   fn: @VIC_SetIrqsEnabled
@@ -107,7 +107,7 @@ inline void VIC_SetIrqPrioEnabled(u8 isEnabled);
   note: disabling high priority interrupts also disables low priority interrupts
   
 \**************************************/
-inline void VIC_SetIrqsEnabled(u8 isHighPrioEnabled, u8 isLowPrioEnabled);
+void VIC_SetIrqsEnabled(u8 isHighPrioEnabled, u8 isLowPrioEnabled);
 
 /*************************************\
   fn: @VIC_SetIrqVTable
@@ -121,7 +121,7 @@ inline void VIC_SetIrqsEnabled(u8 isHighPrioEnabled, u8 isLowPrioEnabled);
   note:
   
 \**************************************/
-inline void VIC_SetIrqVTable(u16* pVTable);
+void VIC_SetIrqVTable(u16* pVTable);
 
 /*************************************\
   fn: @VIC_SetIrqEnabled
@@ -136,7 +136,7 @@ inline void VIC_SetIrqVTable(u16* pVTable);
   note: you have to call this function if you want an interrupt to trigger
   
 \**************************************/
-inline void VIC_SetIrqEnabled(u8 irqNum, u8 isEnabled);
+void VIC_SetIrqEnabled(u8 irqNum, u8 isEnabled);
 
 /*************************************\
   fn: @VIC_SetIrqPrio
@@ -151,6 +151,6 @@ inline void VIC_SetIrqEnabled(u8 irqNum, u8 isEnabled);
   note:
   
 \**************************************/
-inline void VIC_SetIrqPrio(u8 irqNum, u8 priority);
+void VIC_SetIrqPrio(u8 irqNum, u8 priority);
 
 #endif

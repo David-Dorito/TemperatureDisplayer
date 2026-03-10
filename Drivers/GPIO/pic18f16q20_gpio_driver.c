@@ -129,7 +129,18 @@ void GPIO_WritePin(GPIO_Handle* pGpioHandle, u8 isEnabled)
 \**************************************/
 void GPIO_WritePort(GPIO_Handle* pGpioHandle, u8 outputReg)
 {
-
+    switch (pGpioHandle->Port)
+    {
+        case GPIO_PORTA:
+            LATA = outputReg;
+            break;
+        case GPIO_PORTB:
+            LATB = outputReg;
+            break;
+        case GPIO_PORTC:
+            LATC = outputReg;
+            break;
+    }
 }
 
 /*************************************\
@@ -171,7 +182,15 @@ u8 GPIO_ReadPin(GPIO_Handle* pGpioHandle)
 \**************************************/
 u8 GPIO_ReadPort(GPIO_Handle* pGpioHandle)
 {
-
+    switch (pGpioHandle->Port)
+    {
+        case GPIO_PORTA:
+            return PORTA;
+        case GPIO_PORTB:
+            return PORTB;
+        case GPIO_PORTC:
+            return PORTC;
+    }
 }
 
 /*************************************\

@@ -13,18 +13,18 @@ static volatile u8* const PIR[] = {
     &PIR0, &PIR1, &PIR2, &PIR3, &PIR4, &PIR5, &PIR6, &PIR7, &PIR8, &PIR9
 };
 
-inline void VIC_SetShadowRegEnabled(u8 isEnabled)
+void VIC_SetShadowRegEnabled(u8 isEnabled)
 {
     SHADCON = (isEnabled & 1);
 }
 
-inline void VIC_SetExtIntTriggerEdge(u8 ExtIntNum, u8 isRising)
+void VIC_SetExtIntTriggerEdge(u8 ExtIntNum, u8 isRising)
 {
     INTCON0 &= ~(1U << ExtIntNum);
     INTCON0 |= ((isRising & 1) << ExtIntNum);
 }
 
-inline void VIC_SetIrqPrioEnabled(u8 isEnabled)
+void VIC_SetIrqPrioEnabled(u8 isEnabled)
 {
     INTCON0bits.IPEN = (isEnabled & 1);
 }
@@ -35,18 +35,18 @@ void VIC_SetIrqsEnabled(u8 isHighPrioEnabled, u8 isLowPrioEnabled)
     INTCON0bits.GIEH = (isHighPrioEnabled & 1);
 }
 
-inline void VIC_SetIrqVTable(u16* pVTable)
+void VIC_SetIrqVTable(u16* pVTable)
 {
     IVTBASE = (u16)pVTable;
 }
 
-inline void VIC_SetIrqEnabled(u8 irqNum, u8 isEnabled)
+void VIC_SetIrqEnabled(u8 irqNum, u8 isEnabled)
 {
     *PIE[irqNum/8] &= ~(1U << (irqNum % 8));
     *PIE[irqNum/8] |= ((isEnabled & 1) << (irqNum % 8));
 }
 
-inline void VIC_SetIrqPrio(u8 irqNum, u8 priority)
+void VIC_SetIrqPrio(u8 irqNum, u8 priority)
 {
     *IPR[irqNum/8] &= ~(1U << (irqNum % 8));
     *IPR[irqNum/8] |= ((priority & 1) << (irqNum % 8));
