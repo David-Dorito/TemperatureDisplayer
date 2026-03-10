@@ -68,7 +68,18 @@ void GPIO_DeinitPort(GPIO_Handle* pGpioHandle)
 \**************************************/
 void GPIO_WriteTogglePin(GPIO_Handle* pGpioHandle)
 {
-
+    switch (pGpioHandle->Port)
+    {
+        case GPIO_PORTA:
+            LATA ^= (1U << pGpioHandle->Pin);
+            break;
+        case GPIO_PORTB:
+            LATB ^= (1U << pGpioHandle->Pin);
+            break;
+        case GPIO_PORTC:
+            LATC ^= (1U << pGpioHandle->Pin);
+            break;
+    }
 }
 
 /*************************************\
