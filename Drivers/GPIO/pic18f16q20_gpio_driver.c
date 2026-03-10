@@ -135,7 +135,15 @@ void GPIO_WritePort(GPIO_Handle* pGpioHandle, u8 outputReg)
 \**************************************/
 u8 GPIO_ReadPin(GPIO_Handle* pGpioHandle)
 {
-
+    switch (pGpioHandle->Port)
+    {
+        case GPIO_PORTA:
+            return ((PORTA & (1U << pGpioHandle->Pin)) >> pGpioHandle->Pin);
+        case GPIO_PORTB:
+            return ((PORTB & (1U << pGpioHandle->Pin)) >> pGpioHandle->Pin);
+        case GPIO_PORTC:
+            return ((PORTC & (1U << pGpioHandle->Pin)) >> pGpioHandle->Pin);
+    }
 }
 
 /*************************************\
