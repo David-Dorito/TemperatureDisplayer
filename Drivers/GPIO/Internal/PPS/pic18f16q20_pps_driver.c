@@ -93,10 +93,10 @@ static u8* GetInputReg(u8 inSelect)
         case PPS_INSEL_CLCIN1: return &CLCIN1PPS;
         case PPS_INSEL_CLCIN2: return &CLCIN2PPS;
         case PPS_INSEL_CLCIN3: return &CLCIN3PPS;
-        case PPS_INSEL_UART2CTS: return &U2CTSPPS;
-        case PPS_INSEL_UART2RX: return &U2RXPPS;
-        case PPS_INSEL_UART1CTS: return &U1CTSPPS;
-        case PPS_INSEL_UART1RX: return &U1RXPPS;
+        case PPS_INSEL_U2CTS: return &U2CTSPPS;
+        case PPS_INSEL_U2RX: return &U2RXPPS;
+        case PPS_INSEL_U1CTS: return &U1CTSPPS;
+        case PPS_INSEL_U1RX: return &U1RXPPS;
         case PPS_INSEL_SPI1SCK: return &SPI1SCKPPS;
         case PPS_INSEL_SPI1SDI: return &SPI1SDIPPS;
         case PPS_INSEL_SPI1SS: return &SPI1SSPPS;

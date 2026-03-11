@@ -1,5 +1,8 @@
 #include <pic18f16q20.h>
 #include "pic18f16q20_gpio_driver.h"
+#include "Internal/IOC/pic18f16q20_ioc_driver.h"
+#include "Internal/PPS/pic18f16q20_pps_driver.h"
+#include "../VIC/pic18f16q20_vic_driver.h"
 
 /*************************************\
   fn: @GPIO_Init
@@ -15,7 +18,49 @@
 \**************************************/
 void GPIO_Init(GPIO_Handle* pGpioHandle)
 {
+    switch (pGpioHandle->Port)
+    {
+        case GPIO_PORTA:
+            TRISA &= ~(1U << pGpioHandle->Pin);
+            TRISA |= ((pGpioHandle->Config.Direction) << pGpioHandle->Pin);
+            
+            ANSELA &= ~(1U << pGpioHandle->Pin);
+            ANSELA |= ((pGpioHandle->Config.InAnalogEn) << pGpioHandle->Pin);
 
+            WPUA &= ~(1U << pGpioHandle->Pin);
+            WPUA |= ((pGpioHandle->Config.PullupEn) << pGpioHandle->Pin);
+
+            ODCONA &= ~(1U << pGpioHandle->Pin);
+            ODCONA |= ((pGpioHandle->Config.OpType) << pGpioHandle->Pin);
+            
+            SLRCONA &= ~(1U << pGpioHandle->Pin);
+            SLRCONA |= ((pGpioHandle->Config.OpSpeed) << pGpioHandle->Pin);
+
+            INLVLA &= ~(1U << pGpioHandle->Pin);
+            INLVLA |= ((pGpioHandle->Config.InMode) << pGpioHandle->Pin);
+            
+            if (pGpioHandle->Config.AltFuncEn)
+            {
+                if (pGpioHandle->Config.Direction == GPIO_DIRECTION_INPUT)
+                    PPS_SetInput(pGpioHandle->Port, pGpioHandle->Pin, pGpioHandle->Config.AltFuncNum);
+                else
+                    PPS_SetOutput(pGpioHandle->Port, pGpioHandle->Pin, pGpioHandle->Config.AltFuncNum);
+            }
+            
+            if (pGpioHandle->Config.RtFtDetect)
+            {
+                if (pGpioHandle->Config.IntSrc != GPIO_INTSRC_IOC)
+                {
+                    VIC_SetExtIntTriggerEdge(pGpioHandle->Config.RtFtDetect);
+                }
+            }
+
+            break;
+        case GPIO_PORTB:
+            break;
+        case GPIO_PORTC:
+            break;
+    }
 }
 
 /*************************************\

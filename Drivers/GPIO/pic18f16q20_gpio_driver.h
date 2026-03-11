@@ -103,21 +103,22 @@
 #define GPIO_INFUNC_ADACT               0x1E
 
 typedef struct {
-    u8 Direction: 1;        //direction of the pin, input or output
-    u8 OpType: 1;           //output type, push pull or open drain
-    u8 OpSpeed: 1;          //output speed, limited or max
-    u8 InMode: 1;           //input mode
-    u8 InAnalogEn: 1;       //input analog enable
-    u8 PullupEn: 1;         //pull-up enable (there is no internal pull-down resistor on this mcu)
-    u8 RtFtDetect: 2;       //rise/fall detect
-    u8 IntSrc: 2;           //the interrupt which the pin should generate on rise/fall, only applicable if RtFtDetect is not NONE
-    u8 AltFuncNum: 5;       //alternate function number, can allow a pin to be SPI SCK using PPS for example
+    u8 Direction: 1;        // direction of the pin, input or output
+    u8 OpType: 1;           // output type, push pull or open drain
+    u8 OpSpeed: 1;          // output speed, limited or max
+    u8 InMode: 1;           // input mode
+    u8 InAnalogEn: 1;       // input analog enable
+    u8 PullupEn: 1;         // pull-up enable (there is no internal pull-down resistor on this mcu)
+    u8 RtFtDetect: 2;       // rise/fall detect
+    u8 IntSrc: 2;           // the interrupt which the pin should generate on rise/fall, only applicable if RtFtDetect is not NONE
+    u8 AltFuncEn: 1;        // enable or disable alternate functionalities for this pin
+    u8 AltFuncNum: 5;       // alternate function number, can allow a pin to be SPI SCK using PPS for example
 } GPIO_Config;
 
 typedef struct {
-    u8 Pin: 3;              //the pin number on the port, from 0 to 7
-    u8 Port: 2;             //the port, from 0 to 2, each number corresponds to a port (GPIO_PORTA, GPIO_PORTB, GPIO_PORTC macros)
-    GPIO_Config Config;     //the config struct from above, contains all the settings for the pin
+    u8 Pin: 3;              // the pin number on the port, from 0 to 7
+    u8 Port: 2;             // the port, from 0 to 2, each number corresponds to a port (GPIO_PORTA, GPIO_PORTB, GPIO_PORTC macros)
+    GPIO_Config Config;     // the config struct from above, contains all the settings for the pin
 } GPIO_Handle;
 
 /*************************************\
