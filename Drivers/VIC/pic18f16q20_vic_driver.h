@@ -182,4 +182,32 @@ void VIC_SetIrqEnabled(u8 irqNum, u8 isEnabled);
 \**************************************/
 void VIC_SetIrqPrio(u8 irqNum, u8 priority);
 
+/*************************************\
+  fn: @VIC_GetIrqStatus
+  
+  param1 u8: the irq number of the interrupt
+  
+  return u8: true if interrupt is being fired because of this irq number, else false
+  
+  desc: returns true if the given IRQ has triggered an interrupt
+  
+  note:
+  
+\**************************************/
+u8 VIC_GetIrqStatus(u8 irqNum);
+
+/*************************************\
+  fn: @VIC_ClearrIrqStatus
+  
+  param1 u8: the irq number of the interrupt
+  
+  return:
+  
+  desc: clears the interrupt status bit in the status register to avoid another ISR being fired
+  
+  note:
+  
+\**************************************/
+void VIC_ClearIrqStatus(u8 irqNum);
+
 #endif

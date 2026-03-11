@@ -42,12 +42,22 @@ void VIC_SetIrqVTable(u16* pVTable)
 
 void VIC_SetIrqEnabled(u8 irqNum, u8 isEnabled)
 {
-    *PIE[irqNum/8] &= ~(1U << (irqNum % 8));
-    *PIE[irqNum/8] |= ((isEnabled & 1) << (irqNum % 8));
+    *PIE[irqNum >> 3] &= ~(1U << (irqNum % 8));
+    *PIE[irqNum >> 3] |= ((isEnabled & 1) << (irqNum % 8));
 }
 
 void VIC_SetIrqPrio(u8 irqNum, u8 priority)
 {
-    *IPR[irqNum/8] &= ~(1U << (irqNum % 8));
-    *IPR[irqNum/8] |= ((priority & 1) << (irqNum % 8));
+    *IPR[irqNum >> 3] &= ~(1U << (irqNum % 8));
+    *IPR[irqNum >> 3] |= ((priority & 1) << (irqNum % 8));
+}
+
+u8 VIC_GetIrqStatus(u8 irqNum)
+{
+    return ((*PIR[irqNum >> 3] & (1U << (irqNum % 8))) >> (irqNum % 8));
+}
+
+void VIC_ClearIrqStatus(u8 irqNum)
+{
+    *PIR[irqNum >> 3] &= ~(1U << (irqNum % 8));
 }
