@@ -3,9 +3,9 @@
 
 #include "../../../Internal/types.h"
 
-#define PPS_PORTA                   0x00
-#define PPS_PORTB                   0x01
-#define PPS_PORTC                   0x02
+#define PPS_PORTA                   1
+#define PPS_PORTB                   2
+#define PPS_PORTC                   3
 
 #define PPS_OPSEL_LATXY             0x00
 #define PPS_OPSEL_CLKR              0x01
@@ -61,10 +61,10 @@
 #define PPS_INSEL_CLCIN1            0x12
 #define PPS_INSEL_CLCIN2            0x13
 #define PPS_INSEL_CLCIN3            0x14
-#define PPS_INSEL_UART2CTS          0x15
-#define PPS_INSEL_UART2RX           0x16
-#define PPS_INSEL_UART1CTS          0x17
-#define PPS_INSEL_UART1RX           0x18
+#define PPS_INSEL_U2CTS             0x15
+#define PPS_INSEL_U2RX              0x16
+#define PPS_INSEL_U1CTS             0x17
+#define PPS_INSEL_U1RX              0x18
 #define PPS_INSEL_SPI1SCK           0x19
 #define PPS_INSEL_SPI1SDI           0x1A
 #define PPS_INSEL_SPI1SS            0x1B

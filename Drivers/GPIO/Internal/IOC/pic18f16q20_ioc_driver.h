@@ -3,9 +3,9 @@
 
 #include "../../../Internal/types.h"
 
-#define IOC_PORTA                   0x00
-#define IOC_PORTB                   0x01
-#define IOC_PORTC                   0x02
+#define IOC_PORTA                   1
+#define IOC_PORTB                   2
+#define IOC_PORTC                   3
 
 #define IOC_TRIGGER_NONE            0b00
 #define IOC_TRIGGER_RISING          0b01

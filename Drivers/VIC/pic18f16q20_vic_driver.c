@@ -20,8 +20,8 @@ void VIC_SetShadowRegEnabled(u8 isEnabled)
 
 void VIC_SetExtIntTriggerEdge(u8 ExtIntNum, u8 isRising)
 {
-    INTCON0 &= ~(1U << ExtIntNum);
-    INTCON0 |= ((isRising & 1) << ExtIntNum);
+    INTCON0 &= ~(1U << ExtIntNum - VIC_IRQ_INT0);
+    INTCON0 |= ((isRising & 1) << ExtIntNum - VIC_IRQ_INT0);
 }
 
 void VIC_SetIrqPrioEnabled(u8 isEnabled)
