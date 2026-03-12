@@ -33,51 +33,42 @@ static volatile const u8* const GPIO_Regs[8][3] = {
 \**************************************/
 u8 GPIO_Init(GPIO_Handle* pGpioHandle)
 {
-    switch (pGpioHandle->Port)
+    GPIO_Regs[pGpioHandle->Port][TRISX] &= ~(1U << pGpioHandle->Pin);
+    GPIO_Regs[pGpioHandle->Port][TRISX] |= ((pGpioHandle->Config.Direction) << pGpioHandle->Pin);
+    
+    GPIO_Regs[pGpioHandle->Port][ANSELX] &= ~(1U << pGpioHandle->Pin);
+    GPIO_Regs[pGpioHandle->Port][ANSELX] |= ((pGpioHandle->Config.InAnalogEn) << pGpioHandle->Pin);
+
+    GPIO_Regs[pGpioHandle->Port][WPUX] &= ~(1U << pGpioHandle->Pin);
+    GPIO_Regs[pGpioHandle->Port][WPUX] |= ((pGpioHandle->Config.PullupEn) << pGpioHandle->Pin);
+
+    GPIO_Regs[pGpioHandle->Port][ODCONX] &= ~(1U << pGpioHandle->Pin);
+    GPIO_Regs[pGpioHandle->Port][ODCONX] |= ((pGpioHandle->Config.OpType) << pGpioHandle->Pin);
+    
+    GPIO_Regs[pGpioHandle->Port][SLRCONX] &= ~(1U << pGpioHandle->Pin);
+    GPIO_Regs[pGpioHandle->Port][SLRCONX] |= ((pGpioHandle->Config.OpSpeed) << pGpioHandle->Pin);
+
+    GPIO_Regs[pGpioHandle->Port][INLVLX] &= ~(1U << pGpioHandle->Pin);
+    GPIO_Regs[pGpioHandle->Port][INLVLX] |= ((pGpioHandle->Config.InMode) << pGpioHandle->Pin);
+    
+    if (pGpioHandle->Config.AltFuncEn)
     {
-        case GPIO_PORTA:
-            TRISA &= ~(1U << pGpioHandle->Pin);
-            TRISA |= ((pGpioHandle->Config.Direction) << pGpioHandle->Pin);
-            
-            ANSELA &= ~(1U << pGpioHandle->Pin);
-            ANSELA |= ((pGpioHandle->Config.InAnalogEn) << pGpioHandle->Pin);
-
-            WPUA &= ~(1U << pGpioHandle->Pin);
-            WPUA |= ((pGpioHandle->Config.PullupEn) << pGpioHandle->Pin);
-
-            ODCONA &= ~(1U << pGpioHandle->Pin);
-            ODCONA |= ((pGpioHandle->Config.OpType) << pGpioHandle->Pin);
-            
-            SLRCONA &= ~(1U << pGpioHandle->Pin);
-            SLRCONA |= ((pGpioHandle->Config.OpSpeed) << pGpioHandle->Pin);
-
-            INLVLA &= ~(1U << pGpioHandle->Pin);
-            INLVLA |= ((pGpioHandle->Config.InMode) << pGpioHandle->Pin);
-            
-            if (pGpioHandle->Config.AltFuncEn)
-            {
-                if (pGpioHandle->Config.Direction == GPIO_DIRECTION_INPUT)
-                    PPS_SetInput(pGpioHandle->Port, pGpioHandle->Pin, pGpioHandle->Config.AltFuncNum);
-                else
-                    PPS_SetOutput(pGpioHandle->Port, pGpioHandle->Pin, pGpioHandle->Config.AltFuncNum);
-            }
-            
-            if (pGpioHandle->Config.RtFtDetect)
-            {
-                if (pGpioHandle->Config.IntSrc != GPIO_INTSRC_IOC)
-                {
-                    if (pGpioHandle->Config.RtFtDetect == GPIO_RTFTDETECT_RTFT)
-                        return GPIO_INIT_INVALIDTRIGGERS;
-                    VIC_SetExtIntTriggerEdge(pGpioHandle->Config.IntSrc, pGpioHandle->Config.RtFtDetect == GPIO_RTFTDETECT_RT);
-                }
-                else
-                    IOC_SetPinTriggers(pGpioHandle->Port, pGpioHandle->Pin, pGpioHandle->Config.RtFtDetect);
-            }
-            break;
-        case GPIO_PORTB:
-            break;
-        case GPIO_PORTC:
-            break;
+        if (pGpioHandle->Config.Direction == GPIO_DIRECTION_INPUT)
+            PPS_SetInput(pGpioHandle->Port, pGpioHandle->Pin, pGpioHandle->Config.AltFuncNum);
+        else
+            PPS_SetOutput(pGpioHandle->Port, pGpioHandle->Pin, pGpioHandle->Config.AltFuncNum);
+    }
+    
+    if (pGpioHandle->Config.RtFtDetect)
+    {
+        if (pGpioHandle->Config.IntSrc != GPIO_INTSRC_IOC)
+        {
+            if (pGpioHandle->Config.RtFtDetect == GPIO_RTFTDETECT_RTFT)
+                return GPIO_INIT_INVALIDTRIGGERS;
+            VIC_SetExtIntTriggerEdge(pGpioHandle->Config.IntSrc, pGpioHandle->Config.RtFtDetect == GPIO_RTFTDETECT_RT);
+        }
+        else
+            IOC_SetPinTriggers(pGpioHandle->Port, pGpioHandle->Pin, pGpioHandle->Config.RtFtDetect);
     }
     
     return GPIO_INIT_OK;
