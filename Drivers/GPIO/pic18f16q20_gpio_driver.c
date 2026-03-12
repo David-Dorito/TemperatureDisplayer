@@ -4,6 +4,21 @@
 #include "Internal/PPS/pic18f16q20_pps_driver.h"
 #include "../VIC/pic18f16q20_vic_driver.h"
 
+#define ANSELX          0
+#define WPUX            1
+#define ODCONX          2
+#define SLRCONX         3
+#define INLVLX          4
+#define PORTX           5
+#define TRISX           6
+#define LATX            7
+
+static volatile const u8* const GPIO_Regs[8][3] = {
+    {&ANSELA, &WPUA, &ODCONA, &SLRCONA, &INLVLA, &PORTA, &TRISA, &LATA},
+    {&ANSELB, &WPUB, &ODCONB, &SLRCONB, &INLVLB, &PORTB, &TRISB, &LATB},
+    {&ANSELC, &WPUC, &ODCONC, &SLRCONC, &INLVLC, &PORTC, &TRISC, &LATC}
+};
+
 /*************************************\
   fn: @GPIO_Init
   
@@ -118,18 +133,7 @@ void GPIO_DeinitPort(GPIO_Handle* pGpioHandle)
 \**************************************/
 void GPIO_WriteTogglePin(GPIO_Handle* pGpioHandle)
 {
-    switch (pGpioHandle->Port)
-    {
-        case GPIO_PORTA:
-            LATA ^= (1U << pGpioHandle->Pin);
-            break;
-        case GPIO_PORTB:
-            LATB ^= (1U << pGpioHandle->Pin);
-            break;
-        case GPIO_PORTC:
-            LATC ^= (1U << pGpioHandle->Pin);
-            break;
-    }
+    GPIO_Regs[pGpioHandle->Port][LATX] ^= (1U << pGpioHandle->Pin);
 }
 
 /*************************************\
@@ -147,21 +151,8 @@ void GPIO_WriteTogglePin(GPIO_Handle* pGpioHandle)
 \**************************************/
 void GPIO_WritePin(GPIO_Handle* pGpioHandle, u8 isEnabled)
 {
-    switch (pGpioHandle->Port)
-    {
-        case GPIO_PORTA:
-            LATA &= ~(1U << pGpioHandle->Pin);
-            LATA |= ((isEnabled & 1U) << pGpioHandle->Pin);
-            break;
-        case GPIO_PORTB:
-            LATB &= ~(1U << pGpioHandle->Pin);
-            LATB |= ((isEnabled & 1U) << pGpioHandle->Pin);
-            break;
-        case GPIO_PORTC:
-            LATC &= ~(1U << pGpioHandle->Pin);
-            LATC |= ((isEnabled & 1U) << pGpioHandle->Pin);
-            break;
-    }
+    GPIO_Regs[pGpioHandle->Port][LATX] &= ~(1U << pGpioHandle->Pin);
+    GPIO_Regs[pGpioHandle->Port][LATX] |= ((isEnabled & 1) << pGpioHandle->Pin);
 }
 
 /*************************************\
@@ -179,18 +170,7 @@ void GPIO_WritePin(GPIO_Handle* pGpioHandle, u8 isEnabled)
 \**************************************/
 void GPIO_WritePort(GPIO_Handle* pGpioHandle, u8 outputReg)
 {
-    switch (pGpioHandle->Port)
-    {
-        case GPIO_PORTA:
-            LATA = outputReg;
-            break;
-        case GPIO_PORTB:
-            LATB = outputReg;
-            break;
-        case GPIO_PORTC:
-            LATC = outputReg;
-            break;
-    }
+    GPIO_Regs[pGpioHandle->Port][LATX] = outputReg;
 }
 
 /*************************************\
@@ -207,15 +187,7 @@ void GPIO_WritePort(GPIO_Handle* pGpioHandle, u8 outputReg)
 \**************************************/
 u8 GPIO_ReadPin(GPIO_Handle* pGpioHandle)
 {
-    switch (pGpioHandle->Port)
-    {
-        case GPIO_PORTA:
-            return ((PORTA & (1U << pGpioHandle->Pin)) >> pGpioHandle->Pin);
-        case GPIO_PORTB:
-            return ((PORTB & (1U << pGpioHandle->Pin)) >> pGpioHandle->Pin);
-        case GPIO_PORTC:
-            return ((PORTC & (1U << pGpioHandle->Pin)) >> pGpioHandle->Pin);
-    }
+    return ((GPIO_Regs[pGpioHandle->Port][PORTX] & (1U << pGpioHandle->Pin)) >> pGpioHandle->Pin);
 }
 
 /*************************************\
@@ -232,15 +204,7 @@ u8 GPIO_ReadPin(GPIO_Handle* pGpioHandle)
 \**************************************/
 u8 GPIO_ReadPort(GPIO_Handle* pGpioHandle)
 {
-    switch (pGpioHandle->Port)
-    {
-        case GPIO_PORTA:
-            return PORTA;
-        case GPIO_PORTB:
-            return PORTB;
-        case GPIO_PORTC:
-            return PORTC;
-    }
+    return GPIO_Regs[pGpioHandle->Port][PORTX];
 }
 
 /*************************************\
