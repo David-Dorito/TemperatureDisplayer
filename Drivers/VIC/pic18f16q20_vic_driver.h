@@ -69,10 +69,10 @@
 #define VIC_IRQ_I3C2RX                      0x45U
 #define VIC_IRQ_I3C2TX                      0x46U
 #define VIC_IRQ_I3C2                        0x47U
-#define VIC_IRQ_I3C2E                       0x48U
-#define VIC_IRQ_I3C2E                       0x49U
-#define VIC_IRQ_I3C2E                       0x4AU
-#define VIC_IRQ_I3C2E                       0x4BU
+#define VIC_IRQ_I3C2E0                      0x48U
+#define VIC_IRQ_I3C2E1                      0x49U
+#define VIC_IRQ_I3C2E2                      0x4AU
+#define VIC_IRQ_I3C2E3                      0x4BU
 #define VIC_IRQ_I3C2R                       0x4CU
 #define VIC_IRQ_HLVD                        0x4DU
 #define VIC_IRQ_AD                          0x4EU

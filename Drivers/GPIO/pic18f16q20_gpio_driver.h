@@ -121,19 +121,21 @@ typedef struct {
     GPIO_Config Config;     // the config struct from above, contains all the settings for the pin
 } GPIO_Handle;
 
+#define GPIO_INIT_OK                    0
+#define GPIO_INIT_INVALIDTRIGGERS       1
 /*************************************\
   fn: @GPIO_Init
   
   param1 GPIO_Handle*: the gpio handle
   
-  return:
+  return u8: error status return, 0 means OK
   
   desc: configures the gpio pin
   
   note: 
   
 \**************************************/
-void GPIO_Init(GPIO_Handle* pGpioHandle);
+u8 GPIO_Init(GPIO_Handle* pGpioHandle);
 
 /*************************************\
   fn: @GPIO_Deinit

@@ -9,14 +9,14 @@
   
   param1 GPIO_Handle*: the gpio handle
   
-  return:
+  return u8: error status return, 0 means OK 
   
   desc: configures the gpio pin
   
   note: 
   
 \**************************************/
-void GPIO_Init(GPIO_Handle* pGpioHandle)
+u8 GPIO_Init(GPIO_Handle* pGpioHandle)
 {
     switch (pGpioHandle->Port)
     {
@@ -51,16 +51,21 @@ void GPIO_Init(GPIO_Handle* pGpioHandle)
             {
                 if (pGpioHandle->Config.IntSrc != GPIO_INTSRC_IOC)
                 {
-                    VIC_SetExtIntTriggerEdge(pGpioHandle->Config.RtFtDetect);
+                    if (pGpioHandle->Config.RtFtDetect == GPIO_RTFTDETECT_RTFT)
+                        return GPIO_INIT_INVALIDTRIGGERS;
+                    VIC_SetExtIntTriggerEdge(pGpioHandle->Config.IntSrc, pGpioHandle->Config.RtFtDetect == GPIO_RTFTDETECT_RT);
                 }
+                else
+                    IOC_SetPinTriggers(pGpioHandle->Port, pGpioHandle->Pin, pGpioHandle->Config.RtFtDetect);
             }
-
             break;
         case GPIO_PORTB:
             break;
         case GPIO_PORTC:
             break;
     }
+    
+    return GPIO_INIT_OK;
 }
 
 /*************************************\
