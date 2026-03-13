@@ -126,7 +126,20 @@ void GPIO_Deinit(GPIO_Handle* pGpioHandle)
 \**************************************/
 void GPIO_DeinitPort(GPIO_Handle* pGpioHandle)
 {
+    *GPIO_REGS[pGpioHandle->Port][TRISX] = TRISX_RST;
 
+    *GPIO_REGS[pGpioHandle->Port][ANSELX] = ANSELX_RST;
+
+    *GPIO_REGS[pGpioHandle->Port][WPUX] = WPUX_RST;
+
+    *GPIO_REGS[pGpioHandle->Port][ODCONX] = ODCONX_RST;
+
+    *GPIO_REGS[pGpioHandle->Port][SLRCONX] = SLRCONX_RST;
+
+    *GPIO_REGS[pGpioHandle->Port][INLVLX] = INLVLX_RST;
+    
+    for (u8 i = 0; i < 8; i++)
+        IOC_SetPinTriggers(pGpioHandle->Port, i, GPIO_RTFTDETECT_NONE);
 }
 
 /*************************************\
