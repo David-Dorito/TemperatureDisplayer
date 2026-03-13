@@ -242,32 +242,31 @@ u8 GPIO_ReadPort(GPIO_Handle* pGpioHandle);
 /*************************************\
   fn: @GPIO_IRQHandled
   
-  param1 u8: the first pin number the interrupt could have been called from
-  param2 u8: the last pin number the interrupt could have been called from
+  param1:
   
   return: 
   
-  desc: clears IOC flag reg status bits which could have caused the interrupt, for every status clear the
-        GPIO_AppEventCallback() func gets called with the pin number as an arg
+  desc: calls GPIO_AppEvCb() with port and pin as params for each set flag bit and clears the flags afterwards
   
-  note: should be called at the end of an IRQ Handler func that gets called when an interrupt occurs
+  note: should be called at the end of every GPIO ISR
   
 \**************************************/
-void GPIO_IRQHandled(u8 firstPinNum, u8 lastPinNum);
+void GPIO_IrqHandled();
 
 /*************************************\
-  fn: @GPIO_AppEventCallback
+  fn: @GPIO_AppEvCb
   
   param1 u8: the pin number where an interrupt was called
+  param2 u8: the port number where an interrupt was called
   
   return: 
   
-  desc: will be called everytime an interrupt status flag gets cleared in IOC flag reg from GPIO_IRQHandled(),
-        and only from GPIO_IRQHandled()
+  desc: will be called everytime an interrupt status flag gets cleared in IOC flag reg from GPIO_IrqHandled(),
+        and only from GPIO_IrqHandled()
   
   note: weak implementation, please implement your own
   
 \**************************************/
-WEAK void GPIO_AppEventCallback(u8 pinNumber);
+void GPIO_AppEvCb(u8 port, u8 pin);
 
 #endif
