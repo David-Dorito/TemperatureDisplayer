@@ -13,7 +13,7 @@
 #define TRISX           6
 #define LATX            7
 
-static volatile const u8* const GPIO_REGS[8][3] = {
+static volatile u8* const GPIO_REGS[3][8] = {
     {&ANSELA, &WPUA, &ODCONA, &SLRCONA, &INLVLA, &PORTA, &TRISA, &LATA},
     {&ANSELB, &WPUB, &ODCONB, &SLRCONB, &INLVLB, &PORTB, &TRISB, &LATB},
     {&ANSELC, &WPUC, &ODCONC, &SLRCONC, &INLVLC, &PORTC, &TRISC, &LATC}
@@ -33,23 +33,23 @@ static volatile const u8* const GPIO_REGS[8][3] = {
 \**************************************/
 u8 GPIO_Init(GPIO_Handle* pGpioHandle)
 {
-    GPIO_REGS[pGpioHandle->Port][TRISX] &= ~(1U << pGpioHandle->Pin);
-    GPIO_REGS[pGpioHandle->Port][TRISX] |= (pGpioHandle->Config.Direction << pGpioHandle->Pin);
+    *GPIO_REGS[pGpioHandle->Port][TRISX] &= ~(1U << pGpioHandle->Pin);
+    *GPIO_REGS[pGpioHandle->Port][TRISX] |= (pGpioHandle->Config.Direction << pGpioHandle->Pin);
     
-    GPIO_REGS[pGpioHandle->Port][ANSELX] &= ~(1U << pGpioHandle->Pin);
-    GPIO_REGS[pGpioHandle->Port][ANSELX] |= (pGpioHandle->Config.InAnalogEn << pGpioHandle->Pin);
+    *GPIO_REGS[pGpioHandle->Port][ANSELX] &= ~(1U << pGpioHandle->Pin);
+    *GPIO_REGS[pGpioHandle->Port][ANSELX] |= (pGpioHandle->Config.InAnalogEn << pGpioHandle->Pin);
 
-    GPIO_REGS[pGpioHandle->Port][WPUX] &= ~(1U << pGpioHandle->Pin);
-    GPIO_REGS[pGpioHandle->Port][WPUX] |= (pGpioHandle->Config.PullupEn << pGpioHandle->Pin);
+    *GPIO_REGS[pGpioHandle->Port][WPUX] &= ~(1U << pGpioHandle->Pin);
+    *GPIO_REGS[pGpioHandle->Port][WPUX] |= (pGpioHandle->Config.PullupEn << pGpioHandle->Pin);
 
-    GPIO_REGS[pGpioHandle->Port][ODCONX] &= ~(1U << pGpioHandle->Pin);
-    GPIO_REGS[pGpioHandle->Port][ODCONX] |= (pGpioHandle->Config.OpType << pGpioHandle->Pin);
-    
-    GPIO_REGS[pGpioHandle->Port][SLRCONX] &= ~(1U << pGpioHandle->Pin);
-    GPIO_REGS[pGpioHandle->Port][SLRCONX] |= (pGpioHandle->Config.OpSpeed << pGpioHandle->Pin);
+    *GPIO_REGS[pGpioHandle->Port][ODCONX] &= ~(1U << pGpioHandle->Pin);
+    *GPIO_REGS[pGpioHandle->Port][ODCONX] |= (pGpioHandle->Config.OpType << pGpioHandle->Pin);
 
-    GPIO_REGS[pGpioHandle->Port][INLVLX] &= ~(1U << pGpioHandle->Pin);
-    GPIO_REGS[pGpioHandle->Port][INLVLX] |= (pGpioHandle->Config.InMode << pGpioHandle->Pin);
+    *GPIO_REGS[pGpioHandle->Port][SLRCONX] &= ~(1U << pGpioHandle->Pin);
+    *GPIO_REGS[pGpioHandle->Port][SLRCONX] |= (pGpioHandle->Config.OpSpeed << pGpioHandle->Pin);
+
+    *GPIO_REGS[pGpioHandle->Port][INLVLX] &= ~(1U << pGpioHandle->Pin);
+    *GPIO_REGS[pGpioHandle->Port][INLVLX] |= (pGpioHandle->Config.InMode << pGpioHandle->Pin);
     
     if (pGpioHandle->Config.AltFuncEn)
     {
@@ -89,7 +89,19 @@ u8 GPIO_Init(GPIO_Handle* pGpioHandle)
 \**************************************/
 void GPIO_Deinit(GPIO_Handle* pGpioHandle)
 {
+    *GPIO_REGS[pGpioHandle->Port][TRISX] &= ~(1U << pGpioHandle->Pin);
+    
+    *GPIO_REGS[pGpioHandle->Port][ANSELX] &= ~(1U << pGpioHandle->Pin);
 
+    *GPIO_REGS[pGpioHandle->Port][WPUX] &= ~(1U << pGpioHandle->Pin);
+
+    *GPIO_REGS[pGpioHandle->Port][ODCONX] &= ~(1U << pGpioHandle->Pin);
+
+    *GPIO_REGS[pGpioHandle->Port][SLRCONX] &= ~(1U << pGpioHandle->Pin);
+
+    *GPIO_REGS[pGpioHandle->Port][INLVLX] &= ~(1U << pGpioHandle->Pin);
+    
+    IOC_SetPinTriggers(pGpioHandle->Port, pGpioHandle->Pin, GPIO_RTFTDETECT_NONE);
 }
 
 /*************************************\
@@ -124,7 +136,7 @@ void GPIO_DeinitPort(GPIO_Handle* pGpioHandle)
 \**************************************/
 void GPIO_WriteTogglePin(GPIO_Handle* pGpioHandle)
 {
-    GPIO_REGS[pGpioHandle->Port][LATX] ^= (1U << pGpioHandle->Pin);
+    *GPIO_REGS[pGpioHandle->Port][LATX] ^= (1U << pGpioHandle->Pin);
 }
 
 /*************************************\
@@ -142,8 +154,8 @@ void GPIO_WriteTogglePin(GPIO_Handle* pGpioHandle)
 \**************************************/
 void GPIO_WritePin(GPIO_Handle* pGpioHandle, u8 isEnabled)
 {
-    GPIO_REGS[pGpioHandle->Port][LATX] &= ~(1U << pGpioHandle->Pin);
-    GPIO_REGS[pGpioHandle->Port][LATX] |= ((isEnabled & 1) << pGpioHandle->Pin);
+    *GPIO_REGS[pGpioHandle->Port][LATX] &= ~(1U << pGpioHandle->Pin);
+    *GPIO_REGS[pGpioHandle->Port][LATX] |= ((isEnabled & 1) << pGpioHandle->Pin);
 }
 
 /*************************************\
@@ -161,7 +173,7 @@ void GPIO_WritePin(GPIO_Handle* pGpioHandle, u8 isEnabled)
 \**************************************/
 void GPIO_WritePort(GPIO_Handle* pGpioHandle, u8 outputReg)
 {
-    GPIO_REGS[pGpioHandle->Port][LATX] = outputReg;
+    *GPIO_REGS[pGpioHandle->Port][LATX] = outputReg;
 }
 
 /*************************************\
@@ -178,7 +190,7 @@ void GPIO_WritePort(GPIO_Handle* pGpioHandle, u8 outputReg)
 \**************************************/
 u8 GPIO_ReadPin(GPIO_Handle* pGpioHandle)
 {
-    return ((GPIO_REGS[pGpioHandle->Port][PORTX] & (1U << pGpioHandle->Pin)) >> pGpioHandle->Pin);
+    return ((*GPIO_REGS[pGpioHandle->Port][PORTX] & (1U << pGpioHandle->Pin)) >> pGpioHandle->Pin);
 }
 
 /*************************************\
@@ -195,7 +207,7 @@ u8 GPIO_ReadPin(GPIO_Handle* pGpioHandle)
 \**************************************/
 u8 GPIO_ReadPort(GPIO_Handle* pGpioHandle)
 {
-    return GPIO_REGS[pGpioHandle->Port][PORTX];
+    return *GPIO_REGS[pGpioHandle->Port][PORTX];
 }
 
 /*************************************\
