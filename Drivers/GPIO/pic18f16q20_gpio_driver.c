@@ -13,6 +13,13 @@
 #define TRISX           6
 #define LATX            7
 
+#define ANSELX_RST      0xFF
+#define WPUX_RST        0x00
+#define ODCONX_RST      0x00
+#define SLRCONX_RST     0xFF
+#define INLVLX_RST      0xFF
+#define TRISX_RST       0xFF
+
 static volatile u8* const GPIO_REGS[3][8] = {
     {&ANSELA, &WPUA, &ODCONA, &SLRCONA, &INLVLA, &PORTA, &TRISA, &LATA},
     {&ANSELB, &WPUB, &ODCONB, &SLRCONB, &INLVLB, &PORTB, &TRISB, &LATB},
@@ -89,17 +96,17 @@ u8 GPIO_Init(GPIO_Handle* pGpioHandle)
 \**************************************/
 void GPIO_Deinit(GPIO_Handle* pGpioHandle)
 {
-    *GPIO_REGS[pGpioHandle->Port][TRISX] &= ~(1U << pGpioHandle->Pin);
+    *GPIO_REGS[pGpioHandle->Port][TRISX] |= (1U << pGpioHandle->Pin);
     
-    *GPIO_REGS[pGpioHandle->Port][ANSELX] &= ~(1U << pGpioHandle->Pin);
+    *GPIO_REGS[pGpioHandle->Port][ANSELX] |= (1U << pGpioHandle->Pin);
 
     *GPIO_REGS[pGpioHandle->Port][WPUX] &= ~(1U << pGpioHandle->Pin);
 
     *GPIO_REGS[pGpioHandle->Port][ODCONX] &= ~(1U << pGpioHandle->Pin);
 
-    *GPIO_REGS[pGpioHandle->Port][SLRCONX] &= ~(1U << pGpioHandle->Pin);
+    *GPIO_REGS[pGpioHandle->Port][SLRCONX] |= (1U << pGpioHandle->Pin);
 
-    *GPIO_REGS[pGpioHandle->Port][INLVLX] &= ~(1U << pGpioHandle->Pin);
+    *GPIO_REGS[pGpioHandle->Port][INLVLX] |= (1U << pGpioHandle->Pin);
     
     IOC_SetPinTriggers(pGpioHandle->Port, pGpioHandle->Pin, GPIO_RTFTDETECT_NONE);
 }
