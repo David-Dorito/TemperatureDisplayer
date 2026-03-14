@@ -247,11 +247,20 @@ u8 GPIO_ReadPort(GPIO_Handle* pGpioHandle)
 void GPIO_IrqHandled()
 {
     if (PIE0bits.INT0IE && PIR0bits.INT0IF)
+    {
         GPIO_AppEvCb(INT0PPS >> 3, INT0PPS & 0x7);
+        PIR0bits.INT0IF = 0;
+    }
     if (PIE0bits.INT1IE && PIR0bits.INT1IF)
+    {
         GPIO_AppEvCb(INT1PPS >> 3, INT1PPS & 0x7);
+        PIR0bits.INT1IF = 0;
+    }
     if (PIE0bits.INT2IE && PIR0bits.INT2IF)
+    {
         GPIO_AppEvCb(INT2PPS >> 3, INT2PPS & 0x7);
+        PIR0bits.INT2IF = 0;
+    }
     
     if (PIE3bits.IOCIE && PIR3bits.IOCIF)
         for (u8 port = GPIO_PORTA; port <= GPIO_PORTC; port++)
