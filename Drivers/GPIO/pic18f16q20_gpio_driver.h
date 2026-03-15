@@ -242,7 +242,7 @@ u8 GPIO_ReadPort(GPIO_Handle* pGpioHandle);
 /*************************************\
   fn: @GPIO_IRQHandled
   
-  param1:
+  param1 void:
   
   return: 
   
@@ -251,7 +251,7 @@ u8 GPIO_ReadPort(GPIO_Handle* pGpioHandle);
   note: should be called at the end of every GPIO ISR
   
 \**************************************/
-void GPIO_IrqHandled();
+void GPIO_IrqHandled(void);
 
 /*************************************\
   fn: @GPIO_AppEvCb

@@ -25,10 +25,10 @@ void GfxLib_DrawChar(GfxLib_Handle* pGfxLibHandle, char character, uint16_t posX
     }
 }
 
-void GfxLib_DrawString(GfxLib_Handle* pGfxLibHandle, char* text, uint16_t posX, uint16_t posY, uint32_t color)
+void GfxLib_DrawString(GfxLib_Handle* pGfxLibHandle, char* string, uint16_t posX, uint16_t posY, uint32_t color)
 {
-    for (u16 i = 0; text[i] != '\0'; i++)
-        GfxLib_DrawChar(pGfxLibHandle, text[i], posX+i*(pGfxLibHandle->pFont->CharWidth + pGfxLibHandle->pFont->CharSpacing), posY, color);
+    for (u16 i = 0; string[i] != '\0'; i++)
+        GfxLib_DrawChar(pGfxLibHandle, string[i], posX+i*(pGfxLibHandle->pFont->CharWidth + pGfxLibHandle->pFont->CharSpacing), posY, color);
 }
 
 void GfxLib_DrawLine(GfxLib_Handle* pGfxLibHandle)

@@ -14,6 +14,9 @@
                 <sourceRootElem>../Inc</sourceRootElem>
                 <sourceRootElem>../Drivers/Src</sourceRootElem>
                 <sourceRootElem>../Drivers/Inc</sourceRootElem>
+                <sourceRootElem>../Drivers/VIC</sourceRootElem>
+                <sourceRootElem>../Drivers/GPIO</sourceRootElem>
+                <sourceRootElem>../Drivers/Internal</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>

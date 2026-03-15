@@ -5,9 +5,17 @@
                    displayName="Header Files"
                    projectFiles="true">
       <logicalFolder name="f1" displayName="Drivers" projectFiles="true">
+        <itemPath>../Drivers/GPIO/Internal/PPS/pic18f16q20_pps_driver.h</itemPath>
+        <itemPath>../Drivers/GPIO/Internal/IOC/pic18f16q20_ioc_driver.h</itemPath>
+        <itemPath>../Drivers/GPIO/pic18f16q20_gpio_driver.h</itemPath>
+        <itemPath>../Drivers/VIC/pic18f16q20_vic_driver.h</itemPath>
+        <itemPath>../Drivers/Internal/pic18f16q20_errata.h</itemPath>
+        <itemPath>../Drivers/Internal/types.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="Libs" projectFiles="true">
+        <itemPath>../Libs/GfxLib/GfxLib.h</itemPath>
       </logicalFolder>
+      <itemPath>../Inc/bsp.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -22,9 +30,16 @@
                    displayName="Source Files"
                    projectFiles="true">
       <logicalFolder name="f1" displayName="Drivers" projectFiles="true">
+        <itemPath>../Drivers/VIC/pic18f16q20_vic_driver.c</itemPath>
+        <itemPath>../Drivers/GPIO/pic18f16q20_gpio_driver.c</itemPath>
+        <itemPath>../Drivers/GPIO/Internal/IOC/pic18f16q20_ioc_driver.c</itemPath>
+        <itemPath>../Drivers/GPIO/Internal/PPS/pic18f16q20_pps_driver.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="Libs" projectFiles="true">
+        <itemPath>../Libs/GfxLib/GfxLib.c</itemPath>
       </logicalFolder>
+      <itemPath>../Src/main.c</itemPath>
+      <itemPath>../Inc/bsp.c</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
@@ -33,6 +48,9 @@
     <Elem>../Inc</Elem>
     <Elem>../Drivers/Src</Elem>
     <Elem>../Drivers/Inc</Elem>
+    <Elem>../Drivers/VIC</Elem>
+    <Elem>../Drivers/GPIO</Elem>
+    <Elem>../Drivers/Internal</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

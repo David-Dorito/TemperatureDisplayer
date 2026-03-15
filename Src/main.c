@@ -27,38 +27,15 @@ int main(void)
 {
     BSP_Init();
     
-    PCD8544_FillScreenColor(&lcdHandle, WHITE);
-    PCD8544_UpdateScreen(&lcdHandle);
-
     while (TRUE)
     {
         if (isButtonPressed)
         {
-            float temperature = MCP9808_GetTemperature(&sensorHandle);
-            char temperatureString[16] = "";
-            FloatToString(temperature, temperatureString, 4);
-            
-            PCD8544_FillScreenColor(&lcdHandle, WHITE);
-            GfxLib_DrawString(&gfxlibHandle, "TEMPERATURE:", 2, 12, BLACK);
-            GfxLib_DrawString(&gfxlibHandle, temperatureString, 18, 20, BLACK);
-            PCD8544_UpdateScreen(&lcdHandle);
-            
             isButtonPressed = FALSE;
         }
     }
     
     return 0;
-}
-
-void EXTI15_10_IRQHandler(void)
-{
-    GPIO_IRQHandled(10, 15);
-}
-
-void GPIO_AppEventCallback(u8 pinNumber)
-{
-    if (pinNumber == buttonPin.Config.PinNumber)
-        isButtonPressed = TRUE;
 }
 
 void FloatToString(float value, char* buffer, u8 decimals)
@@ -109,3 +86,23 @@ void FloatToString(float value, char* buffer, u8 decimals)
 
     buffer[i] = '\0';
 }
+
+void GPIO_AppEvCb(u8 port, u8 pin)
+{
+    if (pin == btnPin.Pin && port == btnPin.Port)
+        isButtonPressed = TRUE;
+}
+
+/******************************** interrupt service routines ********************************/
+
+void __interrupt(irq(default), base(8)) Default_ISR(void)
+{
+    return;
+}
+
+void __interrupt(irq(VIC_IRQ_IOC), base(8)) IOC_ISR(void)
+{
+    GPIO_IrqHandled();
+}
+
+/********************************************************************************************/
