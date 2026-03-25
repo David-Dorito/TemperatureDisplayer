@@ -1,4 +1,8 @@
-#include <pic18f16q20.h>
+#ifdef __XC8
+    #include <xc.h>
+#else
+    #include "pic18f16q20.h"
+#endif
 #include "pic18f16q20_gpio_driver.h"
 #include "Internal/IOC/pic18f16q20_ioc_driver.h"
 #include "Internal/PPS/pic18f16q20_pps_driver.h"
@@ -243,7 +247,7 @@ u8 GPIO_ReadPort(GPIO_Handle* pGpioHandle)
   note: should be called at the end of an IRQ Handler func that gets called when an interrupt occurs
   
 \**************************************/
-void GPIO_IrqHandled(void)
+void GPIO_IrqHandled(void (*GPIO_AppEvCb)(u8 port, u8 pin))
 {
     if (PIE0bits.INT0IE && PIR0bits.INT0IF)
     {
@@ -269,23 +273,4 @@ void GPIO_IrqHandled(void)
                     GPIO_AppEvCb(port, pin);
                     IOC_ClearPinTriggerStatus(port, pin);
                 }
-}
-
-/*************************************\
-  fn: @GPIO_AppEvCb
-  
-  param1 u8: the port where an interrupt was called
-  param2 u8: the pin number where an interrupt was called
-  
-  return: 
-  
-  desc: will be called everytime an interrupt status flag gets cleared in IOC flag reg from GPIO_IRQHandled(),
-        and only from GPIO_IrqHandled()
-  
-  note: weak implementation, please implement your own
-  
-\**************************************/
-WEAK void GPIO_AppEvCb(u8 port, u8 pin)
-{
-
 }

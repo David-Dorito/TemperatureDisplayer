@@ -1,4 +1,8 @@
-#include <pic18f16q20.h>
+#ifdef __XC8
+    #include <xc.h>
+#else
+    #include "pic18f16q20.h"
+#endif
 #include "pic18f16q20_ioc_driver.h"
 
 void IOC_SetPinTriggers(u8 port, u8 pin, u8 trigger)
@@ -37,6 +41,7 @@ u8 IOC_GetPinTriggerStatus(u8 port, u8 pin)
         case IOC_PORTC:
             return ((IOCCF & (1U << pin)) >> pin);
     }
+    return 0xFF;
 }
 
 void IOC_ClearPinTriggerStatus(u8 port, u8 pin)

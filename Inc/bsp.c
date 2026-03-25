@@ -10,15 +10,16 @@ GPIO_Handle btnPin = (GPIO_Handle){
         .InMode = GPIO_INMODE_ST,
         .IntSrc = GPIO_INTSRC_IOC,
         .PullupEn = TRUE,
-        .RtFtDetect = GPIO_RTFTDETECT_FT
+        .RtFtDetect = GPIO_RTFTDETECT_FT,
     }
 };
 
 void BSP_Init(void)
 {
+    GPIO_Init(&btnPin);
+
     VIC_SetShadowRegEnabled(TRUE);
     VIC_SetIrqsEnabled(TRUE, FALSE);
     VIC_SetIrqEnabled(VIC_IRQ_IOC, TRUE);
     
-    GPIO_Init(&btnPin);
 }

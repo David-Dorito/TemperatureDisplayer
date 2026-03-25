@@ -1,21 +1,28 @@
-#include <pic18f16q20.h>
+#ifdef __XC8
+    #include <xc.h>
+#else
+    #include "pic18f16q20.h"
+#endif
 #include "pic18f16q20_pps_driver.h"
 #include "../../../Internal/pic18f16q20_errata.h"
+
+static volatile u8* GetOutputReg(u8 port, u8 pin);
+static volatile u8* GetInputReg(u8 inSelect);
 
 #define XXXPPS_PORT             0x03
 
 void PPS_SetOutput(u8 port, u8 pin, u8 opSelect)
 {
-    u8* pPPSReg = GetOutputReg(port, pin);
+    volatile u8* pPPSReg = GetOutputReg(port, pin);
     if (pPPSReg != NULL)
         *pPPSReg = opSelect;
 }
 
 void PPS_SetInput(u8 port, u8 pin, u8 inSelect)
 {
-    u8* pPPSReg = GetInputReg(inSelect);
+    volatile u8* pPPSReg = GetInputReg(inSelect);
     if (pPPSReg != NULL)
-        *pPPSReg = ((port << XXXPPS_PORT) | pin);
+        *pPPSReg = (u8)((port << XXXPPS_PORT) | pin);
 }
 
 void PPS_SetLock(u8 isLocked)
@@ -27,7 +34,7 @@ void PPS_SetLock(u8 isLocked)
     INTCON0bits.GIEH = 1;
 }
 
-static u8* GetOutputReg(u8 port, u8 pin)
+static volatile u8* GetOutputReg(u8 port, u8 pin)
 {
     switch (port)
     {
@@ -68,7 +75,7 @@ static u8* GetOutputReg(u8 port, u8 pin)
     }
 }
 
-static u8* GetInputReg(u8 inSelect)
+static volatile u8* GetInputReg(u8 inSelect)
 {
     switch (inSelect)
     {

@@ -9,7 +9,7 @@
 #include "../Drivers/VIC/pic18f16q20_vic_driver.h"
 #include "../Drivers/PCD8544/pcd8544_driver.h"
 #include "../Drivers/MCP9808/mcp9808_driver.h"
-#include "../Libs/Gfxlib/GfxLib.h"
+#include "../Libs/GfxLib/GfxLib.h"
 #include "../Inc/Fonts.h"
 
 extern GPIO_Handle btnPin;

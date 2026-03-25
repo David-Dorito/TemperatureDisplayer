@@ -1,3 +1,8 @@
+#ifdef __XC8
+    #include <xc.h>
+#else
+    #include "pic18f16q20.h"
+#endif
 #include "../Inc/bsp.h"
 
 /*************************************\
@@ -42,18 +47,18 @@ void FloatToString(float value, char* buffer, u8 decimals)
 {
     u16 i = 0;
 
-    // Handle negative numbers
+    // handle neg nums
     if (value < 0)
     {
         buffer[i++] = '-';
         value = -value;
     }
 
-    // Integer part
+    // int part
     int whole = (int)value;
     float fraction = value - whole;
 
-    // Convert integer part (array will be reversed, for example 20 would be 02)
+    // convert integer part (array will be reversed, for example 20 would be 02)
     char temp[16];
     u16 j = 0;
 
@@ -62,15 +67,15 @@ void FloatToString(float value, char* buffer, u8 decimals)
     else
         while (whole > 0)
         {
-            temp[j++] = (whole % 10) + '0';
+            temp[j++] = (char)((whole % 10) + (int)'0');
             whole /= 10;
         }
 
-    // Reverse integer digits (from the example before, turn 02 back to 20)
-    for (int k = j - 1; k >= 0; k--)
+    // reverse integer digits (from the example before, turn 02 back to 20)
+    for (u16 k = j - 1; k >= 0; k--)
         buffer[i++] = temp[k];
 
-    // Decimal point
+    // decimal point
     if (decimals > 0)
     {
         buffer[i++] = '.';
@@ -79,7 +84,7 @@ void FloatToString(float value, char* buffer, u8 decimals)
         {
             fraction *= 10;
             int digit = (int)fraction;
-            buffer[i++] = digit + '0';
+            buffer[i++] = (char)(digit + (int)'0');
             fraction -= digit;
         }
     }
@@ -100,9 +105,9 @@ void __interrupt(irq(default), base(8)) Default_ISR(void)
     return;
 }
 
-void __interrupt(irq(VIC_IRQ_IOC), base(8)) IOC_ISR(void)
+void __interrupt(irq(IRQ_IOC), base(8)) IOC_ISR(void)
 {
-    GPIO_IrqHandled();
+    GPIO_IrqHandled(GPIO_AppEvCb);
 }
 
 /********************************************************************************************/

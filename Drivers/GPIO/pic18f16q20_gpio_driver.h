@@ -17,12 +17,12 @@
 #define GPIO_OPTYPE_OD                  1
 
 //OpSpeed
-#define GPIO_OPSPEED_LIMITED            0
-#define GPIO_OPSPEED_MAX                1
+#define GPIO_OPSPEED_MAX                0
+#define GPIO_OPSPEED_LIMITED            1
 
 //InMode
-#define GPIO_INMODE_ST                  0
-#define GPIO_INMODE_TTL                 1
+#define GPIO_INMODE_TTL                 0
+#define GPIO_INMODE_ST                  1
 
 //RtFtDetect
 #define GPIO_RTFTDETECT_NONE            0b00
@@ -242,31 +242,15 @@ u8 GPIO_ReadPort(GPIO_Handle* pGpioHandle);
 /*************************************\
   fn: @GPIO_IRQHandled
   
-  param1 void:
+  param1 funcptr: callback function ptr, will get called for every interrupt status that got cleared
   
   return: 
   
-  desc: calls GPIO_AppEvCb() with port and pin as params for each set flag bit and clears the flags afterwards
+  desc: calls the callback with port and pin as params for each set flag bit and clears the flags afterwards
   
   note: should be called at the end of every GPIO ISR
   
 \**************************************/
-void GPIO_IrqHandled(void);
-
-/*************************************\
-  fn: @GPIO_AppEvCb
-  
-  param1 u8: the pin number where an interrupt was called
-  param2 u8: the port number where an interrupt was called
-  
-  return: 
-  
-  desc: will be called everytime an interrupt status flag gets cleared in IOC flag reg from GPIO_IrqHandled(),
-        and only from GPIO_IrqHandled()
-  
-  note: weak implementation, please implement your own
-  
-\**************************************/
-void GPIO_AppEvCb(u8 port, u8 pin);
+void GPIO_IrqHandled(void (*GPIO_AppEvCb)(u8 port, u8 pin));
 
 #endif

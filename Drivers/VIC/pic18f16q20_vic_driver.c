@@ -1,5 +1,9 @@
+#ifdef __XC8
+    #include <xc.h>
+#else
+    #include "pic18f16q20.h"
+#endif
 #include "pic18f16q20_vic_driver.h"
-#include <pic18f16q20.h>
 
 static volatile u8* const IPR[] = {
     &IPR0, &IPR1, &IPR2, &IPR3, &IPR4, &IPR5, &IPR6, &IPR7, &IPR8, &IPR9
@@ -20,8 +24,8 @@ void VIC_SetShadowRegEnabled(u8 isEnabled)
 
 void VIC_SetExtIntTriggerEdge(u8 ExtIntNum, u8 isRising)
 {
-    INTCON0 &= ~(1U << ExtIntNum - VIC_IRQ_INT0);
-    INTCON0 |= ((isRising & 1) << ExtIntNum - VIC_IRQ_INT0);
+    INTCON0 &= ~(1U << (ExtIntNum - VIC_IRQ_INT0));
+    INTCON0 |= ((isRising & 1) << (ExtIntNum - VIC_IRQ_INT0));
 }
 
 void VIC_SetIrqPrioEnabled(u8 isEnabled)
