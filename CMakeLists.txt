@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.25)
 
-project(SensorDisplaySystem LANGUAGES C ASM)
+project(TemperatureDisplayer LANGUAGES C ASM)
 
 set(CMAKE_BUILD_TYPE Debug)
 
@@ -11,8 +11,20 @@ add_compile_options(
     -g3
 )
 
-include_directories(
-    Inc
+add_library(HAL
+    Drivers/GPIO/stm32f401xx_gpio_driver.c
+    Drivers/SPI/stm32f401xx_spi_driver.c
+    Drivers/I2C/stm32f401xx_i2c_driver.c
+    Drivers/NVIC/stm32f401xx_nvic_driver.c
+)
+target_include_directories(HAL PUBLIC
+    Drivers/GPIO
+    Drivers/SPI
+    Drivers/I2C
+    Drivers/NVIC
+)
+
+include_directories(Inc
     Drivers/Inc
     Libs/GfxLib
     Inc/
