@@ -49,10 +49,20 @@
 #define SPI_BITORDER_MSBFIRST       0
 #define SPI_BITORDER_LSBFIRST       1
 
-#define SPI1_REG_RESET() do {RCC->APB2RSTR |= (1 << 12); RCC->APB2RSTR &= ~(1 << 12);} while(0)
-#define SPI2_REG_RESET() do {RCC->APB1RSTR |= (1 << 14); RCC->APB1RSTR &= ~(1 << 14);} while(0)
-#define SPI3_REG_RESET() do {RCC->APB1RSTR |= (1 << 15); RCC->APB1RSTR &= ~(1 << 15);} while(0)
-#define SPI4_REG_RESET() do {RCC->APB2RSTR |= (1 << 13); RCC->APB2RSTR &= ~(1 << 13);} while(0)
+#define SPI1_PCLK_EN()              (RCC->APB2ENR |= (1 << 12))
+#define SPI2_PCLK_EN()              (RCC->APB1ENR |= (1 << 14))
+#define SPI3_PCLK_EN()              (RCC->APB1ENR |= (1 << 15))
+#define SPI4_PCLK_EN()              (RCC->APB2ENR |= (1 << 13))
+
+#define SPI1_PCLK_DI()              (RCC->APB2ENR &= ~(1 << 12))
+#define SPI2_PCLK_DI()              (RCC->APB1ENR &= ~(1 << 14))
+#define SPI3_PCLK_DI()              (RCC->APB1ENR &= ~(1 << 15))
+#define SPI4_PCLK_DI()              (RCC->APB2ENR &= ~(1 << 13))
+
+#define SPI1_REG_RESET()            do {RCC->APB2RSTR |= (1 << 12); RCC->APB2RSTR &= ~(1 << 12);} while(0)
+#define SPI2_REG_RESET()            do {RCC->APB1RSTR |= (1 << 14); RCC->APB1RSTR &= ~(1 << 14);} while(0)
+#define SPI3_REG_RESET()            do {RCC->APB1RSTR |= (1 << 15); RCC->APB1RSTR &= ~(1 << 15);} while(0)
+#define SPI4_REG_RESET()            do {RCC->APB2RSTR |= (1 << 13); RCC->APB2RSTR &= ~(1 << 13);} while(0)
 
 typedef struct {
     uint8_t DeviceMode;

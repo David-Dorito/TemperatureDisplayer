@@ -5,25 +5,25 @@
 #include "stm32f401xx.h"
 
 //PinMode
-#define GPIO_PINMODE_INPUT          0b00
-#define GPIO_PINMODE_OUTPUT         0b01
-#define GPIO_PINMODE_ALTFUN         0b10
-#define GPIO_PINMODE_ANALOG         0b11
+#define GPIO_PINMODE_INPUT          0
+#define GPIO_PINMODE_OUTPUT         1
+#define GPIO_PINMODE_ALTFUN         2
+#define GPIO_PINMODE_ANALOG         3
 
 //PinOpType
-#define GPIO_OPTYPE_PP           0b0
-#define GPIO_OPTYPE_OD           0b1
+#define GPIO_OPTYPE_PP              0
+#define GPIO_OPTYPE_OD              1
 
 //PinOpSpeed
-#define GPIO_OPSPEED_LOW         0b00
-#define GPIO_OPSPEED_MED         0b01
-#define GPIO_OPSPEED_HIGH        0b10
-#define GPIO_OPSPEED_VERYHIGH    0b11
+#define GPIO_OPSPEED_LOW            0
+#define GPIO_OPSPEED_MED            1
+#define GPIO_OPSPEED_HIGH           2
+#define GPIO_OPSPEED_VERYHIGH       3
 
 //PinPupdCtrl
-#define GPIO_PUPDCTRL_NOPUPD     0b00
-#define GPIO_PUPDCTRL_PULLUP     0b01
-#define GPIO_PUPDCTRL_PULLDOWN   0b10
+#define GPIO_PUPDCTRL_NOPUPD        0
+#define GPIO_PUPDCTRL_PULLUP        1
+#define GPIO_PUPDCTRL_PULLDOWN      2
 
 //RtFtDetect
 #define GPIO_RTFTDETECT_NONE        0b00
@@ -31,12 +31,26 @@
 #define GPIO_RTFTDETECT_RT          0b10
 #define GPIO_RTFTDETECT_RTFT        0b11
 
-#define GPIOA_REG_RESET() do {RCC->AHB1RSTR |= (1 << 0); RCC->APB2RSTR &= ~(1 << 0);} while(0)
-#define GPIOB_REG_RESET() do {RCC->AHB1RSTR |= (1 << 1); RCC->APB2RSTR &= ~(1 << 1);} while(0)
-#define GPIOC_REG_RESET() do {RCC->AHB1RSTR |= (1 << 2); RCC->APB2RSTR &= ~(1 << 2);} while(0)
-#define GPIOD_REG_RESET() do {RCC->AHB1RSTR |= (1 << 3); RCC->APB2RSTR &= ~(1 << 3);} while(0)
-#define GPIOE_REG_RESET() do {RCC->AHB1RSTR |= (1 << 4); RCC->APB2RSTR &= ~(1 << 4);} while(0)
-#define GPIOH_REG_RESET() do {RCC->AHB1RSTR |= (1 << 7); RCC->APB2RSTR &= ~(1 << 7);} while(0)
+#define GPIOA_PCLK_EN()             (RCC->AHB1ENR |= (1 << 0))
+#define GPIOB_PCLK_EN()             (RCC->AHB1ENR |= (1 << 1))
+#define GPIOC_PCLK_EN()             (RCC->AHB1ENR |= (1 << 2))
+#define GPIOD_PCLK_EN()             (RCC->AHB1ENR |= (1 << 3))
+#define GPIOE_PCLK_EN()             (RCC->AHB1ENR |= (1 << 4))
+#define GPIOH_PCLK_EN()             (RCC->AHB1ENR |= (1 << 7))
+
+#define GPIOA_PCLK_DI()             (RCC->AHB1ENR &= ~(1 << 0))
+#define GPIOB_PCLK_DI()             (RCC->AHB1ENR &= ~(1 << 1))
+#define GPIOC_PCLK_DI()             (RCC->AHB1ENR &= ~(1 << 2))
+#define GPIOD_PCLK_DI()             (RCC->AHB1ENR &= ~(1 << 3))
+#define GPIOE_PCLK_DI()             (RCC->AHB1ENR &= ~(1 << 4))
+#define GPIOH_PCLK_DI()             (RCC->AHB1ENR &= ~(1 << 7))
+
+#define GPIOA_REG_RESET()           do {RCC->AHB1RSTR |= (1 << 0); RCC->APB2RSTR &= ~(1 << 0);} while(0)
+#define GPIOB_REG_RESET()           do {RCC->AHB1RSTR |= (1 << 1); RCC->APB2RSTR &= ~(1 << 1);} while(0)
+#define GPIOC_REG_RESET()           do {RCC->AHB1RSTR |= (1 << 2); RCC->APB2RSTR &= ~(1 << 2);} while(0)
+#define GPIOD_REG_RESET()           do {RCC->AHB1RSTR |= (1 << 3); RCC->APB2RSTR &= ~(1 << 3);} while(0)
+#define GPIOE_REG_RESET()           do {RCC->AHB1RSTR |= (1 << 4); RCC->APB2RSTR &= ~(1 << 4);} while(0)
+#define GPIOH_REG_RESET()           do {RCC->AHB1RSTR |= (1 << 7); RCC->APB2RSTR &= ~(1 << 7);} while(0)
 
 typedef struct {
     uint8_t PinNumber;

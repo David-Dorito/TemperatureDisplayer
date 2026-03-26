@@ -3,6 +3,21 @@
 
 #include <stdint.h>
 
+#define NVIC_ISER0                          ((volatile uint32_t*)0xE000E100U)
+#define NVIC_ISER1                          ((volatile uint32_t*)0xE000E104U)
+#define NVIC_ISER2                          ((volatile uint32_t*)0xE000E108U)
+#define NVIC_ISER3                          ((volatile uint32_t*)0xE000E10CU)
+
+#define NVIC_ICER0                          ((volatile uint32_t*)0xE000E180U)
+#define NVIC_ICER1                          ((volatile uint32_t*)0xE000E184U)
+#define NVIC_ICER2                          ((volatile uint32_t*)0xE000E188U)
+#define NVIC_ICER3                          ((volatile uint32_t*)0xE000E18CU)
+
+#define NVIC_PR_BASEADDR                    0xE000E400U
+#define NVIC_PR                             ((volatile uint32_t*)NVIC_PR_BASEADDR)
+
+#define NO_PR_BITS_IMPLEMENTED              4
+
 #define IRQ_NO_EXTI0                        6
 #define IRQ_NO_EXTI1                        7
 #define IRQ_NO_EXTI2                        8
