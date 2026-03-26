@@ -1,6 +1,7 @@
 #ifndef STM32F401XX_I2C_DRIVER_H_
 #define STM32F401XX_I2C_DRIVER_H_
 
+#include <stdint.h>
 #include "stm32f401xx.h"
 
 //SclSpeed
@@ -31,12 +32,12 @@
 #define I2C3_REG_RESET() do {RCC->APB1RSTR |= (1 << 23); RCC->APB1RSTR &= ~(1 << 23);} while(0)
 
 typedef struct {
-    u16 OwnAddr;
-    u8 OwnAddrMode;
-    u8 SclSpeed;
-    u8 SclStretching;
-    u8 FMDutyCycle;
-    u8 DefaultAckCtrl;
+    uint16_t OwnAddr;
+    uint8_t OwnAddrMode;
+    uint8_t SclSpeed;
+    uint8_t SclStretching;
+    uint8_t FMDutyCycle;
+    uint8_t DefaultAckCtrl;
 } I2C_Config;
 
 typedef struct {
@@ -48,7 +49,7 @@ typedef struct {
   fn: @I2C_PeriphClkCtrl
   
   param1 I2C_Handle*: the handle struct for the i2c peripheral
-  param2 u8: enable or disable the clock which the i2c peripheral is on
+  param2 uint8_t: enable or disable the clock which the i2c peripheral is on
   
   return:
   
@@ -57,13 +58,13 @@ typedef struct {
   note: 
   
 \**************************************/
-void I2C_PeriphClkCtrl(I2C_Handle* pI2cHandle, u8 isEnabled);
+void I2C_PeriphClkCtrl(I2C_Handle* pI2cHandle, uint8_t isEnabled);
 
 /*************************************\
   fn: @I2C_PeriphCtrl
   
   param1 I2C_Handle*: the handle struct for the i2c peripheral
-  param2 u8: enable or disable the i2c peripheral
+  param2 uint8_t: enable or disable the i2c peripheral
   
   return:
   
@@ -72,7 +73,7 @@ void I2C_PeriphClkCtrl(I2C_Handle* pI2cHandle, u8 isEnabled);
   note: 
   
 \**************************************/
-void I2C_PeriphCtrl(I2C_Handle* pI2cHandle, u8 isEnabled);
+void I2C_PeriphCtrl(I2C_Handle* pI2cHandle, uint8_t isEnabled);
 
 /*************************************\
   fn: @I2C_Init
@@ -106,10 +107,10 @@ void I2C_Deinit(I2C_Handle* pI2cHandle);
   fn: @I2C_MasterTransmitData
   
   param1 I2C_Handle*: the handle struct for the i2c peripheral
-  param2 u16: the slave address
-  param3 u8: the address mode of the slave address
-  param4 u8*: the pointer to the buffer of data to write to
-  param5 u16: the length of the data to transmit
+  param2 uint16_t: the slave address
+  param3 uint8_t: the address mode of the slave address
+  param4 uint8_t*: the pointer to the buffer of data to write to
+  param5 uint16_t: the length of the data to transmit
   
   return:
   
@@ -118,16 +119,16 @@ void I2C_Deinit(I2C_Handle* pI2cHandle);
   note: this function is blocking, and does not contain bounds checking
   
 \**************************************/
-void I2C_MasterTransmitData(I2C_Handle* pI2cHandle, u16 slaveAddr, u8 AddrMode, u8* pTxBuffer, u16 len);
+void I2C_MasterTransmitData(I2C_Handle* pI2cHandle, uint16_t slaveAddr, uint8_t AddrMode, uint8_t* pTxBuffer, uint16_t len);
 
 /*************************************\
   fn: @I2C_MasterReceiveData
   
   param1 I2C_Handle*: the handle struct for the i2c peripheral
-  param2 u16: the slave address
-  param3 u8: the address mode of the slave address
-  param4 u8*: the pointer to the buffer to write received data to
-  param5 u16: the amount of bytes to receive
+  param2 uint16_t: the slave address
+  param3 uint8_t: the address mode of the slave address
+  param4 uint8_t*: the pointer to the buffer to write received data to
+  param5 uint16_t: the amount of bytes to receive
   
   return:
   
@@ -136,6 +137,6 @@ void I2C_MasterTransmitData(I2C_Handle* pI2cHandle, u16 slaveAddr, u8 AddrMode, 
   note: this function is blocking, and does not contain bounds checking
   
 \**************************************/
-void I2C_MasterReceiveData(I2C_Handle* pI2cHandle, u16 slaveAddr, u8 AddrMode, u8* pRxBuffer, u16 len);
+void I2C_MasterReceiveData(I2C_Handle* pI2cHandle, uint16_t slaveAddr, uint8_t AddrMode, uint8_t* pRxBuffer, uint16_t len);
 
 #endif

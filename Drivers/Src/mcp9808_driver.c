@@ -1,13 +1,5 @@
+#include "../Inc/definitions.h"
 #include "../Inc/mcp9808_driver.h"
-
-typedef int64_t                 i64;
-typedef int32_t                 i32;
-typedef int16_t                 i16;
-typedef int8_t                  i8;
-typedef uint64_t                u64;
-typedef uint32_t                u32;
-typedef uint16_t                u16;
-typedef uint8_t                 u8;
 
 #define REG_CONFIG              0b0001
 #define REG_UPPERBOUND          0b0010
@@ -31,7 +23,7 @@ typedef uint8_t                 u8;
 #define I2C_ADDRMODE_7BIT       0
 
 static u16 FloatToReg(float temp, uint8_t res);
-static u8 GetHighByte(uint16_t reg);
+static u8 GetHighByte(u16 reg);
 static u8 GetLowByte(u16 reg);
 
 /*************************************\
@@ -48,7 +40,7 @@ static u8 GetLowByte(u16 reg);
 \**************************************/
 void MCP9808_Init(MCP9808_Handle* pMcp9808Handle)
 {
-    u8 commands[3] = {0};
+    uint8_t commands[3] = {0};
     
     // config register
     u16 configReg = 0;
@@ -97,11 +89,11 @@ void MCP9808_Init(MCP9808_Handle* pMcp9808Handle)
 \**************************************/
 float MCP9808_GetTemperature(MCP9808_Handle* pMcp9808Handle)
 {
-    u16 data = REG_TEMP;
-    pMcp9808Handle->pTransport->I2C_MasterTransmitData(pMcp9808Handle->pI2cHandle, pMcp9808Handle->Config.SlaveAddr, I2C_ADDRMODE_7BIT, (u8*)&data, 1);
+    uint16_t data = REG_TEMP;
+    pMcp9808Handle->pTransport->I2C_MasterTransmitData(pMcp9808Handle->pI2cHandle, pMcp9808Handle->Config.SlaveAddr, I2C_ADDRMODE_7BIT, (uint8_t*)&data, 1);
     // ^^ set register pointer to the temperature register
     
-    u8 rxBuffer[2];
+    uint8_t rxBuffer[2];
     pMcp9808Handle->pTransport->I2C_MasterReceiveData(pMcp9808Handle->pI2cHandle, pMcp9808Handle->Config.SlaveAddr, I2C_ADDRMODE_7BIT, rxBuffer, 2);
     // ^^ get temperature data from temperature register
 
@@ -128,7 +120,7 @@ float MCP9808_GetTemperature(MCP9808_Handle* pMcp9808Handle)
 \**************************************/
 void MCP9808_SetSleepMode(MCP9808_Handle* pMcp9808Handle, uint8_t isEnabled)
 {
-    u8 commands[3] = {0};
+    uint8_t commands[3] = {0};
     
     u16 configReg = 0;
     configReg |= ((pMcp9808Handle->Config.AlertOpMode & 0b1) << CONFIG_ALERTMOD);

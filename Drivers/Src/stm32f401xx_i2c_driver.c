@@ -1,3 +1,4 @@
+#include "../Inc/definitions.h"
 #include "../Inc/stm32f401xx_i2c_driver.h"
 #include "../Inc/stm32f401xx_clocks.h"
 
@@ -66,7 +67,7 @@ static u32 GetApb1ClkFreq();
   note: 
   
 \**************************************/
-void I2C_PeriphClkCtrl(I2C_Handle* pI2cHandle, u8 isEnabled)
+void I2C_PeriphClkCtrl(I2C_Handle* pI2cHandle, uint8_t isEnabled)
 {
     if (isEnabled)
     {
@@ -95,7 +96,7 @@ void I2C_PeriphClkCtrl(I2C_Handle* pI2cHandle, u8 isEnabled)
   note: 
   
 \**************************************/
-void I2C_PeriphCtrl(I2C_Handle* pI2cHandle, u8 isEnabled)
+void I2C_PeriphCtrl(I2C_Handle* pI2cHandle, uint8_t isEnabled)
 {
     if (isEnabled)
         pI2cHandle->pI2Cx->CR1 |= (1U << I2C_CR1_PE);
@@ -224,7 +225,7 @@ void I2C_Deinit(I2C_Handle* pI2cHandle)
   note: this function is blocking, and does not contain bounds checking
   
 \**************************************/
-void I2C_MasterTransmitData(I2C_Handle* pI2cHandle, u16 slaveAddr, u8 AddrMode, u8* pTxBuffer, u16 len)
+void I2C_MasterTransmitData(I2C_Handle* pI2cHandle, uint16_t slaveAddr, uint8_t AddrMode, uint8_t* pTxBuffer, uint16_t len)
 {
     while (pI2cHandle->pI2Cx->SR2 & I2C_SR2_BUSY);
     u32 tempread;
@@ -272,7 +273,7 @@ void I2C_MasterTransmitData(I2C_Handle* pI2cHandle, u16 slaveAddr, u8 AddrMode, 
   note: this function is blocking, and does not contain bounds checking
   
 \**************************************/
-void I2C_MasterReceiveData(I2C_Handle* pI2cHandle, u16 slaveAddr, u8 AddrMode, u8* pRxBuffer, u16 len)
+void I2C_MasterReceiveData(I2C_Handle* pI2cHandle, uint16_t slaveAddr, uint8_t AddrMode, uint8_t* pRxBuffer, uint16_t len)
 {
     while (pI2cHandle->pI2Cx->SR2 & I2C_SR2_BUSY);
     u32 tempread;

@@ -1,6 +1,7 @@
+#include "../Inc/definitions.h"
 #include "../Inc/stm32f401xx_gpio_driver.h"
 
-#define GPIO_BASEADDR_TO_CODE(PORT_ADDR)	(((uintptr_t)(PORT_ADDR)-AHB1PERIPH_BASEADDR)/0x400U)
+#define GPIO_BASEADDR_TO_CODE(PORT_ADDR)    (((uintptr_t)(PORT_ADDR)-AHB1PERIPH_BASEADDR)/0x400U)
 
 /*************************************\
   fn: @GPIO_PeriphClkCtrl
@@ -15,7 +16,7 @@
   note: 
   
 \**************************************/
-void GPIO_PeriphClkCtrl(GPIO_Handle* pGpioHandle, u8 isEnabled)
+void GPIO_PeriphClkCtrl(GPIO_Handle* pGpioHandle, uint8_t isEnabled)
 {
     if (isEnabled)
     {
@@ -211,7 +212,7 @@ void GPIO_WriteTogglePin(GPIO_Handle* pGpioHandle)
   note: 
   
 \**************************************/
-void GPIO_WritePin(GPIO_Handle* pGpioHandle, u8 isEnabled)
+void GPIO_WritePin(GPIO_Handle* pGpioHandle, uint8_t isEnabled)
 {
     if (isEnabled) pGpioHandle->pGPIOx->BSRR = (1U << (pGpioHandle->Config.PinNumber + 0)); //set HIGH
     else pGpioHandle->pGPIOx->BSRR = (1U << (pGpioHandle->Config.PinNumber + 16)); //set LOW
@@ -230,7 +231,7 @@ void GPIO_WritePin(GPIO_Handle* pGpioHandle, u8 isEnabled)
   note: 
   
 \**************************************/
-void GPIO_WritePort(GPIO_Handle* pGpioHandle, u16 outputReg)
+void GPIO_WritePort(GPIO_Handle* pGpioHandle, uint16_t outputReg)
 {
     pGpioHandle->pGPIOx->BSRR = outputReg;
     pGpioHandle->pGPIOx->BSRR = (((u32)~outputReg & 0xFFFF) << 16);
@@ -248,7 +249,7 @@ void GPIO_WritePort(GPIO_Handle* pGpioHandle, u16 outputReg)
   note: 
   
 \**************************************/
-u8 GPIO_ReadPin(GPIO_Handle* pGpioHandle)
+uint8_t GPIO_ReadPin(GPIO_Handle* pGpioHandle)
 {
     return (pGpioHandle->pGPIOx->IDR & (1U << pGpioHandle->Config.PinNumber)) >> pGpioHandle->Config.PinNumber;
 }
@@ -265,7 +266,7 @@ u8 GPIO_ReadPin(GPIO_Handle* pGpioHandle)
   note: 
   
 \**************************************/
-u16 GPIO_ReadPort(GPIO_Handle* pGpioHandle)
+uint16_t GPIO_ReadPort(GPIO_Handle* pGpioHandle)
 {
     return (pGpioHandle->pGPIOx->IDR & 0xFFFF);
 }
@@ -285,14 +286,14 @@ u16 GPIO_ReadPort(GPIO_Handle* pGpioHandle)
         an interrupt occurs
   
 \**************************************/
-void GPIO_IRQHandled(u8 firstPinNum, u8 lastPinNum)
+void GPIO_IRQHandled(uint8_t firstPinNum, uint8_t lastPinNum)
 {
-    for (u8 i = firstPinNum; i <= lastPinNum; i++)
+    for (u8 pin = firstPinNum; pin <= lastPinNum; pin++)
     {
-        if (EXTI->PR & (1U << i))
+        if (EXTI->PR & (1U << pin))
         {
-            EXTI->PR |= (1U << i);
-            GPIO_AppEventCallback(i);
+            EXTI->PR |= (1U << pin);
+            GPIO_AppEventCallback(pin);
         }
     }
 }
@@ -310,7 +311,7 @@ void GPIO_IRQHandled(u8 firstPinNum, u8 lastPinNum)
   note: weak implementation, please implement your own
   
 \**************************************/
-WEAK void GPIO_AppEventCallback(u8 pinNumber)
+WEAK void GPIO_AppEventCallback(uint8_t pinNumber)
 {
 
 }

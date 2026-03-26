@@ -1,6 +1,7 @@
 #ifndef STM32F401XX_GPIO_DRIVER_H_
 #define STM32F401XX_GPIO_DRIVER_H_
 
+#include <stdint.h>
 #include "stm32f401xx.h"
 
 //PinMode
@@ -38,13 +39,13 @@
 #define GPIOH_REG_RESET() do {RCC->AHB1RSTR |= (1 << 7); RCC->APB2RSTR &= ~(1 << 7);} while(0)
 
 typedef struct {
-    u8 PinNumber;
-    u8 PinMode;
-    u8 OpType;
-    u8 OpSpeed;
-    u8 PupdCtrl;
-    u8 AltFunNumber;
-    u8 RtFtDetect;
+    uint8_t PinNumber;
+    uint8_t PinMode;
+    uint8_t OpType;
+    uint8_t OpSpeed;
+    uint8_t PupdCtrl;
+    uint8_t AltFunNumber;
+    uint8_t RtFtDetect;
 } GPIO_Config;
 
 typedef struct {
@@ -56,7 +57,7 @@ typedef struct {
   fn: @GPIO_PeriphClkCtrl
   
   param1 GPIO_Handle*: the gpio handle
-  param2 u8: enable or disable clock
+  param2 uint8_t: enable or disable clock
   
   return:
   
@@ -65,7 +66,7 @@ typedef struct {
   note: 
   
 \**************************************/
-void GPIO_PeriphClkCtrl(GPIO_Handle* pGpioHandle, u8 isEnabled);
+void GPIO_PeriphClkCtrl(GPIO_Handle* pGpioHandle, uint8_t isEnabled);
 
 /*************************************\
   fn: @GPIO_Init
@@ -129,7 +130,7 @@ void GPIO_WriteTogglePin(GPIO_Handle* pGpioHandle);
   fn: @GPIO_WritePin
   
   param1 GPIO_Handle*: the gpio handle
-  param2 u8: high or low on the pin
+  param2 uint8_t: high or low on the pin
   
   return:
   
@@ -138,13 +139,13 @@ void GPIO_WriteTogglePin(GPIO_Handle* pGpioHandle);
   note: 
   
 \**************************************/
-void GPIO_WritePin(GPIO_Handle* pGpioHandle, u8 isEnabled);
+void GPIO_WritePin(GPIO_Handle* pGpioHandle, uint8_t isEnabled);
 
 /*************************************\
   fn: @GPIO_WritePort
   
   param1 GPIO_Handle*: the gpio handle
-  param2 u16: the gpio pin output values
+  param2 uint16_t: the gpio pin output values
   
   return:
   
@@ -153,41 +154,41 @@ void GPIO_WritePin(GPIO_Handle* pGpioHandle, u8 isEnabled);
   note: 
   
 \**************************************/
-void GPIO_WritePort(GPIO_Handle* pGpioHandle, u16 outputReg);
+void GPIO_WritePort(GPIO_Handle* pGpioHandle, uint16_t outputReg);
 
 /*************************************\
   fn: @GPIO_ReadPin
   
   param1 GPIO_Handle*: the gpio handle
   
-  return u8: first bit is either 1 or 0 depending on electrical pin state
+  return uint8_t: first bit is either 1 or 0 depending on electrical pin state
   
   desc: reads the gpio electrical pin state
   
   note: 
   
 \**************************************/
-u8 GPIO_ReadPin(GPIO_Handle* pGpioHandle);
+uint8_t GPIO_ReadPin(GPIO_Handle* pGpioHandle);
 
 /*************************************\
   fn: @GPIO_ReadPort
   
   param1 GPIO_Handle*: the gpio handle
   
-  return u16: returns a bitmap of the electrical states of the gpio pins
+  return uint16_t: returns a bitmap of the electrical states of the gpio pins
   
   desc: reads and returns the pin state of every pin on the gpio peripheral
   
   note: 
   
 \**************************************/
-u16 GPIO_ReadPort(GPIO_Handle* pGpioHandle);
+uint16_t GPIO_ReadPort(GPIO_Handle* pGpioHandle);
 
 /*************************************\
   fn: @GPIO_IRQHandled
   
-  param1 u8: the first pin number the interrupt could have been called from
-  param2 u8: the last pin number the interrupt could have been called from
+  param1 uint8_t: the first pin number the interrupt could have been called from
+  param2 uint8_t: the last pin number the interrupt could have been called from
   
   return: 
   
@@ -198,12 +199,12 @@ u16 GPIO_ReadPort(GPIO_Handle* pGpioHandle);
         an interrupt occurs
   
 \**************************************/
-void GPIO_IRQHandled(u8 firstPinNum, u8 lastPinNum);
+void GPIO_IRQHandled(uint8_t firstPinNum, uint8_t lastPinNum);
 
 /*************************************\
   fn: @GPIO_AppEventCallback
   
-  param1 u8: the pin number where an interrupt was called
+  param1 uint8_t: the pin number where an interrupt was called
   
   return: 
   
@@ -213,6 +214,6 @@ void GPIO_IRQHandled(u8 firstPinNum, u8 lastPinNum);
   note: weak implementation, please implement your own
   
 \**************************************/
-void GPIO_AppEventCallback(u8 pinNumber);
+void GPIO_AppEventCallback(uint8_t pinNumber);
 
 #endif /* STM32F401XX_GPIO_DRIVER_H_ */

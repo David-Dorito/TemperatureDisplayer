@@ -1,21 +1,5 @@
+#include "../Inc/definitions.h"
 #include "../Inc/pcd8544_driver.h"
-#include <stddef.h>
-
-#define HIGH                                1
-#define LOW                                 0
-#define TRUE                                1
-#define FALSE                               0
-#define ENABLE                              1
-#define DISABLE                             0
-
-typedef int64_t                             i64;
-typedef int32_t                             i32;
-typedef int16_t                             i16;
-typedef int8_t                              i8;
-typedef uint64_t                            u64;
-typedef uint32_t                            u32;
-typedef uint16_t                            u16;
-typedef uint8_t                             u8;
 
 #define SET_XADDR_0                         0b10000000
 #define SET_YADDR_0                         0b01000000
@@ -60,7 +44,7 @@ void PCD8544_Init(PCD8544_Handle* pPcd8544Handle)
     pPcd8544Handle->pTransport->GPIO_WritePin(pPcd8544Handle->pCsPin, LOW);
     pPcd8544Handle->pTransport->GPIO_WritePin(pPcd8544Handle->pDcPin, LOW);
     
-    u8 command = SET_EXTENDINST;
+    uint8_t command = SET_EXTENDINST;
     pPcd8544Handle->pTransport->SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
     
     command = (SET_VOP | PCD8544_CONTRAST_DEFAULT);
@@ -113,7 +97,7 @@ void PCD8544_Deinit(PCD8544_Handle* pPcd8544Handle)
   note: function is very basic, just a wrapper for GPIO_WritePin() with the LED pin as the arg
   
 \**************************************/
-void PCD8544_SetBacklight(PCD8544_Handle* pPcd8544Handle, u8 isEnabled)
+void PCD8544_SetBacklight(PCD8544_Handle* pPcd8544Handle, uint8_t isEnabled)
 {
     pPcd8544Handle->pTransport->GPIO_WritePin(pPcd8544Handle->pLedPin, !isEnabled);
 }
@@ -132,7 +116,7 @@ void PCD8544_SetBacklight(PCD8544_Handle* pPcd8544Handle, u8 isEnabled)
         so once you turn off sleep mode it will start displaying the image again
   
 \**************************************/
-void PCD8544_SetSleepMode(PCD8544_Handle* pPcd8544Handle, u8 isEnabled)
+void PCD8544_SetSleepMode(PCD8544_Handle* pPcd8544Handle, uint8_t isEnabled)
 {
     pPcd8544Handle->pTransport->GPIO_WritePin(pPcd8544Handle->pCsPin, LOW);
     
@@ -160,7 +144,7 @@ void PCD8544_SetSleepMode(PCD8544_Handle* pPcd8544Handle, u8 isEnabled)
   note: use the PCD8544_DISPLAYMODE_XXX macros as the mode arg, view the datasheet for a description of what they do
   
 \**************************************/
-void PCD8544_SetDisplayMode(PCD8544_Handle* pPcd8544Handle, u8 mode)
+void PCD8544_SetDisplayMode(PCD8544_Handle* pPcd8544Handle, uint8_t mode)
 {
     pPcd8544Handle->pTransport->GPIO_WritePin(pPcd8544Handle->pCsPin, LOW);
 
@@ -184,7 +168,7 @@ void PCD8544_SetDisplayMode(PCD8544_Handle* pPcd8544Handle, u8 mode)
   note: use the PCD8544_TEMPCOEFF_XXX macros as the coefficient arg, view the datasheet for a description of what they do
   
 \**************************************/
-void PCD8544_SetTempCoeff(PCD8544_Handle* pPcd8544Handle, u8 coefficient)
+void PCD8544_SetTempCoeff(PCD8544_Handle* pPcd8544Handle, uint8_t coefficient)
 {
     pPcd8544Handle->pTransport->GPIO_WritePin(pPcd8544Handle->pCsPin, LOW);
 
@@ -208,13 +192,13 @@ void PCD8544_SetTempCoeff(PCD8544_Handle* pPcd8544Handle, u8 coefficient)
   note: 
   
 \**************************************/
-void PCD8544_SetContrast(PCD8544_Handle* pPcd8544Handle, u8 contrast)
+void PCD8544_SetContrast(PCD8544_Handle* pPcd8544Handle, uint8_t contrast)
 {
     pPcd8544Handle->pTransport->GPIO_WritePin(pPcd8544Handle->pCsPin, LOW);
 
     pPcd8544Handle->pTransport->GPIO_WritePin(pPcd8544Handle->pDcPin, LOW);
 
-    u8 command = SET_EXTENDINST;
+    uint8_t command = SET_EXTENDINST;
     pPcd8544Handle->pTransport->SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
 
     command = (SET_VOP | contrast);
@@ -240,7 +224,7 @@ void PCD8544_SetContrast(PCD8544_Handle* pPcd8544Handle, u8 contrast)
   note: early returns nothing to avoid memory corruption if posX >= width or posY >= height
   
 \**************************************/
-void PCD8544_TogglePixelColor(PCD8544_Handle* pPcd8544Handle, u8 posX, u8 posY)
+void PCD8544_TogglePixelColor(PCD8544_Handle* pPcd8544Handle, uint8_t posX, uint8_t posY)
 {
     if (posX >= PCD8544_SCREEN_WIDTH || posY >= PCD8544_SCREEN_HEIGHT)
         return;
@@ -265,7 +249,7 @@ void PCD8544_TogglePixelColor(PCD8544_Handle* pPcd8544Handle, u8 posX, u8 posY)
   note: early returns nothing to avoid memory corruption if posX >= width or posY >= height
   
 \**************************************/
-void PCD8544_SetPixelColor(PCD8544_Handle* pPcd8544Handle, u8 isBlack, u8 posX, u8 posY)
+void PCD8544_SetPixelColor(PCD8544_Handle* pPcd8544Handle, uint8_t isBlack, uint8_t posX, uint8_t posY)
 {
     if (posX >= PCD8544_SCREEN_WIDTH || posY >= PCD8544_SCREEN_HEIGHT)
         return;
@@ -292,7 +276,7 @@ void PCD8544_SetPixelColor(PCD8544_Handle* pPcd8544Handle, u8 isBlack, u8 posX, 
   note: returns 0 if posX >= width or posY >= height to avoid memory corruption
 
 \**************************************/
-u8 PCD8544_GetPixelColor(PCD8544_Handle* pPcd8544Handle, u8 posX, u8 posY)
+uint8_t PCD8544_GetPixelColor(PCD8544_Handle* pPcd8544Handle, uint8_t posX, uint8_t posY)
 {
     if (posX >= PCD8544_SCREEN_WIDTH || posY >= PCD8544_SCREEN_HEIGHT)
         return 0;
@@ -315,7 +299,7 @@ u8 PCD8544_GetPixelColor(PCD8544_Handle* pPcd8544Handle, u8 posX, u8 posY)
   note:
   
 \**************************************/
-void PCD8544_FillScreenColor(PCD8544_Handle* pPcd8544Handle, u8 isBlack)
+void PCD8544_FillScreenColor(PCD8544_Handle* pPcd8544Handle, uint8_t isBlack)
 {
     isBlack = isBlack? 0xFF : 0x00;
     for (u16 i = 0; i < PCD8544_SCREEN_SIZE; i++)
@@ -340,7 +324,7 @@ void PCD8544_UpdateScreen(PCD8544_Handle* pPcd8544Handle)
     pPcd8544Handle->pTransport->GPIO_WritePin(pPcd8544Handle->pCsPin, LOW);
 
     pPcd8544Handle->pTransport->GPIO_WritePin(pPcd8544Handle->pDcPin, LOW);
-    u8 command = SET_XADDR_0;
+    uint8_t command = SET_XADDR_0;
     pPcd8544Handle->pTransport->SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);
     command = SET_YADDR_0;
     pPcd8544Handle->pTransport->SPI_TransmitData(pPcd8544Handle->pSpiHandle, &command, 1);

@@ -1,3 +1,4 @@
+#include "../Inc/definitions.h"
 #include "../Inc/stm32f401xx.h"
 #include "../Inc/stm32f401xx_clocks.h"
 
@@ -14,7 +15,7 @@
         but it should have a tolerance of max 75%
   
 \**************************************/
-void UnpreciseDelay(u32 millisecondsDelay)
+void UnpreciseDelay(uint32_t millisecondsDelay)
 {
     u8 SysClk = RCC->CFGR & (0b11U << RCC_CFGR_SWS);
     u32 totalIncrements = 0;

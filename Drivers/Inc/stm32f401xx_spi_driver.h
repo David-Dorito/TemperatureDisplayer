@@ -8,6 +8,7 @@
     #warning "SPI_DUMMYBYTE was not set, default value is 0x0000. Change it in Drivers/Inc/stm32f401xx_spi_driver.h at the top of the file or enable IgnoreSpiWarnings"
 #endif
 
+#include <stdint.h>
 #include "stm32f401xx.h"
 
 //DeviceMode
@@ -54,14 +55,14 @@
 #define SPI4_REG_RESET() do {RCC->APB2RSTR |= (1 << 13); RCC->APB2RSTR &= ~(1 << 13);} while(0)
 
 typedef struct {
-    u8 DeviceMode;
-	u8 BusConfig;
-	u8 SclkSpeed;
-	u8 DFF;
-	u8 CPOL;
-	u8 CPHA;
-	u8 SSM;
-    u8 BitOrder;
+    uint8_t DeviceMode;
+	uint8_t BusConfig;
+	uint8_t SclkSpeed;
+	uint8_t DFF;
+	uint8_t CPOL;
+	uint8_t CPHA;
+	uint8_t SSM;
+    uint8_t BitOrder;
 } SPI_Config;
 
 typedef struct {
@@ -73,7 +74,7 @@ typedef struct {
   fn: @SPI_PeriphCtrl
   
   param1 SPI_Handle*: the handle struct for the spi peripheral
-  param2 u8: enable or disable the spi peripheral using the SPE bit
+  param2 uint8_t: enable or disable the spi peripheral using the SPE bit
   
   return:
   
@@ -82,13 +83,13 @@ typedef struct {
   note: 
   
 \**************************************/
-void SPI_PeriphCtrl(SPI_Handle* pSpiHandle, u8 isEnabled);
+void SPI_PeriphCtrl(SPI_Handle* pSpiHandle, uint8_t isEnabled);
 
 /*************************************\
   fn: @SPI_PeriphClkCtrl
   
   param1 SPI_Handle*: the handle struct for the spi peripheral
-  param2 u8: enable or disable the clock which the spi peripheral is on
+  param2 uint8_t: enable or disable the clock which the spi peripheral is on
   
   return:
   
@@ -97,7 +98,7 @@ void SPI_PeriphCtrl(SPI_Handle* pSpiHandle, u8 isEnabled);
   note: 
   
 \**************************************/
-void SPI_PeriphClkCtrl(SPI_Handle* pSpiHandle, u8 isEnabled);
+void SPI_PeriphClkCtrl(SPI_Handle* pSpiHandle, uint8_t isEnabled);
 
 /*************************************\
   fn: @SPI_Init
@@ -131,8 +132,8 @@ void SPI_Deinit(SPI_Handle* pSpiHandle);
   fn: @SPI_TransmitData
   
   param1 SPI_Handle*: the handle struct for the spi peripheral
-  param2 u8*: pointer to the transmit buffer
-  param3 u16: length of the transmit buffer
+  param2 uint8_t*: pointer to the transmit buffer
+  param3 uint16_t: length of the transmit buffer
   
   return:
   
@@ -141,14 +142,14 @@ void SPI_Deinit(SPI_Handle* pSpiHandle);
   note: the function is blocking
   
 \**************************************/
-void SPI_TransmitData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u16 len);
+void SPI_TransmitData(SPI_Handle* pSpiHandle, uint8_t* pTxBuffer, uint16_t len);
 
 /*************************************\
   fn: @SPI_ReceiveData
   
   param1 SPI_Handle*: the handle struct for the spi peripheral
-  param2 u8*: pointer to the receive buffer
-  param3 u16: length of the receive buffer
+  param2 uint8_t*: pointer to the receive buffer
+  param3 uint16_t: length of the receive buffer
   
   return:
   
@@ -157,16 +158,16 @@ void SPI_TransmitData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u16 len);
   note: the function is blocking
   
 \**************************************/
-void SPI_ReceiveData(SPI_Handle* pSpiHandle, u8* pRxBuffer, u16 len);
+void SPI_ReceiveData(SPI_Handle* pSpiHandle, uint8_t* pRxBuffer, uint16_t len);
 
 /*************************************\
   fn: @SPI_TransmitReceiveData
   
   param1 SPI_Handle*: the handle struct for the spi peripheral
-  param2 u8*: pointer to the transmit buffer
-  param3 u8*: pointer to the receive buffer
-  param4 u16: length of the transmit buffer
-  param5 u16: length of the receive buffer
+  param2 uint8_t*: pointer to the transmit buffer
+  param3 uint8_t*: pointer to the receive buffer
+  param4 uint16_t: length of the transmit buffer
+  param5 uint16_t: length of the receive buffer
   
   return:
   
@@ -176,6 +177,6 @@ void SPI_ReceiveData(SPI_Handle* pSpiHandle, u8* pRxBuffer, u16 len);
         bytes after the pTxBuffer runs out. the function is blocking
   
 \**************************************/
-void SPI_TransmitReceiveData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u8* pRxBuffer, u16 lenTx, u16 lenRx);
+void SPI_TransmitReceiveData(SPI_Handle* pSpiHandle, uint8_t* pTxBuffer, uint8_t* pRxBuffer, uint16_t lenTx, uint16_t lenRx);
 
 #endif /* STM32F401XX_SPI_DRIVER_H_ */

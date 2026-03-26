@@ -1,3 +1,4 @@
+#include "../Inc/definitions.h"
 #include "../Inc/stm32f401xx_spi_driver.h"
 
 /******************************** BIT DEFINITION MACROS ********************************/
@@ -52,7 +53,7 @@
   note: 
   
 \**************************************/
-void SPI_PeriphCtrl(SPI_Handle* pSpiHandle, u8 isEnabled)
+void SPI_PeriphCtrl(SPI_Handle* pSpiHandle, uint8_t isEnabled)
 {
     if (isEnabled)
         pSpiHandle->pSPIx->CR1 |= (1U << SPI_CR1_SPE);
@@ -73,7 +74,7 @@ void SPI_PeriphCtrl(SPI_Handle* pSpiHandle, u8 isEnabled)
   note: 
   
 \**************************************/
-void SPI_PeriphClkCtrl(SPI_Handle* pSpiHandle, u8 isEnabled)
+void SPI_PeriphClkCtrl(SPI_Handle* pSpiHandle, uint8_t isEnabled)
 {
     if (isEnabled)
     {
@@ -163,7 +164,7 @@ void SPI_Deinit(SPI_Handle* pSpiHandle)
   note: the function is blocking
   
 \**************************************/
-void SPI_TransmitData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u16 len)
+void SPI_TransmitData(SPI_Handle* pSpiHandle, uint8_t* pTxBuffer, uint16_t len)
 {
     pSpiHandle->pSPIx->CR1 |= (1U << SPI_CR1_SPE); //make sure peripheral is enabled
 
@@ -216,7 +217,7 @@ void SPI_TransmitData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u16 len)
   note: the function is blocking
   
 \**************************************/
-void SPI_ReceiveData(SPI_Handle* pSpiHandle, u8* pRxBuffer, u16 len)
+void SPI_ReceiveData(SPI_Handle* pSpiHandle, uint8_t* pRxBuffer, uint16_t len)
 {
     pSpiHandle->pSPIx->CR1 |= (1U << SPI_CR1_SPE); //make sure peripheral is enabled
 
@@ -272,7 +273,7 @@ void SPI_ReceiveData(SPI_Handle* pSpiHandle, u8* pRxBuffer, u16 len)
         bytes after the pTxBuffer runs out. the function is blocking
   
 \**************************************/
-void SPI_TransmitReceiveData(SPI_Handle* pSpiHandle, u8* pTxBuffer, u8* pRxBuffer, u16 lenTx, u16 lenRx)
+void SPI_TransmitReceiveData(SPI_Handle* pSpiHandle, uint8_t* pTxBuffer, uint8_t* pRxBuffer, uint16_t lenTx, uint16_t lenRx)
 {
     pSpiHandle->pSPIx->CR1 |= (1U << SPI_CR1_SPE); //make sure peripheral is enabled
 
