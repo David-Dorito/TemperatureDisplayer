@@ -1,6 +1,6 @@
-#include "../Inc/definitions.h"
-#include "../Inc/stm32f401xx.h"
-#include "../Inc/stm32f401xx_clocks.h"
+#include "definitions.h"
+#include "stm32f401xx.h"
+#include "stm32f401xx_clocks.h"
 
 /*************************************\
   fn: @UnpreciseDelay

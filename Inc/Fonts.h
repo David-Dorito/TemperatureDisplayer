@@ -1,7 +1,7 @@
 #ifndef FONTS_H_
 #define FONTS_H_
 
-#include "../Libs/GfxLib/GfxLib.h"
+#include "GfxLib.h"
 
 extern GfxLib_Font basicFont;
 

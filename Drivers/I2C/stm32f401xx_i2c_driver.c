@@ -1,6 +1,6 @@
-#include "../Inc/definitions.h"
-#include "../Inc/stm32f401xx_i2c_driver.h"
-#include "../Inc/stm32f401xx_clocks.h"
+#include "definitions.h"
+#include "stm32f401xx_i2c_driver.h"
+#include "stm32f401xx_clocks.h"
 
 /******************************** BIT DEFINITION MACROS ********************************/
 

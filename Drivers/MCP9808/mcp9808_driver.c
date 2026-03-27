@@ -1,5 +1,5 @@
-#include "../Inc/definitions.h"
-#include "../Inc/mcp9808_driver.h"
+#include "definitions.h"
+#include "mcp9808_driver.h"
 
 #define REG_CONFIG              0b0001
 #define REG_UPPERBOUND          0b0010

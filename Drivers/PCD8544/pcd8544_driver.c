@@ -1,5 +1,5 @@
-#include "../Inc/definitions.h"
-#include "../Inc/pcd8544_driver.h"
+#include "definitions.h"
+#include "pcd8544_driver.h"
 
 #define SET_XADDR_0                         0b10000000
 #define SET_YADDR_0                         0b01000000

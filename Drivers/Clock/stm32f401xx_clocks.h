@@ -26,7 +26,7 @@
 #define RCC_SYSCLK_HSE          0b01
 #define RCC_SYSCLK_PLL          0b10
 
-#define IgnoreClockWarnings     0
+#define IgnoreClockWarnings     1
 
 #if HSE_FREQ == 0U && !IgnoreClockWarnings
     #warning "HSE_FREQ value is not set inside of Drivers/Inc/stm32f401xx_clocks.h, if your using HSE please set it else turn IgnoreClockWarnings to 1"

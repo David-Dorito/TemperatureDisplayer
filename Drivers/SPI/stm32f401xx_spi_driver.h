@@ -3,7 +3,7 @@
 
 #define SPI_DUMMYBYTE               0x0000U
 
-#define IgnoreSpiWarnings           0
+#define IgnoreSpiWarnings           1
 #if SPI_DUMMYBYTE == 0x0000U && !IgnoreSpiWarnings
     #warning "SPI_DUMMYBYTE was not set, default value is 0x0000. Change it in Drivers/Inc/stm32f401xx_spi_driver.h at the top of the file or enable IgnoreSpiWarnings"
 #endif

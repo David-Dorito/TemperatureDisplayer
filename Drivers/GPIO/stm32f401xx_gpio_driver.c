@@ -1,5 +1,5 @@
-#include "../Inc/definitions.h"
-#include "../Inc/stm32f401xx_gpio_driver.h"
+#include "definitions.h"
+#include "stm32f401xx_gpio_driver.h"
 
 #define GPIO_BASEADDR_TO_CODE(PORT_ADDR)    (((uintptr_t)(PORT_ADDR)-AHB1PERIPH_BASEADDR)/0x400U)
 

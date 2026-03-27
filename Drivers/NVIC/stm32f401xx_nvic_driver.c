@@ -1,6 +1,6 @@
-#include "../Inc/definitions.h"
-#include "../Inc/stm32f401xx_nvic_driver.h"
-#include "../Inc/stm32f401xx.h"
+#include "definitions.h"
+#include "stm32f401xx_nvic_driver.h"
+#include "stm32f401xx.h"
 
 /*************************************\
   fn: @IRQ_PrioCtrl
