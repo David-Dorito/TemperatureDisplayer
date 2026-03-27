@@ -1,5 +1,5 @@
-#ifndef PCD8544_DRIVER_H_
-#define PCD8544_DRIVER_H_
+#ifndef _PCD8544_DRIVER_H_
+#define _PCD8544_DRIVER_H_
 
 #include <stdint.h>
 

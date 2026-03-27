@@ -1,5 +1,5 @@
-#ifndef BSP_H_
-#define BSP_H_
+#ifndef _BSP_H_
+#define _BSP_H_
 
 #include "definitions.h"
 #include "stm32f401xx.h"

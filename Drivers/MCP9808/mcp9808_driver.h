@@ -1,5 +1,5 @@
-#ifndef MCP9808_DRIVER_H_
-#define MCP9808_DRIVER_H_
+#ifndef _MCP9808_DRIVER_H_
+#define _MCP9808_DRIVER_H_
 
 #include <stdint.h>
 

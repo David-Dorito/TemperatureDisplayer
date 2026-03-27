@@ -1,5 +1,5 @@
-#ifndef USER_BOARD_CLOCKS_H_
-#define USER_BOARD_CLOCKS_H_
+#ifndef _STM32F401XX_CLOCKS_H_
+#define _STM32F401XX_CLOCKS_H_
 
 #include <stdint.h>
 

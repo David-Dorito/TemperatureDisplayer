@@ -1,22 +1,18 @@
 #include "GfxLib.h"
 
-typedef int64_t                             i64;
 typedef int32_t                             i32;
 typedef int16_t                             i16;
 typedef int8_t                              i8;
-typedef uint64_t                            u64;
 typedef uint32_t                            u32;
 typedef uint16_t                            u16;
 typedef uint8_t                             u8;
 
 void GfxLib_DrawChar(GfxLib_Handle* pGfxLibHandle, char character, uint16_t posX, uint16_t posY, uint32_t color)
 {
-    u16 row = 0;
-    u16 col = 0;
     for (u32 i = 0; i < pGfxLibHandle->pFont->CharHeight*pGfxLibHandle->pFont->CharWidth; i++)
     {
-        col = i % pGfxLibHandle->pFont->CharWidth;
-        row = i / pGfxLibHandle->pFont->CharWidth;
+        u16 col = i % pGfxLibHandle->pFont->CharWidth;
+        u16 row = i / pGfxLibHandle->pFont->CharWidth;
         u32 pixelIndex = col+row*pGfxLibHandle->pFont->CharWidth;
         u8 bitOffset = 7 - (pixelIndex % 8);
         u8 currentPixelActive = (pGfxLibHandle->pFont->ppCharBitmaps[character - pGfxLibHandle->pFont->StartChar][pixelIndex/8] >> bitOffset) & 1;

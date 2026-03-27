@@ -217,7 +217,7 @@ static void I2C_MasterReceiveData_Bridge(void* pI2cHandle, u16 slaveAddr, u8 add
 void BSP_Init()
 {
     SYSCFG_PCLK_EN();
-    IRQ_ItCtrl(IRQ_NO_EXTI15_10, ENABLE);
+    NVIC_SetIrqEnabled(IRQ_NO_EXTI15_10, ENABLE);
     
     GPIO_Init(&buttonPin);
 

@@ -1,5 +1,5 @@
-#ifndef GFXLIB_H_
-#define GFXLIB_H_
+#ifndef _GFXLIB_H_
+#define _GFXLIB_H_
 
 #include <stdint.h>
 

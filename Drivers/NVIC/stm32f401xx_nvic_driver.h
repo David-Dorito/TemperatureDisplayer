@@ -31,7 +31,7 @@
 #define IRQ_NO_SPI4                         84
 
 /*************************************\
-  fn: @IRQ_PrioCtrl
+  fn: @NVIC_SetIrqPrio
   
   param1 uint8_t: the IRQ number for which you have to set the priority
   param2 uint8_t: the IRQ priority
@@ -43,10 +43,10 @@
   note: 
   
 \**************************************/
-void IRQ_PrioCtrl(uint8_t IrqNumber, uint8_t IrqPriority);
+void NVIC_SetIrqPrio(uint8_t IrqNumber, uint8_t IrqPriority);
 
 /*************************************\
-  fn: @IRQ_ItCtrl
+  fn: @NVIC_SetIrqEnabled
   
   param1 uint8_t: the interrupt line
   param2 uint8_t: enable or disable
@@ -58,6 +58,6 @@ void IRQ_PrioCtrl(uint8_t IrqNumber, uint8_t IrqPriority);
   note: 
   
 \**************************************/
-void IRQ_ItCtrl(uint8_t IrqNumber, uint8_t isEnabled);
+void NVIC_SetIrqEnabled(uint8_t IrqNumber, uint8_t isEnabled);
 
 #endif
