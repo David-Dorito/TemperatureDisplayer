@@ -13,10 +13,10 @@
 #include "GfxLib.h"
 #include "Fonts.h"
 
-extern GPIO_Handle buttonPin;
-extern PCD8544_Handle lcdHandle;
+extern GPIO_Handle    buttonPin;
+extern Pcd8544_Handle lcdHandle;
 extern MCP9808_Handle sensorHandle;
-extern GfxLib_Handle gfxlibHandle;
+extern GfxLib_Handle  gfxlibHandle;
 
 void BSP_Init();
 

@@ -1,111 +1,101 @@
 #include "bsp.h"
 
 /*************************************\
-  
+
   GND  -> LCD, Sensor GND
   3V3  -> LCD, Sensor Vcc
   PA01 -> LCD Reset
   PA02 -> LCD Chip select
   PA03 -> LCD Data/Command select
-  PA05 -> LCD Spi clock 
+  PA05 -> LCD Spi clock
   PA07 -> LCD Spi MOSI
   PA09 -> LCD Backlight through a 220 to 330 Ohm resistor
   PA10 -> GND over a button
   PB08 -> Sensor SCL
   PB09 -> Sensor SDA
-  
+
 \*************************************/
 
-#define WHITE               0
-#define BLACK               1
+#define WHITE 0
+#define BLACK 1
 
-void FloatToString(float value, char *buffer, u8 decimals);
+void FloatToString(float value, char* buffer, u8 decimals);
 
 volatile u8 isButtonPressed = FALSE;
 
-int main(void)
-{
-    BSP_Init();
-    
-    PCD8544_FillScreenColor(&lcdHandle, WHITE);
-    PCD8544_UpdateScreen(&lcdHandle);
+int main(void) {
+	BSP_Init();
 
-    while (TRUE)
-    {
-        if (isButtonPressed)
-        {
-            float temperature = MCP9808_GetTemperature(&sensorHandle);
-            char temperatureString[16] = "";
-            FloatToString(temperature, temperatureString, 4);
-            
-            PCD8544_FillScreenColor(&lcdHandle, WHITE);
-            GfxLib_DrawString(&gfxlibHandle, "TEMPERATURE:", 2, 12, BLACK);
-            GfxLib_DrawString(&gfxlibHandle, temperatureString, 18, 20, BLACK);
-            PCD8544_UpdateScreen(&lcdHandle);
-            
-            isButtonPressed = FALSE;
-        }
-    }
-    
-    return 0;
+	Pcd8544_FillScreenColor(&lcdHandle, WHITE);
+	Pcd8544_UpdateScreen(&lcdHandle);
+
+	while (TRUE) {
+		if (isButtonPressed) {
+			float temperature = MCP9808_GetTemperature(&sensorHandle);
+			char  temperatureString[16] = "";
+			FloatToString(temperature, temperatureString, 4);
+
+			Pcd8544_FillScreenColor(&lcdHandle, WHITE);
+			GfxLib_DrawString(&gfxlibHandle, "TEMPERATURE:", 2, 12, BLACK);
+			GfxLib_DrawString(&gfxlibHandle, temperatureString, 18, 20, BLACK);
+			Pcd8544_UpdateScreen(&lcdHandle);
+
+			isButtonPressed = FALSE;
+		}
+	}
+
+	return 0;
 }
 
-void EXTI15_10_IRQHandler(void)
-{
-    GPIO_IRQHandled(10, 15);
+void EXTI15_10_IRQHandler(void) {
+	GPIO_IRQHandled(10, 15);
 }
 
-void GPIO_AppEventCallback(u8 pinNumber)
-{
-    if (pinNumber == buttonPin.Config.PinNumber)
-        isButtonPressed = TRUE;
+void GPIO_AppEventCallback(u8 pinNumber) {
+	if (pinNumber == buttonPin.Config.PinNumber)
+		isButtonPressed = TRUE;
 }
 
-void FloatToString(float value, char* buffer, u8 decimals)
-{
-    u16 i = 0;
+void FloatToString(float value, char* buffer, u8 decimals) {
+	u16 i = 0;
 
-    // Handle negative numbers
-    if (value < 0)
-    {
-        buffer[i++] = '-';
-        value = -value;
-    }
+	// Handle negative numbers
+	if (value < 0) {
+		buffer[i++] = '-';
+		value = -value;
+	}
 
-    // Integer part
-    int whole = (int)value;
-    float fraction = value - whole;
+	// Integer part
+	int   whole = (int)value;
+	float fraction = value - whole;
 
-    // Convert integer part (array will be reversed, for example 20 would be 02)
-    char temp[16];
-    u16 j = 0;
+	// Convert integer part (array will be reversed, for example 20 would be 02)
+	char temp[16];
+	u16  j = 0;
 
-    if (whole == 0)
-        temp[j++] = '0';
-    else
-        while (whole > 0)
-        {
-            temp[j++] = (whole % 10) + '0';
-            whole /= 10;
-        }
+	if (whole == 0)
+		temp[j++] = '0';
+	else
+		while (whole > 0) {
+			temp[j++] = (whole % 10) + '0';
+			whole /= 10;
+		}
 
-    // Reverse integer digits (from the example before, turn 02 back to 20)
-    for (int k = j - 1; k >= 0; k--)
-        buffer[i++] = temp[k];
+	// Reverse integer digits (from the example before, turn 02 back to 20)
+	for (int k = j - 1; k >= 0; k--)
+		buffer[i++] = temp[k];
 
-    // Decimal point
-    if (decimals > 0)
-    {
-        buffer[i++] = '.';
+	// Decimal point
+	if (decimals > 0) {
+		buffer[i++] = '.';
 
-        for (int d = 0; d < decimals; d++)
-        {
-            fraction *= 10;
-            int digit = (int)fraction;
-            buffer[i++] = digit + '0';
-            fraction -= digit;
-        }
-    }
+		for (int d = 0; d < decimals; d++) {
+			fraction *= 10;
+			int digit = (int)fraction;
+			buffer[i++] = digit + '0';
+			fraction -= digit;
+		}
+	}
 
-    buffer[i] = '\0';
+	buffer[i] = '\0';
 }

@@ -1,69 +1,75 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 4.3.0)
 
 project(TemperatureDisplayer LANGUAGES C ASM)
 
-set(CMAKE_BUILD_TYPE Debug)
-set(TARGET ${PROJECT_NAME}.elf)
+set(CMAKE_EXPORT_COMPILE_COMMANDS "ON")
+set(CMAKE_BUILD_TYPE "Debug")
+set(TARGET "${PROJECT_NAME}.elf")
 
-add_compile_options(
-    -mcpu=cortex-m4
-    -mthumb
-    -O0
-    -g3
+add_library(stm32f401xx INTERFACE)
+target_compile_options(stm32f401xx
+INTERFACE
+	-mcpu=cortex-m4
+	-mthumb
+	-O0
+	-g3
 )
-
-add_library(Drivers
-    Drivers/GPIO/stm32f401xx_gpio_driver.c
-    Drivers/SPI/stm32f401xx_spi_driver.c
-    Drivers/I2C/stm32f401xx_i2c_driver.c
-    Drivers/NVIC/stm32f401xx_nvic_driver.c
-    Drivers/Clock/stm32f401xx_clocks.c
-    Drivers/PCD8544/pcd8544_driver.c
-    Drivers/MCP9808/mcp9808_driver.c
-)
-target_include_directories(Drivers PUBLIC
-    Drivers/
-    Drivers/GPIO
-    Drivers/SPI
-    Drivers/I2C
-    Drivers/NVIC
-    Drivers/Clock
-    Drivers/MCP9808
-    Drivers/PCD8544
+target_link_options(stm32f401xx
+INTERFACE
+	-T${CMAKE_SOURCE_DIR}/STM32F401CCUX_FLASH.ld
+	-mcpu=cortex-m4
+	-mthumb
 )
 
-add_library(GfxLib
-    Libs/GfxLib/GfxLib.c
+add_library(drivers)
+target_sources(drivers
+PRIVATE
+	Drivers/GPIO/stm32f401xx_gpio_driver.c
+	Drivers/SPI/stm32f401xx_spi_driver.c
+	Drivers/I2C/stm32f401xx_i2c_driver.c
+	Drivers/NVIC/stm32f401xx_nvic_driver.c
+	Drivers/Clock/stm32f401xx_clocks.c
+	Drivers/MCP9808/mcp9808_driver.c
 )
-target_include_directories(GfxLib PUBLIC
-    Libs/GfxLib/
+target_include_directories(drivers
+PUBLIC
+	Drivers/
+	Drivers/GPIO
+	Drivers/SPI
+	Drivers/I2C
+	Drivers/NVIC
+	Drivers/Clock
+	Drivers/MCP9808
 )
+target_link_libraries(drivers stm32f401xx)
 
+add_library(gfxlib)
+target_sources(gfxlib
+PRIVATE
+	Libs/GfxLib/GfxLib.c
+)
+target_include_directories(gfxlib
+PUBLIC
+	Libs/GfxLib/
+)
+target_link_libraries(gfxlib stm32f401xx)
+
+add_subdirectory(Drivers/PCD8544)
+target_link_libraries(pcd8544_drivers stm32f401xx)
 
 file(GLOB_RECURSE SOURCES
-    Src/*.c
-    Startup/*.s
-    Inc/*.c
+	Src/*.c
+	Startup/*.s
+	Inc/*.c
 )
-
 add_executable(${TARGET} ${SOURCES})
-
-target_include_directories(${TARGET} PUBLIC Inc
-    Inc/
+target_include_directories(${TARGET} PRIVATE Inc
+	Inc/
 )
-
-target_link_options(${TARGET} PRIVATE
-    -T${CMAKE_SOURCE_DIR}/STM32F401CCUX_FLASH.ld
-    -mcpu=cortex-m4
-    -mthumb
-)
-
-target_link_libraries(${TARGET} Drivers)
-target_link_libraries(${TARGET} GfxLib)
-
-add_custom_command(TARGET ${TARGET} POST_BUILD
-    COMMAND ${CMAKE_OBJCOPY}
-            -O binary
-            ${PROJECT_NAME}.elf
-            ${PROJECT_NAME}.bin
+target_link_libraries(${TARGET}
+PRIVATE
+	stm32f401xx
+	gfxlib
+	drivers
+	pcd8544_drivers
 )
