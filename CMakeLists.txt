@@ -2,10 +2,6 @@ cmake_minimum_required(VERSION 4.3.0)
 
 project(TemperatureDisplayer LANGUAGES C ASM)
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS "ON")
-set(CMAKE_BUILD_TYPE "Debug")
-set(TARGET "${PROJECT_NAME}.elf")
-
 add_library(stm32f401xx INTERFACE)
 target_compile_options(stm32f401xx
 INTERFACE
@@ -49,12 +45,17 @@ target_link_libraries(gfxlib stm32f401xx)
 add_subdirectory(Drivers/PCD8544)
 target_link_libraries(pcd8544_drivers stm32f401xx)
 
-file(GLOB_RECURSE SOURCES
-	Src/*.c
-	Startup/*.s
-	Inc/*.c
+set(TARGET "${PROJECT_NAME}.elf")
+add_executable(${TARGET})
+target_sources(${TARGET}
+PRIVATE
+	Src/main.c
+	Src/syscalls.c
+	Src/sysmem.c
+	Startup/startup_stm32f401ccux.s
+	Inc/bsp.c
+	Inc/Fonts.c
 )
-add_executable(${TARGET} ${SOURCES})
 target_include_directories(${TARGET} PRIVATE Inc
 	Inc/
 )
