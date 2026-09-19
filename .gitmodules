@@ -1,3 +1,6 @@
 [submodule "Drivers/PCD8544"]
 	path = Drivers/PCD8544
 	url = git@github.com:David-Dorito/generic-PCD8544-drivers.git
+[submodule "Libs/GfxLib"]
+	path = Libs/GfxLib
+	url = git@github.com:David-Dorito/GfxLib.git

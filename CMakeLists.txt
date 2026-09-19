@@ -43,15 +43,7 @@ PUBLIC
 )
 target_link_libraries(drivers stm32f401xx)
 
-add_library(gfxlib)
-target_sources(gfxlib
-PRIVATE
-	Libs/GfxLib/GfxLib.c
-)
-target_include_directories(gfxlib
-PUBLIC
-	Libs/GfxLib/
-)
+add_subdirectory(Libs/GfxLib)
 target_link_libraries(gfxlib stm32f401xx)
 
 add_subdirectory(Drivers/PCD8544)

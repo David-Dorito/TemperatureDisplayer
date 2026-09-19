@@ -119,14 +119,14 @@ static const uint8_t* basicFontBitMaps[] = {
     basicFont_bitmap_W,
     basicFont_bitmap_X,
     basicFont_bitmap_Y,
-    basicFont_bitmap_Z
+    basicFont_bitmap_Z,
 };
 
 GfxLib_Font basicFont = (GfxLib_Font){
-    .ppCharBitmaps = basicFontBitMaps,
+    .CharBitmaps = basicFontBitMaps,
     .CharCount = sizeof(basicFontBitMaps) / sizeof(basicFontBitMaps[0]),
     .CharHeight = 6,
     .CharWidth = 6,
     .CharSpacing = 1,
-    .StartChar = ' '
+    .StartChar = ' ',
 };

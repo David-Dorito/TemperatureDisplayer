@@ -193,12 +193,14 @@ Pcd8544_Handle lcdHandle = (Pcd8544_Handle){
     .Drivers = &lcdTransport,
 };
 
-static GfxLib_Transport gfxlibTransport = {
-    .DrawPixelFunc = PCD8544_SetPixelColor_Bridge,
+static GfxLib_DisplayDrivers gfxlibTransport = {
+    .DrawPixel = PCD8544_SetPixelColor_Bridge,
 };
 
-GfxLib_Handle gfxlibHandle =
-    (GfxLib_Handle){.pFont = &basicFont, .pDisplayHandle = &lcdHandle, .pTransport = &gfxlibTransport};
+GfxLib_Handle gfxlibHandle = (GfxLib_Handle){
+    .Display = &lcdHandle,
+    .Drivers = &gfxlibTransport,
+};
 
 static void PCD8544_SetPixelColor_Bridge(void* pHandle, u16 posX, u16 posY, u32 color) {
 	Pcd8544_SetPixelColor((Pcd8544_Handle*)pHandle, color ? TRUE : FALSE, posX, posY);

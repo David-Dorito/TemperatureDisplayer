@@ -29,6 +29,10 @@ int main(void) {
 	Pcd8544_FillScreenColor(&lcdHandle, WHITE);
 	Pcd8544_UpdateScreen(&lcdHandle);
 
+	GfxLib_FontString stringToDraw = (GfxLib_FontString){
+	    .Font = &basicFont,
+	};
+
 	while (TRUE) {
 		if (isButtonPressed) {
 			float temperature = MCP9808_GetTemperature(&sensorHandle);
@@ -36,8 +40,15 @@ int main(void) {
 			FloatToString(temperature, temperatureString, 4);
 
 			Pcd8544_FillScreenColor(&lcdHandle, WHITE);
-			GfxLib_DrawString(&gfxlibHandle, "TEMPERATURE:", 2, 12, BLACK);
-			GfxLib_DrawString(&gfxlibHandle, temperatureString, 18, 20, BLACK);
+
+			stringToDraw.String = "TEMPERATURE:";
+			stringToDraw.Pos = (GfxLib_Point){.X = 2, .Y = 12};
+			GfxLib_DrawString(&gfxlibHandle, stringToDraw, BLACK);
+
+			stringToDraw.String = temperatureString;
+			stringToDraw.Pos = (GfxLib_Point){.X = 18, .Y = 20};
+			GfxLib_DrawString(&gfxlibHandle, stringToDraw, BLACK);
+
 			Pcd8544_UpdateScreen(&lcdHandle);
 
 			isButtonPressed = FALSE;
