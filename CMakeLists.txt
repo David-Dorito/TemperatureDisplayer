@@ -66,3 +66,10 @@ PRIVATE
 	drivers
 	pcd8544_drivers
 )
+
+add_custom_command(TARGET ${TARGET} POST_BUILD
+	COMMAND ${CMAKE_OBJCOPY}
+	-O binary
+	$<TARGET_FILE:${TARGET}>
+	${CMAKE_BINARY_DIR}/TemperatureDisplayer.bin
+)
