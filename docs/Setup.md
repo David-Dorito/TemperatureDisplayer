@@ -25,12 +25,9 @@ Below is the wiring schematic for the project:
 **You need these installed on your system to build and flash this project:**
 - ARM GCC toolchain
     - arm-none-eabi-gcc (tested with version 13.3.1)
-- CMake (version 3.25 or higher)
-- Ninja
-- VS Code (optional) with:
-    - CMake Tools extension
-    - clangd extension
+- CMake (version 4.3.0 or higher)
 - STM32CubeProgrammer (recommended), or alternative tools for flashing
+- Ninja
 
 *if you have STM32CubeIDE installed, you already have a working ARM toolchain*
 
@@ -45,21 +42,15 @@ This clones the project from the repo and puts bash into the project root.
 #### 3. Configure the project
 From the project root:
 ```bash
-cmake -S . -B build -G Ninja \
-  -DCMAKE_TOOLCHAIN_FILE=cmake/arm-gcc-toolchain.cmake \
-  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+cmake --preset debug
 ```
-This:
-- Configures the project for bare metal STM32
-- Generates compile_commands.json
-- Uses Ninja for fast builds
 
 #### 4. Build the project
 Again from the project root:
 ```bash
-cmake --build build
+cmake --build --preset debug
 ```
-Output files (`.elf`, `.bin`, `.hex`) will appear in the build/ directory
+Output files (`TemperatureDisplayer.elf` importantly) will appear in the build/ directory
 
 #### 5. Flashing
 Flashing is not handled by CMake. Use one of the following tools to program the generated `.elf` file to the microcontroller:
