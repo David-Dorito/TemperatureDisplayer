@@ -208,6 +208,8 @@ static void PCD8544_SetPixelColor_Bridge(void* pHandle, u16 posX, u16 posY, u32 
 
 static Pcd8544_Status SPI_TransmitData_Bridge(void* pHandle, u8* pTxBuffer, u16 len, u32 timeout) {
 	SPI_TransmitData((SPI_Handle*)pHandle, pTxBuffer, len);
+
+	return PCD8544_OK;
 }
 
 static void GPIO_WritePin_Bridge(void* pHandle, u8 isEnabled) {
